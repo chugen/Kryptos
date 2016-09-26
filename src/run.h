@@ -26,31 +26,32 @@ int16_t setMotorDutyR(float duty);
  ****************************************/
 int8_t setMotorDirL(int8_t cw_ccw);
 int8_t setMotorDirR(int8_t cw_ccw);
-/****************************************
- エンコーダ1ms差分取得
- ****************************************/
-int32_t returnEncoderDiffL(void);
-int32_t returnEncoderDiffR(void);
+
 /****************************************
  速度返す
  ****************************************/
 float returnVelocityL(void);
 
 float returnVelocityR(void);
+
 /****************************************
- エンコーダカウント方向
+ 速度P制御
  ****************************************/
-int8_t returnCountDirL(void);
-int8_t returnCountDirR(void);
+float ctrlPropVelocity(float kp);
+
 /****************************************
- P制御
+ 速度I制御
  ****************************************/
-float controlProportionL(float kp);
-float controlProportionR(float kp);
+float ctrlIntVelocityL(float ki);
+
 /****************************************
- I制御
+ 角速度P制御
  ****************************************/
-float controlIntegralL(float ki);
-float controlIntegralR(float ki);
+float ctrlPropAngularVelocity(float kp);
+
+/****************************************
+ 角速度I制御
+ ****************************************/
+float ctrlIntAngularVelocity(float ki);
 
 #endif /* RUN_H_ */

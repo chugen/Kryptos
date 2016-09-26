@@ -39,6 +39,22 @@
 #define LRED 100,30,30
 #define RGB_OFF 0,0,0
 /****************************************
+Gyro(MPU-6000)レジスタ定義
+****************************************/
+#define WHO_AM_I 0x75
+#define USER_CTRL 0x6A
+#define SIGNAL_PATH_RESET 0x68
+#define GYRO_CONFIG 0x1B
+#define ACCEL_CONFIG 0x1C
+#define GYRO_ZOUT_L 0x48
+#define GYRO_ZOUT_H 0x47
+#define ACCEL_XOUT_L 0x3B
+#define ACCEL_XOUT_H 0x3C
+#define ACCEL_YOUT_L 0x3E
+#define ACCEL_YOUT_H 0x3D
+#define PWR_MGMT_1 0x6B
+#define PWR_MGMT_2 0x6C
+/****************************************
 周波数定義
 ****************************************/
 #define bz_C0 	16.35

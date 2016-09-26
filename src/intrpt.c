@@ -11,6 +11,8 @@
 #include "run.h"
 #include "grobal.h"
 #include "parameter.h"
+#include "sensor.h"
+#include "app.h"
 
 /****************************************
  割り込み関数0
@@ -22,15 +24,23 @@ void intrptCMT0(void) {
 		g_mode_velo = returnVelocityR();
 	}
 
+	if (g_test_count < 5000) {
+		g_test_array[g_test_count] = 1;
+		g_test_array2[g_test_count] = -1;
+	}
+
 	if (g_test_flag == 1) {
-		g_current_velo.L = returnVelocityL();
-		g_current_velo.R = returnVelocityR();
+		g_current_gcenter_velo = returnVelocityL() + returnVelocityR();
+		g_current_angularvelo = returnGyroZVal() - g_gyro_reference;
 
-		setMotorDutyL(controlProportionL(400)+controlIntegralL(150));
-		setMotorDutyR(controlProportionR(400)+controlIntegralR(150));
-
-		g_error_integral.L+=g_current_error.L;
-		g_error_integral.R+=g_current_error.R;
+		setMotorDutyL(
+				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
+						- ctrlPropAngularVelocity(ANG_VELO_P)
+						- ctrlIntAngularVelocity(ANG_VELO_I));
+		setMotorDutyR(
+				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
+						+ ctrlPropAngularVelocity(ANG_VELO_P)
+						+ ctrlIntAngularVelocity(ANG_VELO_I));
 
 	}
 }

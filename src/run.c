@@ -5,13 +5,14 @@
  *      Author: Gen
  */
 #include <stdint.h>
+#include "app.h"
 #include "run.h"
 #include "iodefine.h"
 #include "intrpt.h"
-#include "app.h"
 #include "grobal.h"
 #include "parameter.h"
 #include "common.h"
+#include "sensor.h"
 /****************************************
  吸引
  ****************************************/
@@ -46,29 +47,29 @@ int8_t driveMotor(int8_t on_off) {
  ****************************************/
 int16_t setMotorDutyL(float duty) {
 	if (duty < 0) {
-		setMotorDirL(1);
-		duty*=-1;
-	}else{
-		setMotorDirL(0);
+		setMotorDirL(BACKWARD);
+		duty *= -1;
+	} else {
+		setMotorDirL(FORWARD);
 	}
 	if (duty >= 80) {
 		duty = 80;
 	}
 	MTU0.TGRC = (int16_t) (250 * duty / 100);	//MOTOR_L
-	return 0;
+	return (int16_t) (250 * duty / 100);
 }
 int16_t setMotorDutyR(float duty) {
 	if (duty < 0) {
-			setMotorDirR(1);
-			duty*=-1;
-		}else{
-			setMotorDirR(0);
-		}
+		setMotorDirR(BACKWARD);
+		duty *= -1;
+	} else {
+		setMotorDirR(FORWARD);
+	}
 	if (duty >= 80) {
 		duty = 80;
 	}
 	MTU0.TGRA = (int16_t) (250 * duty / 100);	//MOTOR_R
-	return 0;
+	return (int16_t) (250 * duty / 100);
 }
 /****************************************
  モータ 　CW/CCW
@@ -96,104 +97,53 @@ int8_t setMotorDirR(int8_t cw_ccw) {
 		return cw_ccw;
 	}
 }
-/****************************************
- エンコーダ1ms差分取得
- ****************************************/
-int32_t returnEncoderDiffL(void) {
-	int32_t diff = 0;
-
-	diff = TPU4.TCNT;
-
-	TPU4.TCNT = 0;
-
-	if (diff < INT16_MAX) {
-		return diff * returnCountDirL();
-	} else {
-		return -(UINT16_MAX - diff) * returnCountDirL();
-	}
-}
-
-int32_t returnEncoderDiffR(void) {
-	int32_t diff = 0;
-
-	diff = MTU1.TCNT;
-
-	MTU1.TCNT = 0;
-
-	if (diff < INT16_MAX) {
-		return diff * returnCountDirR();
-	} else {
-		return (UINT16_MAX - diff) * returnCountDirR();
-	}
-}
 
 /****************************************
  速度返す
  ****************************************/
 float returnVelocityL(void) {
-	return returnEncoderDiffL() * DIAMETER_L * M_PI / (ENC_RESO * 2) * PINION
-			/ SPUR*returnCountDirL();
+	return returnEncoderDiffL() * DIAMETER_L * M_PI / (ENC_RESO * 2)
+			/ GEAR_RATIO;
 }
 
 float returnVelocityR(void) {
-	return returnEncoderDiffR() * DIAMETER_R * M_PI / (ENC_RESO * 2) * PINION
-			/ SPUR;
+	return returnEncoderDiffR() * DIAMETER_R * M_PI / (ENC_RESO * 2)
+			/ GEAR_RATIO;
 }
 
 /****************************************
- エンコーダカウント方向
+ 速度P制御
  ****************************************/
-int8_t returnCountDirL(void) {
-	int8_t temp;
-	if (TPU4.TSR.BIT.TCFD == 0) {
-		temp = -1;
-	} else if (TPU4.TSR.BIT.TCFD == 1) {
-		temp = 1;
-	}
-	return temp;
-}
-int8_t returnCountDirR(void) {
-	int8_t temp;
-	if (MTU1.TSR.BIT.TCFD == 0) {
-		temp = 1;
-	} else if (MTU1.TSR.BIT.TCFD == 1) {
-		temp = -1;
-	}
-	return temp;
+float ctrlPropVelocity(float kp) {
+
+	g_current_gcenter_velo_error = g_target_gcenter_velo
+			- g_current_gcenter_velo;
+
+	return g_current_gcenter_velo_error * kp;
 }
 
 /****************************************
- P制御
+ 速度I制御
  ****************************************/
-float controlProportionL(float kp) {
-
-	g_current_error.L = g_target_velo.L - g_current_velo.L;
-
-	return g_current_error.L * kp;
+float ctrlIntVelocity(float ki) {
+	g_gcenter_velo_error_integral += g_current_gcenter_velo_error;
+	return g_gcenter_velo_error_integral * ki;
 }
-float controlProportionR(float kp) {
 
-	g_current_error.R = g_target_velo.R - g_current_velo.R;
-
-	return g_current_error.R * kp;
-}
 /****************************************
- I制御
+ 角速度P制御
  ****************************************/
-float controlIntegralL(float ki) {
+float ctrlPropAngularVelocity(float kp) {
+	g_current_angularvelo_error = g_target_angularvelo - g_current_angularvelo;
 
-	return g_error_integral.L*ki;
+	return convDegreeToRadian(g_current_angularvelo_error) * TREAD / 2.0 * kp;
 }
 
-float controlIntegralR(float ki) {
-
-	return g_error_integral.R*ki;
-
+/****************************************
+ 角速度I制御
+ ****************************************/
+float ctrlIntAngularVelocity(float ki) {
+	g_angularvelo_error_integral += g_current_angularvelo_error;
+	return convDegreeToRadian(g_angularvelo_error_integral) * TREAD / 2.0 * ki;
 }
-
-
-
-
-
-
 

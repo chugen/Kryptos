@@ -10,16 +10,17 @@
 
 
 
-int16_t init(void);
-int16_t initIO(void);
-int16_t initClock(void);
-int16_t initLowPowerConsumption(void);
-int16_t initCMT(void);
-int16_t initMTU(void);
-int16_t initTPU(void);
-int16_t initSCI(void);
-int16_t initADC(void);
-int16_t initSPI(void);
+int8_t init(void);
+int8_t initIO(void);
+int8_t initClock(void);
+int8_t initLowPowerConsumption(void);
+int8_t initCMT(void);
+int8_t initMTU(void);
+int8_t initTPU(void);
+int8_t initSCI(void);
+int8_t initADC(void);
+int8_t initSPI(void);
+int8_t initMPU6000(void);
 
 
 #endif /* INIT_H_ */

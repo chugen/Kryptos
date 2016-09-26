@@ -7,8 +7,9 @@
 #include <stdint.h>
 #include "iodefine.h"
 #include "init.h"
-
-int16_t init(void) {
+#include "sensor.h"
+#include "common.h"
+int8_t init(void) {
 	initClock();
 	initIO();
 	initLowPowerConsumption();
@@ -18,11 +19,11 @@ int16_t init(void) {
 	initTPU();
 	initSCI();
 	initADC();
-
+	initMPU6000();
 	return 0;
 }
 
-int16_t initIO(void) {
+int8_t initIO(void) {
 	PORTA.PMR.BYTE = 0x00;
 	PORTE.PMR.BYTE = 0x00;
 	PORT5.PMR.BYTE = 0x00;
@@ -50,7 +51,7 @@ int16_t initIO(void) {
 	return 0;
 }
 
-int16_t initClock(void) {
+int8_t initClock(void) {
 	unsigned short i;
 
 	SYSTEM.PRCR.WORD = 0xA503;	//プロテクト解除
@@ -79,7 +80,7 @@ int16_t initClock(void) {
 	return 0;
 }
 
-int16_t initLowPowerConsumption(void) {
+int8_t initLowPowerConsumption(void) {
 
 	SYSTEM.PRCR.WORD = 0xA502; //プロテクト解除
 
@@ -95,7 +96,7 @@ int16_t initLowPowerConsumption(void) {
 	return 0;
 }
 
-int16_t initCMT(void) {
+int8_t initCMT(void) {
 
 	CMT.CMSTR0.BIT.STR0 = 0x00;	//カウントストップ
 	CMT0.CMCR.BIT.CMIE = 0x00;	//コンペアマッチ割り込み禁止
@@ -111,7 +112,7 @@ int16_t initCMT(void) {
 	return 0;
 }
 
-int16_t initMTU(void) {
+int8_t initMTU(void) {
 	MPC.PWPR.BIT.B0WI = 0;
 	MPC.PWPR.BIT.PFSWE = 1;		//書き込みプロテクト解除
 	MPC.PB1PFS.BIT.PSEL = 0x01;	//MTIOC0C MOTOR_L
@@ -140,8 +141,8 @@ int16_t initMTU(void) {
 	MTU2.TIOR.BIT.IOA = 0x05;	//初期出力：H,コンペアマッチ：L
 
 	//MTU0:MOTOR MTU2:SPEAKER
-	MTU0.TGRA = (int16_t) (250 * 15 / 100);	//MOTOR_R
-	MTU0.TGRC = (int16_t) (250 * 15 / 100);	//MOTOR_L
+	MTU0.TGRA = (int8_t) (250 * 15 / 100);	//MOTOR_R
+	MTU0.TGRC = (int8_t) (250 * 15 / 100);	//MOTOR_L
 	MTU0.TGRD = 250;
 
 	MTU2.TGRA = 5;
@@ -163,7 +164,7 @@ int16_t initMTU(void) {
 	return 0;
 }
 
-int16_t initTPU(void) {
+int8_t initTPU(void) {
 	static const int16_t fled_width = 1500;
 	MPC.PWPR.BIT.B0WI = 0;
 	MPC.PWPR.BIT.PFSWE = 1;
@@ -225,7 +226,7 @@ int16_t initTPU(void) {
 
 }
 
-int16_t initSCI(void) {
+int8_t initSCI(void) {
 	int16_t dmy;
 
 	MPC.PWPR.BIT.B0WI = 0;
@@ -263,7 +264,7 @@ int16_t initSCI(void) {
 	return 0;
 }
 
-int16_t initADC(void) {
+int8_t initADC(void) {
 	S12AD.ADCSR.BIT.ADST = 0x00;	//AD変換ストップ
 	S12AD.ADCSR.BIT.TRGE = 0x00;	//トリガによるAD変換開始禁止
 	S12AD.ADCSR.BIT.CKS = 0x02; 	//PCLK/2=25MHz
@@ -275,7 +276,7 @@ int16_t initADC(void) {
 	return 0;
 }
 
-int16_t initSPI(void) {
+int8_t initSPI(void) {
 
 	MPC.PWPR.BIT.B0WI = 0;	//PFSWE書き込みプロテクト解除
 	MPC.PWPR.BIT.PFSWE = 1;	//PFS書き込みプロテクト解除
@@ -322,5 +323,15 @@ int16_t initSPI(void) {
 
 	RSPI1.SPCR.BIT.SPE = 1; 	//RSPI機能動作
 
+	return 0;
+}
+
+int8_t initMPU6000(void) {
+	commSPI(SIGNAL_PATH_RESET, 0x07, WRITE); 	//シグナルパスリセット
+	commSPI(USER_CTRL, 0x10, WRITE);			//I2C無効，SPI有効
+	commSPI(PWR_MGMT_1, 0x08, WRITE);			//温度センサ無効，
+	commSPI(PWR_MGMT_2, 0x0E, WRITE);
+	commSPI(GYRO_CONFIG, 0x18, WRITE);
+	commSPI(ACCEL_CONFIG, 0x18, WRITE);
 	return 0;
 }

@@ -32,16 +32,15 @@ int16_t driveLED(int16_t mode);
 /****************************************
  フルカラーLED
  ****************************************/
-int16_t driveRGB(int16_t RED, int16_t GREEN, int16_t BLUE, int8_t on_off);
+int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off);
 
 /****************************************
  モード選択
  ****************************************/
-uint16_t selectMode(int16_t max_mode);
+int16_t selectMode(int16_t max_mode);
 /****************************************
-deg-rad変換
-****************************************/
-float convDegRad(float degree) ;
-
+ deg-rad変換
+ ****************************************/
+float convDegreeToRadian(float degree);
 
 #endif /* APP_HPP_ */

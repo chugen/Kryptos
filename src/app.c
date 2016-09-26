@@ -234,7 +234,7 @@ int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off) {
 /****************************************
  モード選択
  ****************************************/
-uint16_t selectMode(int16_t max_mode) {
+int16_t selectMode(int16_t max_mode) {
 	int16_t mode = 0;
 	g_flag_mode_setting = 1;
 	driveRGB(20, 0, 0, 1);
@@ -268,10 +268,11 @@ uint16_t selectMode(int16_t max_mode) {
 	return mode;
 }
 /****************************************
-deg-rad変換
-****************************************/
-float convDegRad(float degree) {
-	double radian;
-	radian = degree * M_PI / 180;
-	return radian;
+ deg-rad変換
+ ****************************************/
+
+float convDegreeToRadian(float degree) {
+	float temp;
+	temp = degree * M_PI / 180.0;
+	return temp;
 }

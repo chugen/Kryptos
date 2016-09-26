@@ -24,7 +24,7 @@
 #include "common.h"
 
 void main(void) {
-	uint16_t i = 0;
+	int16_t i = 0;
 	init();
 	checkBatt();
 
@@ -34,6 +34,7 @@ void main(void) {
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(RED, ON);
+		calcGyroZRef();
 		g_test_flag = 1;
 		setMotorDutyL(20);
 		setMotorDutyR(20);
@@ -41,15 +42,25 @@ void main(void) {
 		setMotorDirL(FORWARD);
 		setMotorDirR(FORWARD);
 		driveMotor(ON);
-		while (1) {
-
+		g_test_count = 0;
+		waitTime(3000);
+		driveMotor(OFF);
+		waitButton();
+		for (i = 0; i < 5000; i++) {
+			myprintf("%f,%f\n", g_test_array[i], g_test_array2[i]);
 		}
-
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(GREEN, ON);
-		while (1) {
-			myprintf("WHO_AM_I: %d\n", commSPI(117, 0x0f, READ));
+		calcGyroZRef();
+		g_test_flag = 1;
+
+		setMotorDirL(FORWARD);
+		setMotorDirR(FORWARD);
+
+		driveMotor(ON);
+		while(1){
+
 		}
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
@@ -100,15 +111,10 @@ void main(void) {
 		driveSuction(100, 1);
 		break;
 	case 10: //////////////////////////////////////////////////////////////////////////////////////
-		driveRGB(LRED, ON);
-		g_test_flag = 0;
-		setMotorDutyL(50);
-		setMotorDutyR(50);
 
-		setMotorDirL(BACKWARD);
-		setMotorDirR(BACKWARD);
-
-		driveMotor(ON);
+		while (1) {
+			myprintf("%f\n", returnGyroZVal());
+		}
 		break;
 	default: //////////////////////////////////////////////////////////////////////////////////////
 		break;
