@@ -11,17 +11,17 @@
 /****************************************
 機体パラメータ
  ****************************************/
-//機体長さ(mm)
-#define LENGTH 92.0
-//機体幅(mm)
-#define WIDTH 69.0
-//機体重量(g)
-#define MASS 105.0
-//輪距(mm)
-#define TREAD 65.0
-//タイヤ直径(mm)
-#define DIAMETER_L 21.0
-#define DIAMETER_R 21.0
+//機体長さ(m)
+#define LENGTH 0.092
+//機体幅(m)
+#define WIDTH 0.069
+//機体重量(kg)
+#define MASS 0.105
+//輪距(m)
+#define TREAD 0.065
+//タイヤ直径(m)
+#define DIAMETER_L 0.022
+#define DIAMETER_R 0.022
 //ギア歯数
 #define PINION 9.0
 #define SPUR 35.0
@@ -31,15 +31,14 @@
 #define ENC_RESO 4096
 
 #endif /* PARAMETER_H_ */
-
 /****************************************
 制御パラメータ
  ****************************************/
 //速度P制御
 #define VELO_P 220
 //速度I制御
-#define VELO_I 300
+#define VELO_I 500
 //角速度P制御
-#define ANG_VELO_P 0.05
+#define ANG_VELO_P 15
 //角速度I制御
-#define ANG_VELO_I 0.01
+#define ANG_VELO_I 2

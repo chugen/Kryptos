@@ -42,5 +42,10 @@ int16_t selectMode(int16_t max_mode);
  deg-rad変換
  ****************************************/
 float convDegreeToRadian(float degree);
+/****************************************
+ ログ書き出し関数
+ ****************************************/
+void printLog(void);
+
 
 #endif /* APP_HPP_ */

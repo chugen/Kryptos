@@ -100,7 +100,7 @@ float returnGyroZVal(void) {
 	int16_t temp;
 
 	temp = (((int16_t) (commSPI(GYRO_ZOUT_H, 0x00, READ))) << 8);
-	temp |= ((int16_t) (commSPI(GYRO_ZOUT_H, 0x00, READ)));
+	temp += ((int16_t) (commSPI(GYRO_ZOUT_L, 0x00, READ)));
 
 	return (float) (temp * 2000.0 / INT16_MAX);
 }
@@ -111,10 +111,10 @@ int8_t calcGyroZRef(void){
 	int i=0;
 	float temp;
 	g_gyro_reference=0;
-	for(i=0;i<150;i++){
+	for(i=0;i<500;i++){
 		temp+=returnGyroZVal();
 		waitTime(1);
 	}
-	g_gyro_reference=temp/150.0;
+	g_gyro_reference=temp/500.0;
 	return 0;
 }

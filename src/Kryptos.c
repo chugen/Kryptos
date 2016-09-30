@@ -10,7 +10,6 @@
 /*                                                             */
 /***************************************************************/
 
-#include <machine.h>
 #include <stdint.h>
 #include "my_typedef.h"
 #include "iodefine.h"
@@ -24,7 +23,6 @@
 #include "common.h"
 
 void main(void) {
-	int16_t i = 0;
 	init();
 	checkBatt();
 
@@ -34,54 +32,60 @@ void main(void) {
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(RED, ON);
+		waitTime(2000);
 		calcGyroZRef();
 		g_test_flag = 1;
-		setMotorDutyL(20);
-		setMotorDutyR(20);
-
-		setMotorDirL(FORWARD);
-		setMotorDirR(FORWARD);
-		driveMotor(ON);
-		g_test_count = 0;
-		waitTime(3000);
+		g_log_count = 0;
+		g_distance = 0;
+		accTrape(5, 0.18*5, 0.5, 0);
+		waitTime(1000);
 		driveMotor(OFF);
 		waitButton();
-		for (i = 0; i < 5000; i++) {
-			myprintf("%f,%f\n", g_test_array[i], g_test_array2[i]);
-		}
+		printLog();
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(GREEN, ON);
+
+		waitTime(2000);
 		calcGyroZRef();
 		g_test_flag = 1;
-
-		setMotorDirL(FORWARD);
-		setMotorDirR(FORWARD);
-
-		driveMotor(ON);
-		while(1){
-
-		}
+		g_log_count = 0;
+		g_distance = 0;
+		accTrape(5, 0.5, 2, 2.3);
+		g_distance = 0;
+		turn90Wide(1000, 90, 500, 2.3);
+		g_angularvelo_error_integral=0;
+		accTrape(5, 0.5, 2.3, 0);
+		waitTime(1000);
+		driveMotor(OFF);
+		waitButton();
+		printLog();
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
-		for (i = 0; i < 5000; i++) {
-			myprintf("%f\n", g_test_array[i]);
+
+		waitTime(3000);
+		driveRGB(GREEN, ON);
+		calcGyroZRef();
+
+		while (1) {
+			myprintf("%f %f\n", g_current_angularvelo, g_angle);
 		}
 		break;
 	case 3: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(YELLOW, ON);
-		for (i = 0; i < 5000; i++)
-			myprintf("%f\n", g_test_array[i]);
+
 		break;
 	case 4: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(CYAN, ON);
 		break;
 	case 5: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
+
 		break;
 	case 6: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WHITE, ON);
+
 		break;
 	case 7: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
@@ -101,19 +105,23 @@ void main(void) {
 		break;
 	case 8: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WATER, ON);
-		g_test_flag = 0;
-		while (1) {
-			myprintf("%8f %8f\n", returnVelocityL(), returnVelocityR());
-		}
+
 		break;
 	case 9: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LBLUE, ON);
 		driveSuction(100, 1);
 		break;
 	case 10: //////////////////////////////////////////////////////////////////////////////////////
+		driveRGB(LRED, ON);
+		calcGyroZRef();
+		g_test_flag = 1;
 
+		setMotorDirL(FORWARD);
+		setMotorDirR(FORWARD);
+
+		driveMotor(ON);
 		while (1) {
-			myprintf("%f\n", returnGyroZVal());
+
 		}
 		break;
 	default: //////////////////////////////////////////////////////////////////////////////////////

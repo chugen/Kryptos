@@ -54,4 +54,13 @@ float ctrlPropAngularVelocity(float kp);
  ****************************************/
 float ctrlIntAngularVelocity(float ki);
 
+/****************************************
+ 台形加速
+ ****************************************/
+void accTrape(float t_acc, float t_dis, float t_max_velo, float t_end_velo);
+/****************************************
+ スラローム　大廻
+ ****************************************/
+void turn90Wide(float s_angacc, float s_angle, float s_max_angvelo,
+		float c_velo);
 #endif /* RUN_H_ */

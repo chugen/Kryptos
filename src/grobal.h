@@ -17,18 +17,13 @@
 extern volatile float g_mode_velo;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //目標速度
-extern volatile floatLR_t g_target_velo;
-extern volatile float g_target_gcenter_velo;
-
+extern volatile float g_target_velo;
 //現在速度
-extern volatile floatLR_t g_current_velo;
-extern volatile float g_current_gcenter_velo;
+extern volatile float g_current_velo;
 //現在偏差
-extern volatile floatLR_t g_current_velo_error;
-extern volatile float g_current_gcenter_velo_error;
+extern volatile float g_current_velo_error;
 //偏差積分
-extern volatile floatLR_t g_velo_error_integral;
-extern volatile float g_gcenter_velo_error_integral;
+extern volatile float g_velo_error_integral;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //目標角速度
 extern volatile float g_target_angularvelo;
@@ -45,15 +40,24 @@ extern volatile float g_angularvelo_error_integral;
 //Gyro　リファレンス
 extern volatile float g_gyro_reference;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
+//距離
+extern volatile float g_distance;
+//加速度
+extern volatile float g_accele;
+//角度
+extern volatile float g_angle;
+//各加速度
+extern volatile float g_angularaccele;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //フラグ
 extern volatile int8_t g_flag_mode_setting;
 
 //テスト用
-extern volatile int16_t g_wait_counter;
-extern volatile int16_t g_test_count;
-extern volatile float g_test_array[5000];
-extern volatile float g_test_array2[5000];
+extern volatile int16_t g_wait_count;
+extern volatile int16_t g_log_count;
+extern volatile float g_log_array[];
+extern volatile float g_log_array2[];
+extern volatile float g_log_array3[];
 extern volatile int8_t g_test_flag;
 
 #endif /* GROBAL_H_ */

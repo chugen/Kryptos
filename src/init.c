@@ -20,7 +20,7 @@ int8_t init(void) {
 	initSCI();
 	initADC();
 	initMPU6000();
-	return 0;
+	return 1;
 }
 
 int8_t initIO(void) {
@@ -48,7 +48,7 @@ int8_t initIO(void) {
 	PORTC.PDR.BIT.B4 = 1;	//motor M_L_IN2
 	PORTC.PDR.BIT.B3 = 1;	//motor M_R_IN1
 	PORTC.PDR.BIT.B2 = 1;	//motor M_R_IN2
-	return 0;
+	return 1;
 }
 
 int8_t initClock(void) {
@@ -77,7 +77,7 @@ int8_t initClock(void) {
 	SYSTEM.SCKCR3.BIT.CKSEL = 0x04; //PLL回路選択
 
 	SYSTEM.PRCR.WORD = 0xA500; //プロテクト
-	return 0;
+	return 1;
 }
 
 int8_t initLowPowerConsumption(void) {
@@ -93,7 +93,7 @@ int8_t initLowPowerConsumption(void) {
 	MSTP(RSPI1) = 0;	// RSPI1:モジュールストップ解除
 
 	SYSTEM.PRCR.WORD = 0xA500;	//プロテクト
-	return 0;
+	return 1;
 }
 
 int8_t initCMT(void) {
@@ -105,11 +105,21 @@ int8_t initCMT(void) {
 	CMT0.CMCOR = 6250 - 1;		//割り込み周期設定 1ms
 
 	IR(CMT0, CMI0)= 0x00;
-	IPR( CMT0, CMI0 )= 0x0F;	//割り込み優先度設定:14
+	IPR( CMT0, CMI0 )= 0x0F;	//割り込み優先度設定:15
 	IEN( CMT0, CMI0 )= 0x01;	//割り込み許可
 
+	CMT1.CMCR.BIT.CMIE = 0x00;	//コンペアマッチ割り込み禁止
+	CMT1.CMCR.BIT.CKS = 0x00;	// PCLK/8=50MHz/8=6.25MHz=6250000Hz
+	CMT1.CMCR.BIT.CMIE = 0x01;	//コンペアマッチ割り込み許可
+	CMT1.CMCOR = 6250 - 1;		//割り込み周期設定 1ms
+
+	IR(CMT1, CMI1)= 0x00;
+	IPR( CMT1, CMI1 )= 0x0E;	//割り込み優先度設定:14
+	IEN( CMT1, CMI1 )= 0x01;	//割り込み許可
+
 	CMT.CMSTR0.BIT.STR0 = 0x01;
-	return 0;
+	CMT.CMSTR0.BIT.STR1 = 0x01;
+	return 1;
 }
 
 int8_t initMTU(void) {
@@ -161,7 +171,7 @@ int8_t initMTU(void) {
 //	IPR( MTU4, TGIA4 )= 0x08;//割り込み優先度設定:8
 //	IEN( MTU4, TGIA4 )= 0x01;
 
-	return 0;
+	return 1;
 }
 
 int8_t initTPU(void) {
@@ -222,7 +232,7 @@ int8_t initTPU(void) {
 
 	//TPUA.TSTR.BYTE = 0x3f;	//TPU0~5 TCNTカウントスタート
 
-	return 0;
+	return 1;
 
 }
 
@@ -261,7 +271,7 @@ int8_t initSCI(void) {
 	SCI1.SCR.BIT.TE = 1;	//送信許可
 	SCI1.SCR.BIT.RE = 1;	//受信許可
 
-	return 0;
+	return 1;
 }
 
 int8_t initADC(void) {
@@ -273,7 +283,7 @@ int8_t initADC(void) {
 	S12AD.ADSSTR01.WORD = 50; 		//サンプリング時間50ステート
 	S12AD.ADCER.BIT.ADRFMT = 0;		//レジスタ右詰め
 	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
-	return 0;
+	return 1;
 }
 
 int8_t initSPI(void) {
@@ -323,7 +333,7 @@ int8_t initSPI(void) {
 
 	RSPI1.SPCR.BIT.SPE = 1; 	//RSPI機能動作
 
-	return 0;
+	return 1;
 }
 
 int8_t initMPU6000(void) {
@@ -333,5 +343,5 @@ int8_t initMPU6000(void) {
 	commSPI(PWR_MGMT_2, 0x0E, WRITE);
 	commSPI(GYRO_CONFIG, 0x18, WRITE);
 	commSPI(ACCEL_CONFIG, 0x18, WRITE);
-	return 0;
+	return 1;
 }

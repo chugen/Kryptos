@@ -54,7 +54,10 @@ void Excep_CMT0_CMI0(void){
 }
 
 // CMTU1_CMT1
-void Excep_CMT1_CMI1(void){ }
+void intrptCMT1(void);
+void Excep_CMT1_CMI1(void){
+	intrptCMT1();
+}
 
 // CMTU2_CMT2
 void Excep_CMT2_CMI2(void){ }

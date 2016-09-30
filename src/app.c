@@ -12,14 +12,15 @@
 #include "run.h"
 #include "grobal.h"
 #include "intrpt.h"
+#include "serial.h"
 
 /****************************************
  Wait関数
  ****************************************/
 void waitTime(int16_t wait_ms) {
-	g_wait_counter = 0;
+	g_wait_count = 0;
 	while (1) {
-		if (g_wait_counter > wait_ms)
+		if (g_wait_count > wait_ms)
 			break;
 	}
 }
@@ -240,7 +241,7 @@ int16_t selectMode(int16_t max_mode) {
 	driveRGB(20, 0, 0, 1);
 	while (pushButton()) {
 		driveLED(mode);
-		if (g_mode_velo < -0.6) {
+		if (g_mode_velo < -0.3) {
 
 			mode--;
 			if (mode < 0) {
@@ -251,7 +252,7 @@ int16_t selectMode(int16_t max_mode) {
 			}
 			driveLED(mode);
 			waitTime(300);
-		} else if (g_mode_velo > 0.6) {
+		} else if (g_mode_velo > 0.3) {
 
 			mode++;
 			if (mode < 0) {
@@ -270,9 +271,17 @@ int16_t selectMode(int16_t max_mode) {
 /****************************************
  deg-rad変換
  ****************************************/
-
 float convDegreeToRadian(float degree) {
 	float temp;
 	temp = degree * M_PI / 180.0;
 	return temp;
+}
+/****************************************
+ ログ書き出し関数
+ ****************************************/
+void printLog(void){
+	int32_t i;
+	for(i=0;i<LOG_TIMES;i++){
+		myprintf("%d	%f	%f\n",i,*(g_log_array+i),*(g_log_array2+i));
+	}
 }

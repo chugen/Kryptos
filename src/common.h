@@ -22,6 +22,8 @@
 #define FORWARD 0
 #define BACKWARD 1
 
+#define LOG_TIMES 1500
+
 #define M_PI 3.141592653589793
 /****************************************
 色定義
