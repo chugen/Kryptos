@@ -38,8 +38,8 @@ int8_t initIO(void) {
 
 	//PORTE.PDR.BIT.B0 = 1;	//spi_cs
 
-	PORT5.PDR.BIT.B4 = 1;	//LED_S 0,2
-	PORT5.PDR.BIT.B5 = 1;	//LED_F 1,3
+	PORT5.PDR.BIT.B4 = 1;	//SLED FR_L 1,3
+	PORT5.PDR.BIT.B5 = 1;	//SLED FL_R 0,4
 
 	PORT3.PDR.BIT.B1 = 1;		//SW
 
@@ -87,6 +87,7 @@ int8_t initLowPowerConsumption(void) {
 	MSTP(MTU) = 0;		// MTU:モジュールストップ状態解除
 	MSTP(TPU0) = 0;		// TPUユニット0:モジュールストップ状態解除
 	MSTP(CMT0) = 0;		// CMTユニット0:モジュールストップ状態解除
+	MSTP(CMT1) = 0;		// CMTユニット0:モジュールストップ状態解除
 	MSTP(S12AD) = 0;	// S12AD(12bitADC):モジュールストップ状態解除
 	MSTP(RSPI0) = 0;	// RSPI0:モジュールストップ状態解除
 	MSTP(SCI1) = 0;		// SCI1:モジュールストップ解除
@@ -99,12 +100,13 @@ int8_t initLowPowerConsumption(void) {
 int8_t initCMT(void) {
 
 	CMT.CMSTR0.BIT.STR0 = 0x00;	//カウントストップ
+	CMT.CMSTR0.BIT.STR1 = 0x00;	//カウントストップ
 	CMT0.CMCR.BIT.CMIE = 0x00;	//コンペアマッチ割り込み禁止
 	CMT0.CMCR.BIT.CKS = 0x00;	// PCLK/8=50MHz/8=6.25MHz=6250000Hz
 	CMT0.CMCR.BIT.CMIE = 0x01;	//コンペアマッチ割り込み許可
 	CMT0.CMCOR = 6250 - 1;		//割り込み周期設定 1ms
 
-	IR(CMT0, CMI0)= 0x00;
+	//IR(CMT0, CMI0)= 0x00;
 	IPR( CMT0, CMI0 )= 0x0F;	//割り込み優先度設定:15
 	IEN( CMT0, CMI0 )= 0x01;	//割り込み許可
 
@@ -113,12 +115,13 @@ int8_t initCMT(void) {
 	CMT1.CMCR.BIT.CMIE = 0x01;	//コンペアマッチ割り込み許可
 	CMT1.CMCOR = 6250 - 1;		//割り込み周期設定 1ms
 
-	IR(CMT1, CMI1)= 0x00;
+	//IR(CMT1, CMI1)= 0x00;
 	IPR( CMT1, CMI1 )= 0x0E;	//割り込み優先度設定:14
 	IEN( CMT1, CMI1 )= 0x01;	//割り込み許可
 
 	CMT.CMSTR0.BIT.STR0 = 0x01;
-	CMT.CMSTR0.BIT.STR1 = 0x01;
+	CMT.CMSTR0.BIT.STR1 = 0x1;
+	CMT.CMSTR1.BIT.STR2 = 0x0;
 	return 1;
 }
 
@@ -171,6 +174,7 @@ int8_t initMTU(void) {
 //	IPR( MTU4, TGIA4 )= 0x08;//割り込み優先度設定:8
 //	IEN( MTU4, TGIA4 )= 0x01;
 
+	MTU.TSTR.BIT.CST1 = 1;	//位相係数スタート
 	return 1;
 }
 
@@ -231,7 +235,7 @@ int8_t initTPU(void) {
 	TPU5.TMDR.BIT.MD = 0x03;	//PWMモード2
 
 	//TPUA.TSTR.BYTE = 0x3f;	//TPU0~5 TCNTカウントスタート
-
+	TPUA.TSTR.BIT.CST4 = 1;	//位相係数スタート
 	return 1;
 
 }
@@ -278,11 +282,11 @@ int8_t initADC(void) {
 	S12AD.ADCSR.BIT.ADST = 0x00;	//AD変換ストップ
 	S12AD.ADCSR.BIT.TRGE = 0x00;	//トリガによるAD変換開始禁止
 	S12AD.ADCSR.BIT.CKS = 0x02; 	//PCLK/2=25MHz
-	S12AD.ADCSR.BIT.ADCS = 0x01; 	//連続スキャンモード
-	S12AD.ADANS0.WORD = 0x5E;		//0000|0000|0101|1110
-	S12AD.ADSSTR01.WORD = 50; 		//サンプリング時間50ステート
+	S12AD.ADCSR.BIT.ADCS = 0x00; 	//シングルスキャンモード
+	//S12AD.ADANS0.WORD = 0x5E;		//0000|0000|0101|1110
+	S12AD.ADSSTR01.WORD = 20; 		//サンプリング時間20ステート
 	S12AD.ADCER.BIT.ADRFMT = 0;		//レジスタ右詰め
-	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+	//S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
 	return 1;
 }
 
@@ -345,3 +349,4 @@ int8_t initMPU6000(void) {
 	commSPI(ACCEL_CONFIG, 0x18, WRITE);
 	return 1;
 }
+

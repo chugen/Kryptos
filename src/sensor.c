@@ -8,7 +8,7 @@
 #include "iodefine.h"
 #include "sensor.h"
 #include "common.h"
-#include "grobal.h"
+#include "global.h"
 
 /****************************************
  SPI送受信
@@ -107,14 +107,78 @@ float returnGyroZVal(void) {
 /****************************************
  GYRO_Zのリファレンス値を算出
  ****************************************/
-int8_t calcGyroZRef(void){
-	int i=0;
+int8_t calcGyroZRef(void) {
+	int i = 0;
 	float temp;
-	g_gyro_reference=0;
-	for(i=0;i<500;i++){
-		temp+=returnGyroZVal();
+	g_gyro_reference = 0;
+	for (i = 0; i < 500; i++) {
+		temp += returnGyroZVal();
 		waitTime(1);
 	}
-	g_gyro_reference=temp/500.0;
+	g_gyro_reference = temp / 500.0;
 	return 0;
+}
+/****************************************
+ 受光センサー値返す
+ ****************************************/
+uint16_t returnSenVal(uint8_t mode) {
+	switch (mode) {
+	S12AD.ADCSR.BIT.ADST = 0x00; 	//AD変換停止
+	case 0:
+		S12AD.ADANS0.WORD=0x02;
+		S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+		while (S12AD.ADCSR.BIT.ADST == 1)
+			;
+		return S12AD.ADDR1;
+		break;
+	case 1:
+		S12AD.ADANS0.WORD=0x04;
+		S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+		while (S12AD.ADCSR.BIT.ADST == 1)
+			;
+		return S12AD.ADDR2;
+		break;
+	case 2:
+		S12AD.ADANS0.WORD=0x08;
+		S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+		while (S12AD.ADCSR.BIT.ADST == 1)
+			;
+		return S12AD.ADDR3;
+		break;
+	case 3:
+		S12AD.ADANS0.WORD=0x10;
+		S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+		while (S12AD.ADCSR.BIT.ADST == 1)
+			;
+		return S12AD.ADDR4;
+		break;
+	default:
+		return 0;
+		break;
+	}
+	S12AD.ADCSR.BIT.ADST = 0x00; 	//AD変換ストップ
+}
+
+/****************************************
+ 光センサー
+ ****************************************/
+void driveSensorLED(uint8_t mode) {
+	switch (mode) {
+	case OFF:
+		PORT5.PODR.BIT.B4 = 0;
+		PORT5.PODR.BIT.B5 = 0;
+		break;
+	case FR_L:
+		PORT5.PODR.BIT.B4 = 1;
+		PORT5.PODR.BIT.B5 = 0;
+		break;
+	case FL_R:
+		PORT5.PODR.BIT.B4 = 0;
+		PORT5.PODR.BIT.B5 = 1;
+		break;
+	default:
+		PORT5.PODR.BIT.B4 = 0;
+		PORT5.PODR.BIT.B5 = 0;
+		break;
+	}
 }

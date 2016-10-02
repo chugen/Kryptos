@@ -10,7 +10,7 @@
 #include "iodefine.h"
 #include "common.h"
 #include "run.h"
-#include "grobal.h"
+#include "global.h"
 #include "intrpt.h"
 #include "serial.h"
 
@@ -33,6 +33,11 @@ float checkBatt(void) {
 	int16_t tmp;
 	float battery;
 	waitTime(100);
+	S12AD.ADCSR.BIT.ADST = 0x00; 	//AD変換停止
+	S12AD.ADANS0.WORD = 0x40;
+	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+	while (S12AD.ADCSR.BIT.ADST == 1)
+		;
 	tmp = S12AD.ADDR6;
 	battery = (float) (tmp / 4096.0 * 3.3 * 3.0) + 0.06;
 
@@ -58,32 +63,6 @@ int16_t waitButton(void) {
 	return 0;
 }
 
-/****************************************
- センサー値返す
- ****************************************/
-int16_t returnSenVal(uint8_t mode) {
-	switch (mode) {
-	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
-	while (S12AD.ADCSR.BIT.ADST == 1)
-		;
-case 0:
-	return S12AD.ADDR1;
-	break;
-case 1:
-	return S12AD.ADDR2;
-	break;
-case 2:
-	return S12AD.ADDR3;
-	break;
-case 3:
-	return S12AD.ADDR4;
-	break;
-default:
-	return 0;
-	break;
-	}
-	S12AD.ADCSR.BIT.ADST = 0x00; 	//AD変換ストップ
-}
 /****************************************
  モード選択LED
  ****************************************/
@@ -196,13 +175,13 @@ int16_t driveLED(int16_t mode) {
  ****************************************/
 int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off) {
 	if (on_off == 0) {
-		TPU0.TGRD = 1500 - blue;
+		TPU0.TGRD = 1500;
 		TPU0.TGRC = 1500;
 
-		TPU1.TGRA = 1500 - red;
+		TPU1.TGRA = 1500;
 		TPU1.TGRB = 1500;
 
-		TPU2.TGRA = 1500 - green;
+		TPU2.TGRA = 1500;
 		TPU2.TGRB = 1500;
 
 		TPU0.TCNT = 0;
@@ -238,7 +217,7 @@ int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off) {
 int16_t selectMode(int16_t max_mode) {
 	int16_t mode = 0;
 	g_flag_mode_setting = 1;
-	driveRGB(20, 0, 0, 1);
+	driveRGB(20, 20, 20, 1);
 	while (pushButton()) {
 		driveLED(mode);
 		if (g_mode_velo < -0.3) {
@@ -279,9 +258,9 @@ float convDegreeToRadian(float degree) {
 /****************************************
  ログ書き出し関数
  ****************************************/
-void printLog(void){
+void printLog(void) {
 	int32_t i;
-	for(i=0;i<LOG_TIMES;i++){
-		myprintf("%d	%f	%f\n",i,*(g_log_array+i),*(g_log_array2+i));
+	for (i = 0; i < LOG_TIMES; i++) {
+		myprintf("%d	%f	%f\n", i, *(g_log_array + i), *(g_log_array2 + i));
 	}
 }

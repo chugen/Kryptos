@@ -19,25 +19,23 @@
 #include "intrpt.h"
 #include "serial.h"
 #include "sensor.h"
-#include "grobal.h"
+#include "global.h"
 #include "common.h"
 
 void main(void) {
 	init();
 	checkBatt();
 
-	TPUA.TSTR.BIT.CST4 = 1;
-	MTU.TSTR.BIT.CST1 = 1;
-
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(RED, ON);
+		driveMotor(ON);
 		waitTime(2000);
 		calcGyroZRef();
 		g_test_flag = 1;
 		g_log_count = 0;
 		g_distance = 0;
-		accTrape(5, 0.18*5, 0.5, 0);
+		accTrape(5, 0.18 * 3, 0.5, 0);
 		waitTime(1000);
 		driveMotor(OFF);
 		waitButton();
@@ -45,17 +43,46 @@ void main(void) {
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(GREEN, ON);
-
+		driveMotor(ON);
 		waitTime(2000);
 		calcGyroZRef();
 		g_test_flag = 1;
 		g_log_count = 0;
 		g_distance = 0;
-		accTrape(5, 0.5, 2, 2.3);
-		g_distance = 0;
-		turn90Wide(1000, 90, 500, 2.3);
-		g_angularvelo_error_integral=0;
-		accTrape(5, 0.5, 2.3, 0);
+		accTrape(5, 0.03 + 0.18 + 0.09 * 26 + 0.03, 1.3, 1.0);
+
+		turn90Wide(6000, -90, 600, 1.0);
+
+		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+
+		turn90Wide(6000, -90, 600, 1.0);
+
+		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+
+		turn90Wide(6000, -90, 600, 1.0);
+
+		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+
+		turn90Wide(6000, -90, 600, 1.0);
+
+		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+
+		turn90Wide(6000, -90, 600, 1.0);
+
+		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+
+		turn90Wide(6000, -90, 600, 1.0);
+
+		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+
+		turn90Wide(6000, -90, 600, 1.0);
+
+		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+
+		turn90Wide(6000, -90, 600, 1.0);
+
+		accTrape(5, 0.09 * 3 + 0.06 , 1.3, 0);
+
 		waitTime(1000);
 		driveMotor(OFF);
 		waitButton();
@@ -69,6 +96,7 @@ void main(void) {
 		calcGyroZRef();
 
 		while (1) {
+
 			myprintf("%f %f\n", g_current_angularvelo, g_angle);
 		}
 		break;
@@ -89,27 +117,19 @@ void main(void) {
 		break;
 	case 7: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
-		g_test_flag = 1;
-		setMotorDutyL(20);
-		setMotorDutyR(20);
-
-		setMotorDirL(0);
-		setMotorDirR(0);
-		driveMotor(ON);
-		driveRGB(50, 10, 10, ON);
-		driveSuction(100, ON);
-		while (1) {
-
-		}
 
 		break;
 	case 8: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WATER, ON);
+		while (1) {
 
+			myprintf("%6.1d %6.1d %6.1d %6.1d\n", g_sensor_L, g_sensor_FL,
+					g_sensor_FR, g_sensor_R);
+		}
 		break;
 	case 9: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LBLUE, ON);
-		driveSuction(100, 1);
+		driveSuction(100, ON);
 		break;
 	case 10: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LRED, ON);
