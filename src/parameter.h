@@ -29,8 +29,6 @@
 #define GEAR_RATIO 3.888888888888
 //エンコーダ分解能
 #define ENC_RESO 4096
-
-#endif /* PARAMETER_H_ */
 /****************************************
 制御パラメータ
  ****************************************/
@@ -42,3 +40,5 @@
 #define ANG_VELO_P 5
 //角速度I制御
 #define ANG_VELO_I 2
+
+#endif /* PARAMETER_H_ */
