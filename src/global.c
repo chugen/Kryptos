@@ -54,9 +54,35 @@ volatile int32_t g_sensor_R;
 volatile int32_t g_sensor_L_derivative;
 volatile int32_t g_sensor_R_derivative;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//map
+volatile uint8_t g_orient = 1;
+volatile uint8_t g_current_x = 0;
+volatile uint8_t g_current_y = 0;
+volatile uint8_t g_wall_data_temp[16][16];
+volatile uint8_t g_wall_data[16][16];
+
+volatile uint8_t g_target_x = 1;
+volatile uint8_t g_target_y = 0;
+volatile uint8_t g_step_map[16][16];
+volatile uint8_t g_path[256];
+volatile uint8_t g_path_2[256];
+volatile uint8_t g_path_3[256];
+
+
+volatile uint8_t g_flag_step_goal;
+volatile uint8_t g_flag_step_goal_2;
+volatile uint8_t g_flag_step_goal_3;
+volatile uint8_t g_flag_curve = 0;
+volatile uint8_t g_flag_gap = 0;
+volatile uint8_t g_flag_adachi_goal = 0;
+volatile uint8_t g_flag_path_run_goal = 0;
+volatile uint8_t g_flag_diagonal=0;
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //フラグ
 volatile int8_t g_flag_mode_setting = 0;
 volatile int8_t g_test_flag = 0;
+volatile int8_t g_flag_turn;
 //テスト用
 volatile int16_t g_wait_count = 0; //waitTime関数用カウンタ
 volatile int16_t g_log_count = 0;

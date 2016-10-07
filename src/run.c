@@ -14,6 +14,7 @@
 #include "parameter.h"
 #include "common.h"
 #include "sensor.h"
+#include "my_typedef.h"
 /****************************************
  吸引
  ****************************************/
@@ -56,8 +57,8 @@ int16_t setMotorDutyL(float duty) {
 	if (duty >= 99) {
 		duty = 99;
 	}
-	MTU0.TGRC = (int16_t) (250 * duty / 100);	//MOTOR_L
-	return (int16_t) (250 * duty / 100);
+	MTU0.TGRC = (int16_t) (250 * duty / 100 * correctVoltage());	//MOTOR_L
+	return (int16_t) (250 * duty / 100 * correctVoltage());
 }
 int16_t setMotorDutyR(float duty) {
 	if (duty < 0) {
@@ -69,8 +70,8 @@ int16_t setMotorDutyR(float duty) {
 	if (duty >= 99) {
 		duty = 99;
 	}
-	MTU0.TGRA = (int16_t) (250 * duty / 100);	//MOTOR_R
-	return (int16_t) (250 * duty / 100);
+	MTU0.TGRA = (int16_t) (250 * duty / 100 * correctVoltage());	//MOTOR_R
+	return (int16_t) (250 * duty / 100 * correctVoltage());
 }
 /****************************************
  モータ 　CW/CCW
@@ -143,13 +144,54 @@ float ctrlPropAngularVelocity(float kp) {
  ****************************************/
 float ctrlIntAngularVelocity(float ki) {
 	g_angularvelo_error_integral += g_current_angularvelo_error;
-	return convDegreeToRadian(g_angularvelo_error_integral) * TREAD / 2.0 * ki;
+	if (((g_sensor_L > SEN_THRESHOLD_L) || (g_sensor_R > SEN_THRESHOLD_R))
+			&& g_flag_turn == 0) {
+		g_angularvelo_error_integral = 0;
+		return 0;
+	} else {
+		return convDegreeToRadian(g_angularvelo_error_integral) * TREAD / 2.0
+				* ki;
+	}
+}
+/****************************************
+ 壁制御
+ ****************************************/
+float ctrlWall(float kp) {
+
+	if ((g_sensor_L > SEN_THRESHOLD_L) && (g_sensor_R > SEN_THRESHOLD_R)) {
+		if (g_target_velo >= 0.1) {
+			return kp
+					* (( SEN_REFERENCE_L - g_sensor_L)
+							- ( SEN_REFERENCE_R - g_sensor_R));
+		} else {
+			return 0;
+		}
+	} else if (g_flag_turn == 1) {
+		return 0;
+	} else if ((fabsf(g_sensor_L_derivative) > SEN_DERIVATIVE_L)
+			|| (fabsf(g_sensor_R_derivative) > SEN_DERIVATIVE_R)) {
+		return 0;
+	} else if ((g_sensor_L < SEN_THRESHOLD_L)
+			&& (g_sensor_R < SEN_THRESHOLD_R)) {
+		return 0;
+	} else if (g_sensor_L > SEN_THRESHOLD_L) {
+
+		return 2 * kp * ( SEN_REFERENCE_L - g_sensor_L);
+
+	} else if (g_sensor_R - SEN_REFERENCE_R) {
+
+		return -2 * kp * ( SEN_REFERENCE_R - g_sensor_R);
+
+	} else {
+		return 0;
+	}
+
 }
 
 /****************************************
  台形加速
  ****************************************/
-void accTrape(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
+void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 	double section1 = 0;
 	double section2 = 0;
 	double section3 = 0;
@@ -182,7 +224,6 @@ void accTrape(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 	}
 	section2 += section1;
 	section3 += section2;
-	//driveMotor(ON);
 
 //section1////////////////////////////////////////////////////////////////////
 	g_accele = t_acc;
@@ -212,35 +253,48 @@ void accTrape(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 	g_angle = 0;
 }
 /****************************************
- スラローム　大廻
+ スラローム
  ****************************************/
-void turn90Wide(float s_angacc, float s_angle, float s_max_angvelo,
-		float c_velo) {
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//スラロームパラメータ					{degree, alpha,   omega,	velo,	front,	 rear, dia}
+const turn_t turn_90_L = 		{	 89,  7000,     532,	 0.5,	0.013,  0.022,	0 };
+const turn_t turn_90_R =		{	-89,  7000, 	532,	 0.5,	0.013,  0.022,	0 };
+
+const turn_t turn_90_wide_L = 	{	 90,  6000, 	600,	   1,	 0.03,  0.06, 	0 };
+const turn_t turn_90_wide_R = 	{	-90,  6000, 	600, 	   1,	 0.03,  0.06,	0 };
+
+const turn_t pivot = 			{   180,  6000, 	600,	   0, 		0,	   0,	0 };
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+void turnCorner(turn_t p) {
 	double section1 = 0;
 	double section2 = 0;
 	double section3 = 0;
 
 	float angacc_temp;
+	runStraight(5, p.front, p.velocity, p.velocity);
+	g_flag_turn = 1; //ターンフラグ立てる
 
-	if (s_angle <= 0) {
-		angacc_temp = -s_angacc;
+	if ((p.angle) <= 0) {
+		angacc_temp = -p.angular_accele;
 	} else {
-		angacc_temp = s_angacc;
+		angacc_temp = p.angular_accele;
 	}
 
-	g_angularaccele=angacc_temp;
+	g_angularaccele = angacc_temp;
 
-	section1 = (s_max_angvelo * s_max_angvelo) / (2 * s_angacc);
-	section3 = (s_max_angvelo * s_max_angvelo) / (2 * s_angacc);
-	section2 = fabsf(s_angle) - section1 - section3;
+	section1 = (p.max_angular_velo * p.max_angular_velo)
+			/ (2 * p.angular_accele);
+	section3 = (p.max_angular_velo * p.max_angular_velo)
+			/ (2 * p.angular_accele);
+	section2 = fabsf(p.angle) - section1 - section3;
 
 	if (section2 <= 0) {
 		if (section1 <= 0 && section3 >= 0) {
 			section1 = 0;
 			section2 = 0;
-			section3 = fabsf(s_angle);
+			section3 = fabsf(p.angle);
 		} else if (section1 >= 0 && section3 <= 0) {
-			section1 = fabsf(s_angle);
+			section1 = fabsf(p.angle);
 			section2 = 0;
 			section3 = 0;
 		} else {
@@ -248,44 +302,42 @@ void turn90Wide(float s_angacc, float s_angle, float s_max_angvelo,
 			section2 = 0;
 
 			section1 = (-g_current_angularvelo * g_current_angularvelo)
-					/ (4 * s_angacc) + fabsf(s_angle) / 2;
+					/ (4 * p.angular_accele) + fabsf(p.angle) / 2;
 			section3 = (g_current_angularvelo * g_current_angularvelo)
-					/ (4 * s_angacc) + fabsf(s_angle) / 2;
+					/ (4 * p.angular_accele) + fabsf(p.angle) / 2;
 		}
 
 	}
 	section2 += section1;
 	section3 += section2;
-	//driveMotor(ON);
 
-	//section1////////////////////////////////////////////////////////////////////
+//section1////////////////////////////////////////////////////////////////////
 
 	while (1) {
 		if (fabsf(g_angle) >= section1)
 			break;
 	}
 
-	//section2////////////////////////////////////////////////////////////////////
+//section2////////////////////////////////////////////////////////////////////
 
 	g_angularaccele = 0;
 
-	if (s_angle <= 0) {
-		g_target_angularvelo = -s_max_angvelo;
+	if (p.angle <= 0) {
+		g_target_angularvelo = -p.max_angular_velo;
 	} else {
-		g_target_angularvelo = s_max_angvelo;
+		g_target_angularvelo = p.max_angular_velo;
 	}
 	while (1) {
 		if (fabsf(g_angle) >= section2)
 			break;
 	}
 
-	//section3////////////////////////////////////////////////////////////////////
+//section3////////////////////////////////////////////////////////////////////
 
-
-		g_angularaccele = angacc_temp*-1;
+	g_angularaccele = angacc_temp * -1;
 
 	while (1) {
-		if (fabsf(g_angle) >= section3 || fabsf(g_target_angularvelo) < 0.01)
+		if (fabsf(g_angle) >= section3 || fabsf(g_target_angularvelo) < 0.0001)
 			break;
 	}
 	g_angularaccele = 0;
@@ -293,5 +345,8 @@ void turn90Wide(float s_angacc, float s_angle, float s_max_angvelo,
 	g_angle = 0;
 	g_distance = 0;
 	g_angularvelo_error_integral = 0;
+
+	g_flag_turn = 0; //ターンフラグおろす
+	runStraight(5, p.rear, p.velocity, p.velocity);
 }
 

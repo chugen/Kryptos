@@ -9,21 +9,23 @@
 #include "init.h"
 #include "sensor.h"
 #include "common.h"
-int8_t init(void) {
+#include "global.h"
+void init(void) {
 	initClock();
 	initIO();
 	initLowPowerConsumption();
-	initCMT();
 	initSPI();
 	initMTU();
 	initTPU();
 	initSCI();
 	initADC();
 	initMPU6000();
-	return 1;
+	initCMT();
+	initMap();
+
 }
 
-int8_t initIO(void) {
+void initIO(void) {
 	PORTA.PMR.BYTE = 0x00;
 	PORTE.PMR.BYTE = 0x00;
 	PORT5.PMR.BYTE = 0x00;
@@ -48,10 +50,10 @@ int8_t initIO(void) {
 	PORTC.PDR.BIT.B4 = 1;	//motor M_L_IN2
 	PORTC.PDR.BIT.B3 = 1;	//motor M_R_IN1
 	PORTC.PDR.BIT.B2 = 1;	//motor M_R_IN2
-	return 1;
+
 }
 
-int8_t initClock(void) {
+void initClock(void) {
 	unsigned short i;
 
 	SYSTEM.PRCR.WORD = 0xA503;	//プロテクト解除
@@ -77,10 +79,10 @@ int8_t initClock(void) {
 	SYSTEM.SCKCR3.BIT.CKSEL = 0x04; //PLL回路選択
 
 	SYSTEM.PRCR.WORD = 0xA500; //プロテクト
-	return 1;
+
 }
 
-int8_t initLowPowerConsumption(void) {
+void initLowPowerConsumption(void) {
 
 	SYSTEM.PRCR.WORD = 0xA502; //プロテクト解除
 
@@ -94,10 +96,10 @@ int8_t initLowPowerConsumption(void) {
 	MSTP(RSPI1) = 0;	// RSPI1:モジュールストップ解除
 
 	SYSTEM.PRCR.WORD = 0xA500;	//プロテクト
-	return 1;
+
 }
 
-int8_t initCMT(void) {
+void initCMT(void) {
 
 	CMT.CMSTR0.BIT.STR0 = 0x00;	//カウントストップ
 	CMT.CMSTR0.BIT.STR1 = 0x00;	//カウントストップ
@@ -120,12 +122,12 @@ int8_t initCMT(void) {
 	IEN( CMT1, CMI1 )= 0x01;	//割り込み許可
 
 	CMT.CMSTR0.BIT.STR0 = 0x01;
-	CMT.CMSTR0.BIT.STR1 = 0x1;
+	CMT.CMSTR0.BIT.STR1 = 0x01;
 	CMT.CMSTR1.BIT.STR2 = 0x0;
-	return 1;
+
 }
 
-int8_t initMTU(void) {
+void initMTU(void) {
 	MPC.PWPR.BIT.B0WI = 0;
 	MPC.PWPR.BIT.PFSWE = 1;		//書き込みプロテクト解除
 	MPC.PB1PFS.BIT.PSEL = 0x01;	//MTIOC0C MOTOR_L
@@ -175,10 +177,10 @@ int8_t initMTU(void) {
 //	IEN( MTU4, TGIA4 )= 0x01;
 
 	MTU.TSTR.BIT.CST1 = 1;	//位相係数スタート
-	return 1;
+
 }
 
-int8_t initTPU(void) {
+void initTPU(void) {
 	static const int16_t fled_width = 1500;
 	MPC.PWPR.BIT.B0WI = 0;
 	MPC.PWPR.BIT.PFSWE = 1;
@@ -236,11 +238,11 @@ int8_t initTPU(void) {
 
 	//TPUA.TSTR.BYTE = 0x3f;	//TPU0~5 TCNTカウントスタート
 	TPUA.TSTR.BIT.CST4 = 1;	//位相係数スタート
-	return 1;
+
 
 }
 
-int8_t initSCI(void) {
+void initSCI(void) {
 	int16_t dmy;
 
 	MPC.PWPR.BIT.B0WI = 0;
@@ -275,10 +277,10 @@ int8_t initSCI(void) {
 	SCI1.SCR.BIT.TE = 1;	//送信許可
 	SCI1.SCR.BIT.RE = 1;	//受信許可
 
-	return 1;
+
 }
 
-int8_t initADC(void) {
+void initADC(void) {
 	S12AD.ADCSR.BIT.ADST = 0x00;	//AD変換ストップ
 	S12AD.ADCSR.BIT.TRGE = 0x00;	//トリガによるAD変換開始禁止
 	S12AD.ADCSR.BIT.CKS = 0x02; 	//PCLK/2=25MHz
@@ -287,10 +289,10 @@ int8_t initADC(void) {
 	S12AD.ADSSTR01.WORD = 20; 		//サンプリング時間20ステート
 	S12AD.ADCER.BIT.ADRFMT = 0;		//レジスタ右詰め
 	//S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
-	return 1;
+
 }
 
-int8_t initSPI(void) {
+void initSPI(void) {
 
 	MPC.PWPR.BIT.B0WI = 0;	//PFSWE書き込みプロテクト解除
 	MPC.PWPR.BIT.PFSWE = 1;	//PFS書き込みプロテクト解除
@@ -337,16 +339,25 @@ int8_t initSPI(void) {
 
 	RSPI1.SPCR.BIT.SPE = 1; 	//RSPI機能動作
 
-	return 1;
+
 }
 
-int8_t initMPU6000(void) {
+void initMPU6000(void) {
 	commSPI(SIGNAL_PATH_RESET, 0x07, WRITE); 	//シグナルパスリセット
 	commSPI(USER_CTRL, 0x10, WRITE);			//I2C無効，SPI有効
 	commSPI(PWR_MGMT_1, 0x08, WRITE);			//温度センサ無効，
 	commSPI(PWR_MGMT_2, 0x0E, WRITE);
 	commSPI(GYRO_CONFIG, 0x18, WRITE);
 	commSPI(ACCEL_CONFIG, 0x18, WRITE);
-	return 1;
+
 }
 
+
+void initMap(void) {
+	int i, j;
+	for (i = 0; i < 16; i++) {
+		for (j = 0; j < 16; j++) {
+			g_step_map[i][j] = 255;
+		}
+	}
+}

@@ -124,37 +124,37 @@ int8_t calcGyroZRef(void) {
 uint16_t returnSenVal(uint8_t mode) {
 	switch (mode) {
 	S12AD.ADCSR.BIT.ADST = 0x00; 	//AD変換停止
-	case 0:
-		S12AD.ADANS0.WORD=0x02;
-		S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
-		while (S12AD.ADCSR.BIT.ADST == 1)
-			;
-		return S12AD.ADDR1;
-		break;
-	case 1:
-		S12AD.ADANS0.WORD=0x04;
-		S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
-		while (S12AD.ADCSR.BIT.ADST == 1)
-			;
-		return S12AD.ADDR2;
-		break;
-	case 2:
-		S12AD.ADANS0.WORD=0x08;
-		S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
-		while (S12AD.ADCSR.BIT.ADST == 1)
-			;
-		return S12AD.ADDR3;
-		break;
-	case 3:
-		S12AD.ADANS0.WORD=0x10;
-		S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
-		while (S12AD.ADCSR.BIT.ADST == 1)
-			;
-		return S12AD.ADDR4;
-		break;
-	default:
-		return 0;
-		break;
+case 0:
+	S12AD.ADANS0.WORD = 0x02;
+	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+	while (S12AD.ADCSR.BIT.ADST == 1)
+		;
+	return S12AD.ADDR1;
+	break;
+case 1:
+	S12AD.ADANS0.WORD = 0x04;
+	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+	while (S12AD.ADCSR.BIT.ADST == 1)
+		;
+	return S12AD.ADDR2;
+	break;
+case 2:
+	S12AD.ADANS0.WORD = 0x08;
+	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+	while (S12AD.ADCSR.BIT.ADST == 1)
+		;
+	return S12AD.ADDR3;
+	break;
+case 3:
+	S12AD.ADANS0.WORD = 0x10;
+	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+	while (S12AD.ADCSR.BIT.ADST == 1)
+		;
+	return S12AD.ADDR4;
+	break;
+default:
+	return 0;
+	break;
 	}
 	S12AD.ADCSR.BIT.ADST = 0x00; 	//AD変換ストップ
 }
@@ -162,23 +162,36 @@ uint16_t returnSenVal(uint8_t mode) {
 /****************************************
  光センサー
  ****************************************/
+static uint8_t switch_sensorLED;
 void driveSensorLED(uint8_t mode) {
-	switch (mode) {
-	case OFF:
-		PORT5.PODR.BIT.B4 = 0;
-		PORT5.PODR.BIT.B5 = 0;
-		break;
-	case FR_L:
-		PORT5.PODR.BIT.B4 = 1;
-		PORT5.PODR.BIT.B5 = 0;
-		break;
-	case FL_R:
-		PORT5.PODR.BIT.B4 = 0;
-		PORT5.PODR.BIT.B5 = 1;
-		break;
-	default:
-		PORT5.PODR.BIT.B4 = 0;
-		PORT5.PODR.BIT.B5 = 0;
-		break;
+	if (switch_sensorLED == OFF) {
+		mode=OFF;
 	}
+		switch (mode) {
+		case OFF:
+			PORT5.PODR.BIT.B4 = 0;
+			PORT5.PODR.BIT.B5 = 0;
+			break;
+		case FR_L:
+			PORT5.PODR.BIT.B4 = 1;
+			PORT5.PODR.BIT.B5 = 0;
+			break;
+		case FL_R:
+			PORT5.PODR.BIT.B4 = 0;
+			PORT5.PODR.BIT.B5 = 1;
+			break;
+		default:
+			PORT5.PODR.BIT.B4 = 0;
+			PORT5.PODR.BIT.B5 = 0;
+			break;
+		}
+}
+
+void switchSensorLED(uint8_t on_off) {
+	if (on_off == 1) {
+		switch_sensorLED = 1;
+	} else {
+		switch_sensorLED = 0;
+	}
+
 }

@@ -8,6 +8,7 @@
 #ifndef RUN_H_
 #define RUN_H_
 
+#include "my_typedef.h"
 /****************************************
  吸引
  ****************************************/
@@ -53,15 +54,28 @@ float ctrlPropAngularVelocity(float kp);
  角速度I制御
  ****************************************/
 float ctrlIntAngularVelocity(float ki);
+/****************************************
+ 壁制御
+ ****************************************/
+float ctrlWall(float kp);
 
 /****************************************
  台形加速
  ****************************************/
-void accTrape(float t_acc, float t_dis, float t_max_velo, float t_end_velo);
+void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo);
 /****************************************
  スラローム　大廻
  ****************************************/
-void turn90Wide(float s_angacc, float s_angle, float s_max_angvelo,
-		float c_velo);
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//スラロームパラメータ				{度,alpha,M_omega,v,front,rear,dia}
+extern const turn_t turn_90_L ;
+extern const turn_t turn_90_R ;
+
+extern const turn_t turn_90_wide_L ;
+extern const turn_t turn_90_wide_R ;
+
+extern const turn_t pivot;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+void turnCorner(turn_t p_turn);
 
 #endif /* RUN_H_ */

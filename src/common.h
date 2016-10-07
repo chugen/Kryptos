@@ -8,8 +8,8 @@
 #ifndef COMMON_HPP_
 #define COMMON_HPP_
 /****************************************
-定数定義
-****************************************/
+ 定数定義
+ ****************************************/
 #define LEFT 0
 #define RIGHT 1
 
@@ -24,10 +24,48 @@
 
 #define LOG_TIMES 1500
 
+#define SECTION 0.18
+#define HALF_SECTION 0.09
+
 #define M_PI 3.141592653589793
+
 /****************************************
-色定義
-****************************************/
+ map関連
+ ****************************************/
+#define NORTH 0x01
+#define WEST 0x02
+#define SOUTH 0x04
+#define EAST 0x08
+/****************************************
+ path
+ ****************************************/
+//一次path
+#define STRAIGHT 0x01
+#define L_CURVE 0x02
+#define R_CURVE 0x04
+#define ERROR 0x08
+//2次path
+#define S_L_CURVE 31
+#define S_BIG_L_CURVE 32
+#define S_R_CURVE 33
+#define S_BIG_R_CURVE 34
+#define S_U_L_CURVE 35
+#define S_U_R_CURVE 36
+//斜め系
+#define L_45_I 37
+#define L_45_O 38
+#define R_45_I 39
+#define R_45_O 40
+#define L_135_I 41
+#define L_135_O 42
+#define R_135_I 43
+#define R_135_O 44
+#define L_SLA_90 45
+#define R_SLA_90 46
+#define DIAGONAL 47
+/****************************************
+ 色定義
+ ****************************************/
 #define RED 100,0,0
 #define GREEN 0,100,0
 #define BLUE 0,0,100
@@ -41,8 +79,8 @@
 #define LRED 100,30,30
 #define RGB_OFF 0,0,0
 /****************************************
-Gyro(MPU-6000)レジスタ定義
-****************************************/
+ Gyro(MPU-6000)レジスタ定義
+ ****************************************/
 #define WHO_AM_I 0x75
 #define USER_CTRL 0x6A
 #define SIGNAL_PATH_RESET 0x68
@@ -57,8 +95,8 @@ Gyro(MPU-6000)レジスタ定義
 #define PWR_MGMT_1 0x6B
 #define PWR_MGMT_2 0x6C
 /****************************************
-センサー
-****************************************/
+ センサー
+ ****************************************/
 #define SEN_L 3
 #define SEN_FL 2
 #define SEN_FR 1
@@ -66,9 +104,10 @@ Gyro(MPU-6000)レジスタ定義
 
 #define FR_L 1
 #define FL_R 2
+
 /****************************************
-周波数定義
-****************************************/
+ 周波数定義
+ ****************************************/
 #define bz_C0 	16.35
 #define bz_CS0  17.32
 #define bz_D0 	18.35
@@ -190,8 +229,5 @@ Gyro(MPU-6000)レジスタ定義
 #define bz_AS9  14917.24
 #define bz_B9   15804.27
 #define bz_C10  16744.04
-
-
-
 
 #endif /* COMMON_HPP_ */

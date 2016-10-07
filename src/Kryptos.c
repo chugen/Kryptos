@@ -21,6 +21,8 @@
 #include "sensor.h"
 #include "global.h"
 #include "common.h"
+#include "parameter.h"
+#include "map.h"
 
 void main(void) {
 	init();
@@ -30,13 +32,15 @@ void main(void) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(RED, ON);
 		driveMotor(ON);
-		waitTime(2000);
+		switchSensorLED(ON);
+		waitTime(5000);
 		calcGyroZRef();
 		g_test_flag = 1;
 		g_log_count = 0;
 		g_distance = 0;
-		accTrape(5, 0.18 * 3, 0.5, 0);
-		waitTime(1000);
+
+		searchAdachi();
+		switchSensorLED(ON);
 		driveMotor(OFF);
 		waitButton();
 		printLog();
@@ -49,39 +53,39 @@ void main(void) {
 		g_test_flag = 1;
 		g_log_count = 0;
 		g_distance = 0;
-		accTrape(5, 0.03 + 0.18 + 0.09 * 26 + 0.03, 1.3, 1.0);
+		runStraight(5, 0.03 + SECTION + SECTION * 13 + 0.03, 1.3, 1.0);
 
-		turn90Wide(6000, -90, 600, 1.0);
+		turnCorner(turn_90_wide_R);
 
-		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
 
-		turn90Wide(6000, -90, 600, 1.0);
+		turnCorner(turn_90_wide_R);
 
-		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
 
-		turn90Wide(6000, -90, 600, 1.0);
+		turnCorner(turn_90_wide_R);
 
-		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
 
-		turn90Wide(6000, -90, 600, 1.0);
+		turnCorner(turn_90_wide_R);
 
-		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
 
-		turn90Wide(6000, -90, 600, 1.0);
+		turnCorner(turn_90_wide_R);
 
-		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
 
-		turn90Wide(6000, -90, 600, 1.0);
+		turnCorner(turn_90_wide_R);
 
-		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
 
-		turn90Wide(6000, -90, 600, 1.0);
+		turnCorner(turn_90_wide_R);
 
-		accTrape(5, 0.09 * 26 + 0.06 + 0.03, 1.3, 1.0);
+		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
 
-		turn90Wide(6000, -90, 600, 1.0);
+		turnCorner(turn_90_wide_R);
 
-		accTrape(5, 0.09 * 3 + 0.06 , 1.3, 0);
+		runStraight(5, HALF_SECTION * 3 + 0.06, 1.3, 0);
 
 		waitTime(1000);
 		driveMotor(OFF);
@@ -102,14 +106,42 @@ void main(void) {
 		break;
 	case 3: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(YELLOW, ON);
+		switchSensorLED(ON);
+		driveMotor(ON);
+		waitTime(2000);
+		calcGyroZRef();
 
+		g_test_flag = 1;
+		g_log_count = 0;
+		g_distance = 0;
+		runStraight(5, SECTION * 2 + HALF_SECTION, 1.3, 0.5);
+
+		turnCorner(turn_90_R);
+
+		runStraight(5, SECTION * 2 + HALF_SECTION, 1.3, 0);
+		switchSensorLED(ON);
+		driveMotor(OFF);
+		waitButton();
+		printLog();
 		break;
 	case 4: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(CYAN, ON);
+
 		break;
 	case 5: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-
+		driveMotor(ON);
+		switchSensorLED(ON);
+		waitTime(2000);
+		calcGyroZRef();
+		g_test_flag = 1;
+		g_log_count = 0;
+		g_distance = 0;
+		runStraight(5, SECTION * 5, 3, 0);
+		waitTime(1000);
+		driveMotor(OFF);
+		waitButton();
+		printLog();
 		break;
 	case 6: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WHITE, ON);
@@ -121,10 +153,12 @@ void main(void) {
 		break;
 	case 8: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WATER, ON);
+		switchSensorLED(ON);
 		while (1) {
 
-			myprintf("%6.1d %6.1d %6.1d %6.1d\n", g_sensor_L, g_sensor_FL,
-					g_sensor_FR, g_sensor_R);
+			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL,
+					g_sensor_L, g_sensor_R, g_sensor_FR);
+			waitTime(50);
 		}
 		break;
 	case 9: //////////////////////////////////////////////////////////////////////////////////////

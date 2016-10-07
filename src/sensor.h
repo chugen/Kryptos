@@ -38,4 +38,6 @@ uint16_t returnSenVal(uint8_t mode);
  光センサー
  ****************************************/
 void driveSensorLED(uint8_t mode);
+void switchSensorLED(uint8_t on_off);
+
 #endif /* SENSOR_H_ */

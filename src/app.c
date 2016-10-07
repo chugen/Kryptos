@@ -13,6 +13,7 @@
 #include "global.h"
 #include "intrpt.h"
 #include "serial.h"
+#include "parameter.h"
 
 /****************************************
  Wait関数
@@ -26,7 +27,7 @@ void waitTime(int16_t wait_ms) {
 }
 
 /****************************************
- バッテリーチェック
+ バッテリーチェック/補正
  ****************************************/
 float checkBatt(void) {
 
@@ -50,6 +51,21 @@ float checkBatt(void) {
 		}
 	}
 	return battery;
+}
+
+float correctVoltage(void) {
+	float temp,battery,tmp;
+	S12AD.ADCSR.BIT.ADST = 0x00; 	//AD変換停止
+	S12AD.ADANS0.WORD = 0x40;
+	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+	while (S12AD.ADCSR.BIT.ADST == 1)
+		;
+	tmp = S12AD.ADDR6;
+	battery = (float) (tmp / 4096.0 * 3.3 * 3.0) + 0.06;
+
+	temp=MAX_VOLTAGE/battery;
+
+	return temp;
 }
 /****************************************
  スイッチ

@@ -1,49 +1,51 @@
 /*
- * app.hpp
+ * map.h
  *
- *  Created on: 2016/06/28
- *      Author: 元太
+ *  Created on: 2016/10/06
+ *      Author: Gen
  */
 
-#ifndef APP_HPP_
-#define APP_HPP_
+#ifndef MAP_H_
+#define MAP_H_
 
 /****************************************
- Wait関数
+ 方位管理
  ****************************************/
-void waitTime(int16_t wait_ms);
+void checkOrient(int ori_deg);
 /****************************************
- バッテリーチェック/補正
+ 座標管理
  ****************************************/
-float checkBatt(void);
-float correctVoltage(void);
+void countCoord(void);
 /****************************************
- スイッチ
+ map表示
  ****************************************/
-int16_t pushButton(void);
-int16_t waitButton(void);
+void printMap(void);
+/****************************************
+ 初期壁セット
+ ****************************************/
+void setInitWall(void);
+/****************************************
+ 壁情報一致
+ ****************************************/
+void matchWall(void);
+/****************************************
+ 壁情報決定版
+ ****************************************/
+void matchWallGoal(void) ;
 
 /****************************************
- モード選択LED
+ 壁情報読み込み
  ****************************************/
-int16_t driveLED(int16_t mode);
-/****************************************
- フルカラーLED
- ****************************************/
-int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off);
+void checkWall(void);
 
 /****************************************
- モード選択
+ queuemap
  ****************************************/
-int16_t selectMode(int16_t max_mode);
+void countStepQueue(void);
 /****************************************
- deg-rad変換
+ 足立法
  ****************************************/
-float convDegreeToRadian(float degree);
-/****************************************
- ログ書き出し関数
- ****************************************/
-void printLog(void);
+void searchAdachi(void);
 
 
-#endif /* APP_HPP_ */
+#endif /* MAP_H_ */

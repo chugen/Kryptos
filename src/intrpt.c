@@ -25,13 +25,12 @@ void intrptCMT0(void) {
 	calcDistance();
 	calcAngularAcc();
 	calcAngle();
-	//getSensorVal();
 	getModeVelocity();
 
 	g_current_velo = returnVelocityL() + returnVelocityR();
 	g_current_angularvelo = returnGyroZVal() - g_gyro_reference;
 
-	getLog(g_target_velo, g_current_velo);
+	getLog(g_target_angularvelo, g_current_angularvelo);
 
 	if (g_test_flag == 1) {
 		setMotorDuty();
@@ -48,14 +47,13 @@ void intrptCMT0(void) {
  割り込み関数1
  ****************************************/
 void intrptCMT1(void) {
-	//getSensorVal();
+	getSensorVal();
 }
 /****************************************
  割り込み関数2
  ****************************************/
 void intrptCMT2(void) {
 	//getSensorVal();
-
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,11 +81,11 @@ void setMotorDuty(void) {
 	setMotorDutyL(
 			ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
 					- ctrlPropAngularVelocity(ANG_VELO_P)
-					- ctrlIntAngularVelocity(ANG_VELO_I));
+					- ctrlIntAngularVelocity(ANG_VELO_I) - ctrlWall(WALL_P));
 	setMotorDutyR(
 			ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
 					+ ctrlPropAngularVelocity(ANG_VELO_P)
-					+ ctrlIntAngularVelocity(ANG_VELO_I));
+					+ ctrlIntAngularVelocity(ANG_VELO_I) + ctrlWall(WALL_P));
 }
 /****************************************
  加速　割り込み
@@ -133,13 +131,13 @@ void getSensorVal(void) {
 	sensor_L_before = g_sensor_L;
 	sensor_R_before = g_sensor_R;
 	driveSensorLED(FR_L);
-	for (i = 0; i < 300; i++) {
+	for (i = 0; i < 1000; i++) {
 	}
 
 	sensor_L_on = returnSenVal(SEN_L);
 	sensor_FR_on = returnSenVal(SEN_FR);
 	driveSensorLED(OFF);
-	for (i = 0; i < 300; i++) {
+	for (i = 0; i < 1000; i++) {
 	}
 	sensor_FR_off = returnSenVal(SEN_FR);
 	sensor_FL_off = returnSenVal(SEN_FL);
@@ -147,7 +145,7 @@ void getSensorVal(void) {
 	sensor_L_off = returnSenVal(SEN_L);
 
 	driveSensorLED(FL_R);
-	for (i = 0; i < 300; i++) {
+	for (i = 0; i < 1000; i++) {
 	}
 	sensor_FL_on = returnSenVal(SEN_FL);
 	sensor_R_on = returnSenVal(SEN_R);

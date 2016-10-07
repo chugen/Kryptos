@@ -8,16 +8,17 @@
 #ifndef MY_TYPEDEF_H_
 #define MY_TYPEDEF_H_
 
-//左右区別する　float型のパラメータ
-typedef struct float_LR{
-	float L;
-	float R;
-} floatLR_t;
+#include <stdint.h>
 
-//左右区別する　int型のパラメータ
-typedef struct  {
-	int L;
-	int R;
-} int_LR_t;
+//
+typedef struct{
+	float angle;
+	float angular_accele;
+	float max_angular_velo;
+	float velocity;
+	float front;
+	float rear;
+	uint8_t diagonal;
+} turn_t;
 
 #endif /* MY_TYPEDEF_H_ */
