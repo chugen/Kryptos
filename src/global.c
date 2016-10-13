@@ -61,12 +61,12 @@ volatile uint8_t g_current_y = 0;
 volatile uint8_t g_wall_data_temp[16][16];
 volatile uint8_t g_wall_data[16][16];
 
-volatile uint8_t g_target_x = 1;
-volatile uint8_t g_target_y = 0;
+volatile int16_t g_target_x = 1;
+volatile int16_t g_target_y = 0;
 volatile uint8_t g_step_map[16][16];
-volatile uint8_t g_path[256];
-volatile uint8_t g_path_2[256];
-volatile uint8_t g_path_3[256];
+volatile uint16_t g_path[1024];
+volatile uint16_t g_path_2[1024];
+volatile uint16_t g_path_3[256];
 
 
 volatile uint8_t g_flag_step_goal;
@@ -81,7 +81,7 @@ volatile uint8_t g_flag_diagonal=0;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //フラグ
 volatile int8_t g_flag_mode_setting = 0;
-volatile int8_t g_test_flag = 0;
+volatile int8_t g_flag_control = 0;
 volatile int8_t g_flag_turn;
 //テスト用
 volatile int16_t g_wait_count = 0; //waitTime関数用カウンタ
@@ -89,4 +89,6 @@ volatile int16_t g_log_count = 0;
 volatile float g_log_array[LOG_TIMES];
 volatile float g_log_array2[LOG_TIMES];
 
+volatile uint16_t g_path_test[256];
+volatile uint16_t g_path_test_slant[256];
 

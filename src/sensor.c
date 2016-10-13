@@ -102,7 +102,7 @@ float returnGyroZVal(void) {
 	temp = (((int16_t) (commSPI(GYRO_ZOUT_H, 0x00, READ))) << 8);
 	temp += ((int16_t) (commSPI(GYRO_ZOUT_L, 0x00, READ)));
 
-	return (float) (temp * 2000.0 / INT16_MAX);
+	return  (float) (temp * 2000.0 / INT16_MAX);
 }
 /****************************************
  GYRO_Zのリファレンス値を算出

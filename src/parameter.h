@@ -33,13 +33,14 @@
 #define ENC_RESO 4096
 //最高電圧
 #define MAX_VOLTAGE 8.4
-
+//初期距離
+#define INIT_DIS 0.054
 /****************************************
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 500
-#define SEN_REFERENCE_R 520
+#define SEN_REFERENCE_L 440//500
+#define SEN_REFERENCE_R 560//520
 //変化量
 #define SEN_DERIVATIVE_L 5
 #define SEN_DERIVATIVE_R 5
@@ -47,12 +48,12 @@
 #define SEN_THRESHOLD_L 400
 #define SEN_THRESHOLD_R 400
 //壁有無判定基準値
-#define SEN_NOWALL_L 260
-#define SEN_NOWALL_R 260
-#define SEN_NOWALL_FL 100
-#define SEN_NOWALL_FR 80
+#define SEN_NOWALL_L 220
+#define SEN_NOWALL_R 220
+#define SEN_NOWALL_FL 180
+#define SEN_NOWALL_FR 60
 //死亡判定
-#define SEN_DEATH 1750
+#define SEN_DEATH 1950
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //速度P制御
 #define VELO_P 220

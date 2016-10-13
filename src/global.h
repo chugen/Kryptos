@@ -60,37 +60,38 @@ extern volatile int32_t g_sensor_R_derivative;
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //map
-extern volatile uint8_t g_orient ;
-extern volatile uint8_t g_current_x ;
-extern volatile uint8_t g_current_y ;
+extern volatile uint8_t g_orient;
+extern volatile uint8_t g_current_x;
+extern volatile uint8_t g_current_y;
 extern volatile uint8_t g_wall_data_temp[16][16];
 extern volatile uint8_t g_wall_data[16][16];
-extern volatile uint8_t g_target_x;
-extern volatile uint8_t g_target_y;
+extern volatile int16_t g_target_x;
+extern volatile int16_t g_target_y;
 extern volatile uint8_t g_step_map[16][16];
-extern volatile uint8_t g_path[256];
-extern volatile uint8_t g_path_2[256];
-extern volatile uint8_t g_path_3[256];
-
+extern volatile uint16_t g_path[1024];
+extern volatile uint16_t g_path_2[1024];
+extern volatile uint16_t g_path_3[256];
 
 extern volatile uint8_t g_flag_step_goal;
 extern volatile uint8_t g_flag_step_goal_2;
 extern volatile uint8_t g_flag_step_goal_3;
-extern volatile uint8_t g_flag_curve ;
-extern volatile uint8_t g_flag_gap ;
-extern volatile uint8_t g_flag_adachi_goal ;
+extern volatile uint8_t g_flag_curve;
+extern volatile uint8_t g_flag_gap;
+extern volatile uint8_t g_flag_adachi_goal;
 extern volatile uint8_t g_flag_path_run_goal;
 extern volatile uint8_t g_flag_diagonal;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //フラグ
 extern volatile int8_t g_flag_mode_setting;
 extern volatile int8_t g_flag_turn;
+extern volatile int8_t g_flag_control;
 //テスト用
-extern volatile int8_t g_test_flag;
+
 extern volatile int16_t g_wait_count;
 extern volatile int16_t g_log_count;
 extern volatile float g_log_array[];
 extern volatile float g_log_array2[];
-extern volatile int8_t g_test_flag;
-
+extern volatile int8_t g_flag_control;
+extern volatile uint16_t g_path_test[];
+extern volatile uint16_t g_path_test_slant[];
 #endif /* GLOBAL_H_ */

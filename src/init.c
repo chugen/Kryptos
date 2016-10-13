@@ -139,29 +139,29 @@ void initMTU(void) {
 
 	PORTB.PMR.BIT.B1 = 1;		// MOTOR_L
 	PORTB.PMR.BIT.B3 = 1;		// MOTOR_R
-	PORTB.PMR.BIT.B5 = 0;		// SPEAKER
+	PORTB.PMR.BIT.B5 = 1;		// SPEAKER
 	PORT1.PMR.BIT.B4 = 1;		// encoder
 	PORT1.PMR.BIT.B5 = 1;		// encoder
 
 	MTU.TSTR.BYTE = 0x00;		//MTU0~5 TCNTカウントストップ
 
-	MTU0.TCR.BIT.TPSC = 0x00;	//PCLK/16=3125000Hz
-	MTU2.TCR.BIT.TPSC = 0x02;	//PCLK=50MHz
+	MTU0.TCR.BIT.TPSC = 0x00;	//PCLK=50MHz
+	MTU2.TCR.BIT.TPSC = 0x02;	//PCLK/16=3125000Hz
 
 	MTU0.TCR.BIT.CCLR = 0x06;	//TGRDコンペアマッチでTCNTカウンタクリア
 	MTU2.TCR.BIT.CCLR = 0x02;	//TGRBコンペアマッチでTCNTカウンタクリア
 
 	MTU0.TIORH.BIT.IOA = 0x05;	//初期出力：H,コンペアマッチ：L
 	MTU0.TIORL.BIT.IOC = 0x05;	//初期出力：H,コンペアマッチ：L
-	MTU2.TIOR.BIT.IOA = 0x05;	//初期出力：H,コンペアマッチ：L
+	MTU2.TIOR.BIT.IOA = 0x00;	//出力禁止
 
 	//MTU0:MOTOR MTU2:SPEAKER
 	MTU0.TGRA = (int8_t) (250 * 15 / 100);	//MOTOR_R
 	MTU0.TGRC = (int8_t) (250 * 15 / 100);	//MOTOR_L
 	MTU0.TGRD = 250;
 
-	MTU2.TGRA = 5;
-	MTU2.TGRB = 50;
+	MTU2.TGRA = 0;
+	MTU2.TGRB = 0;
 
 	MTU0.TMDR.BIT.MD = 0x03;	//PWMモード2
 	MTU1.TMDR.BIT.MD = 0x07;	//位相係数モード4
@@ -211,10 +211,10 @@ void initTPU(void) {
 	TPU2.TCR.BIT.CCLR = 0x02;	//TGRBコンペアマッチでTCNTカウンタクリア
 	TPU5.TCR.BIT.CCLR = 0x02;	//TGRBコンペアマッチでTCNTカウンタクリア
 
-	TPU0.TIORL.BIT.IOD = 0x02;	//初期出力：H,コンペアマッチ：L
-	TPU1.TIOR.BIT.IOA = 0x02;	//初期出力：H,コンペアマッチ：L
+	TPU0.TIORL.BIT.IOD = 0x00;	//出力禁止
+	TPU1.TIOR.BIT.IOA = 0x00;	//出力禁止
 	TPU2.TIOR.BIT.IOA = 0x02;	//初期出力：H,コンペアマッチ：L
-	TPU5.TIOR.BIT.IOA = 0x02;	//初期出力：H,コンペアマッチ：L
+	TPU5.TIOR.BIT.IOA = 0x00;	//出力禁止
 
 	//TPU0:BLUE TPU1:RED TPU2:GREEN TPU5:SUCTION
 	//LED_BLUE

@@ -20,8 +20,14 @@
  ****************************************/
 int8_t driveSuction(int16_t duty, int8_t on_off) {
 	if (on_off == 0) {
+
+		TPU5.TGRA = 0;
+		TPU5.TGRB = 100;
+
+		TPU5.TIOR.BIT.IOA = 0x00;	//出力禁止
 		TPUA.TSTR.BIT.CST5 = 0;
 	} else {
+		TPU5.TIOR.BIT.IOA = 0x02;	//初期出力：H,コンペアマッチ：L
 		TPU5.TGRA = 100 - duty;
 		TPU5.TGRB = 100;
 		TPUA.TSTR.BIT.CST5 = 1;
@@ -168,6 +174,8 @@ float ctrlWall(float kp) {
 		}
 	} else if (g_flag_turn == 1) {
 		return 0;
+	} else if (g_flag_diagonal == 1) {
+		return 0;
 	} else if ((fabsf(g_sensor_L_derivative) > SEN_DERIVATIVE_L)
 			|| (fabsf(g_sensor_R_derivative) > SEN_DERIVATIVE_R)) {
 		return 0;
@@ -255,16 +263,33 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 /****************************************
  スラローム
  ****************************************/
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //スラロームパラメータ					{degree, alpha,   omega,	velo,	front,	 rear, dia}
-const turn_t turn_90_L = 		{	 89,  7000,     532,	 0.5,	0.013,  0.022,	0 };
-const turn_t turn_90_R =		{	-89,  7000, 	532,	 0.5,	0.013,  0.022,	0 };
+const turn_t turn_90_L = { 89, 7000, 532, 0.5, 0.013, 0.022, 0 };
+const turn_t turn_90_R = { -89, 7000, 532, 0.5, 0.013, 0.022, 0 };
 
-const turn_t turn_90_wide_L = 	{	 90,  6000, 	600,	   1,	 0.03,  0.06, 	0 };
-const turn_t turn_90_wide_R = 	{	-90,  6000, 	600, 	   1,	 0.03,  0.06,	0 };
+//																	0.03
+const turn_t turn_90_wide_L_1000 = { 90, 6000, 600, 1, 0.02, 0.06, 0 };
+const turn_t turn_90_wide_R_1000 = { -90, 6000, 600, 1, 0.02, 0.06, 0 };
 
-const turn_t pivot = 			{   180,  6000, 	600,	   0, 		0,	   0,	0 };
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+const turn_t turn_180_L_1000 = { 178, 6000, 690, 1, 0.022, 0.03/*0.021*/, 0 };
+const turn_t turn_180_R_1000 = { -178, 6000, 690, 1, 0.022, 0.03/*0.021*/, 0 };
+
+const turn_t turn_45_in_L_1000 = { 45, 9500, 617, 1, 0.018, 0.059, 1 };
+const turn_t turn_45_in_R_1000 = { -45, 9500, 617, 1, 0.018, 0.059, 1 };
+const turn_t turn_45_out_L_1000 = { 45, 9500, 617, 1, 0.059, 0.018, 0 };
+const turn_t turn_45_out_R_1000 = { -45, 9500, 617, 1, 0.059, 0.018, 0 };
+
+const turn_t turn_135_in_L_1000 = { 135, 9000, 900, 1, 0.052, 0.036, 1 };
+const turn_t turn_135_in_R_1000 = { -135, 9000, 900, 1, 0.052, 0.036, 1 };
+const turn_t turn_135_out_L_1000 = { 135, 9000, 900, 1, 0.036 + 0.01, 0.052, 0 };
+const turn_t turn_135_out_R_1000 = { -135, 9000, 900, 1, 0.036 + 0.01, 0.052, 0 };
+//
+const turn_t turn_v90_L_1000 = { 90, 22000, 1056, 1, 0.052, 0.052, 1 };
+const turn_t turn_v90_R_1000 = { -90, 22000, 1056, 1, 0.052, 0.052, 1 };
+
+const turn_t pivot = { 186, 6000, 600, 0, 0, 0, 0 };
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void turnCorner(turn_t p) {
 	double section1 = 0;
 	double section2 = 0;
@@ -273,6 +298,7 @@ void turnCorner(turn_t p) {
 	float angacc_temp;
 	runStraight(5, p.front, p.velocity, p.velocity);
 	g_flag_turn = 1; //ターンフラグ立てる
+	g_flag_diagonal = p.diagonal;
 
 	if ((p.angle) <= 0) {
 		angacc_temp = -p.angular_accele;

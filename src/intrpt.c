@@ -32,14 +32,15 @@ void intrptCMT0(void) {
 
 	getLog(g_target_angularvelo, g_current_angularvelo);
 
-	if (g_test_flag == 1) {
+	if (g_flag_control == 1) {
 		setMotorDuty();
 	}
 
-	if (fabsf(g_target_velo-g_current_velo) > 200
+	if (fabsf(g_target_velo-g_current_velo) > 1
 			|| (fabsf(g_target_angularvelo-g_current_angularvelo) > 1000)) {
 
 		driveMotor(OFF);
+		driveSuction(70,OFF);
 	}
 
 }

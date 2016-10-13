@@ -54,7 +54,7 @@ float checkBatt(void) {
 }
 
 float correctVoltage(void) {
-	float temp,battery,tmp;
+	float temp, battery, tmp;
 	S12AD.ADCSR.BIT.ADST = 0x00; 	//AD変換停止
 	S12AD.ADANS0.WORD = 0x40;
 	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
@@ -63,9 +63,26 @@ float correctVoltage(void) {
 	tmp = S12AD.ADDR6;
 	battery = (float) (tmp / 4096.0 * 3.3 * 3.0) + 0.06;
 
-	temp=MAX_VOLTAGE/battery;
+	temp = MAX_VOLTAGE / battery;
 
 	return temp;
+}
+/****************************************
+ センサー待ち
+ ****************************************/
+void waitSensor(void) {
+	uint16_t count = 0;
+	while (1) {
+		if ((g_sensor_L > 500) && (g_sensor_R > 500)) {
+			count++;
+			if (count > 700) {
+				break;
+			}
+		} else {
+			count = 0;
+		}
+		waitTime(1);
+	}
 }
 /****************************************
  スイッチ
@@ -191,6 +208,7 @@ int16_t driveLED(int16_t mode) {
  ****************************************/
 int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off) {
 	if (on_off == 0) {
+
 		TPU0.TGRD = 1500;
 		TPU0.TGRC = 1500;
 
@@ -199,6 +217,10 @@ int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off) {
 
 		TPU2.TGRA = 1500;
 		TPU2.TGRB = 1500;
+
+		TPU0.TIORL.BIT.IOD = 0x00;	//出力禁止
+		TPU1.TIOR.BIT.IOA = 0x00;	//出力禁止
+		TPU2.TIOR.BIT.IOA = 0x00;	//出力禁止
 
 		TPU0.TCNT = 0;
 		TPU1.TCNT = 0;
@@ -209,13 +231,17 @@ int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off) {
 		TPUA.TSTR.BIT.CST2 = 0;	//LED_GREEN
 
 	} else {
-		TPU0.TGRD = 1500 - blue;
+		TPU0.TIORL.BIT.IOD = 0x02;	//初期出力：H,コンペアマッチ：L
+		TPU1.TIOR.BIT.IOA = 0x02;	//初期出力：H,コンペアマッチ：L
+		TPU2.TIOR.BIT.IOA = 0x02;	//初期出力：H,コンペアマッチ：L
+
+		TPU0.TGRD = 1500 - blue - 1;
 		TPU0.TGRC = 1500;
 
-		TPU1.TGRA = 1500 - red;
+		TPU1.TGRA = 1500 - red - 1;
 		TPU1.TGRB = 1500;
 
-		TPU2.TGRA = 1500 - green;
+		TPU2.TGRA = 1500 - green - 1;
 		TPU2.TGRB = 1500;
 
 		TPUA.TSTR.BIT.CST0 = 1;	//LED_BLUE
@@ -227,6 +253,29 @@ int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off) {
 	return 0;
 }
 
+/****************************************
+ ブザー
+ ****************************************/
+void driveBuzzer(float freq, float wait_ms) {
+	float cycle;
+
+	if (freq == 0) {
+		waitTime(wait_ms);
+	} else {
+		cycle = (float) 312500 / (float) freq;
+
+		MTU2.TGRA = (int) cycle / 2;
+
+		MTU2.TGRB = (int) cycle;
+
+		MTU2.TIOR.BIT.IOA = 0x05;	//初期出力：H,コンペアマッチ：L
+		MTU.TSTR.BIT.CST2 = 1;
+		waitTime(wait_ms);
+		MTU2.TIOR.BIT.IOA = 0x00;	//出力禁止
+		MTU.TSTR.BIT.CST2 = 0;
+
+	}
+}
 /****************************************
  モード選択
  ****************************************/
@@ -279,4 +328,126 @@ void printLog(void) {
 	for (i = 0; i < LOG_TIMES; i++) {
 		myprintf("%d	%f	%f\n", i, *(g_log_array + i), *(g_log_array2 + i));
 	}
+}
+
+/****************************************
+ サーキット関数
+ ****************************************/
+void runCircuit(uint8_t x, uint8_t y, uint8_t times, float velocity,
+		float accelaration, float turn_velo) {
+	int i;
+	driveMotor(ON);
+	switchSensorLED(ON);
+	driveSuction(70, ON);
+	waitTime(1000);
+	runStraight(accelaration, INIT_DIS + HALF_SECTION, velocity, turn_velo);
+	for (i = 0; i < times; i++) {
+		runStraight(accelaration, SECTION * (y - 3), velocity, turn_velo);
+		turnCorner(turn_90_wide_R_1000);
+		runStraight(accelaration, SECTION * (x - 3), velocity, turn_velo);
+		turnCorner(turn_90_wide_R_1000);
+		runStraight(accelaration, SECTION * (y - 3), velocity, turn_velo);
+		turnCorner(turn_90_wide_R_1000);
+		runStraight(accelaration, SECTION * (x - 3), velocity, turn_velo);
+		turnCorner(turn_90_wide_R_1000);
+	}
+	runStraight(accelaration, SECTION * 2, velocity, 0);
+	waitTime(500);
+	driveMotor(OFF);
+	switchSensorLED(OFF);
+}
+/****************************************
+ 大会用関数
+ ****************************************/
+void selectContest(void) {
+	switch (selectMode(4)) {
+	case 0:
+
+		break;
+	case 1:
+
+		break;
+	case 2:
+		waitButton();
+		countStepShortest();
+		waitTime(200);
+		printMap();
+		makePath();
+		makePath2();
+		makePath3();
+		printPath2();
+		printPath3();
+		printPathTest();
+		printPathTestDiagonal();
+		break;
+
+	case 3:
+
+		break;
+	case 4:
+
+		break;
+	default:
+		break;
+
+	}
+}
+/****************************************
+ ゴール音
+ ****************************************/
+void soundGoal(void) {
+	driveBuzzer(BZ_A4, 240);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_F4, 240);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_C4, 360);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_AS4, 60);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_AS4, 60);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_G4, 60);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_G4, 60);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_AS4, 60);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_A4, 360);
+}
+/****************************************
+ エラー音
+ ****************************************/
+void soundError(void) {
+	driveBuzzer(BZ_C3, 100);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_CS3, 100);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_D3, 100);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_CS3, 100);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_C3, 100);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_CS3, 100);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_D3, 100);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_CS3, 100);
+	driveBuzzer(0, 50);
+	driveBuzzer(BZ_C3, 300);
+}
+/****************************************
+ スタート音
+ ****************************************/
+void soundCountdown(void) {
+	driveBuzzer(BZ_A3, 800);
+	waitTime(200);
+
+	driveBuzzer(BZ_A3, 800);
+	waitTime(200);
+
+	driveBuzzer(BZ_A3, 800);
+	waitTime(200);
+
+	driveBuzzer(BZ_A4, 1000);
 }

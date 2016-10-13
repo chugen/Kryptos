@@ -30,67 +30,51 @@ void main(void) {
 
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
-		driveRGB(RED, ON);
-		driveMotor(ON);
+		driveRGB(ORANGE, ON);
 		switchSensorLED(ON);
-		waitTime(5000);
+		waitSensor();
+		driveRGB(CYAN, ON);
+		driveMotor(ON);
+		soundCountdown();
 		calcGyroZRef();
-		g_test_flag = 1;
+		g_flag_control = 1;
 		g_log_count = 0;
 		g_distance = 0;
 
-		searchAdachi();
-		switchSensorLED(ON);
+		searchFurukawa();
+		switchSensorLED(OFF);
 		driveMotor(OFF);
-		waitButton();
-		printLog();
+		g_current_x = START_X;
+		g_current_y = START_Y;
+		g_orient = 0x01;
+		countStepShortest();
+		makePath();
+		makePath2();
+		makePath3();
+
+		while (1) {
+			driveRGB(BLUE, ON);
+			waitButton();
+			switchSensorLED(ON);
+			waitSensor();
+			driveRGB(GREEN, ON);
+			soundCountdown();
+			driveSuction(70, ON);
+			waitTime(1000);
+			g_flag_control = 1;
+			g_log_count = 0;
+			g_distance = 0;
+			g_target_velo=0;
+			driveMotor(ON);
+			runPathDiagonal();
+			switchSensorLED(ON);
+			driveMotor(OFF);
+			driveSuction(100, OFF);
+		}
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(GREEN, ON);
-		driveMotor(ON);
-		waitTime(2000);
-		calcGyroZRef();
-		g_test_flag = 1;
-		g_log_count = 0;
-		g_distance = 0;
-		runStraight(5, 0.03 + SECTION + SECTION * 13 + 0.03, 1.3, 1.0);
 
-		turnCorner(turn_90_wide_R);
-
-		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
-
-		turnCorner(turn_90_wide_R);
-
-		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
-
-		turnCorner(turn_90_wide_R);
-
-		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
-
-		turnCorner(turn_90_wide_R);
-
-		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
-
-		turnCorner(turn_90_wide_R);
-
-		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
-
-		turnCorner(turn_90_wide_R);
-
-		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
-
-		turnCorner(turn_90_wide_R);
-
-		runStraight(5, SECTION * 13 + 0.06 + 0.03, 1.3, 1.0);
-
-		turnCorner(turn_90_wide_R);
-
-		runStraight(5, HALF_SECTION * 3 + 0.06, 1.3, 0);
-
-		waitTime(1000);
-		driveMotor(OFF);
-		waitButton();
-		printLog();
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
@@ -111,12 +95,12 @@ void main(void) {
 		waitTime(2000);
 		calcGyroZRef();
 
-		g_test_flag = 1;
+		g_flag_control = 1;
 		g_log_count = 0;
 		g_distance = 0;
-		runStraight(5, SECTION * 2 + HALF_SECTION, 1.3, 0.5);
+		runStraight(5, SECTION * 2 + HALF_SECTION, 1.3, 1);
 
-		turnCorner(turn_90_R);
+		turnCorner(turn_135_out_R_1000);
 
 		runStraight(5, SECTION * 2 + HALF_SECTION, 1.3, 0);
 		switchSensorLED(ON);
@@ -126,7 +110,10 @@ void main(void) {
 		break;
 	case 4: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(CYAN, ON);
-
+		while (1) {
+			myprintf("%f\n", returnGyroZVal());
+			waitTime(50);
+		}
 		break;
 	case 5: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
@@ -134,7 +121,7 @@ void main(void) {
 		switchSensorLED(ON);
 		waitTime(2000);
 		calcGyroZRef();
-		g_test_flag = 1;
+		g_flag_control = 1;
 		g_log_count = 0;
 		g_distance = 0;
 		runStraight(5, SECTION * 5, 3, 0);
@@ -168,11 +155,7 @@ void main(void) {
 	case 10: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LRED, ON);
 		calcGyroZRef();
-		g_test_flag = 1;
-
-		setMotorDirL(FORWARD);
-		setMotorDirR(FORWARD);
-
+		g_flag_control = 1;
 		driveMotor(ON);
 		while (1) {
 
