@@ -65,8 +65,8 @@
 #define L_135_O 42
 #define R_135_I 43
 #define R_135_O 44
-#define L_SLA_90 45
-#define R_SLA_90 46
+#define L_V90 45
+#define R_V90 46
 #define DIAGONAL 47
 /****************************************
  色定義
