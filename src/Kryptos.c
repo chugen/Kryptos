@@ -23,6 +23,7 @@
 #include "common.h"
 #include "parameter.h"
 #include "map.h"
+#include "contest.h"
 
 void main(void) {
 	init();
@@ -35,13 +36,13 @@ void main(void) {
 		waitSensor();
 		driveRGB(CYAN, ON);
 		driveMotor(ON);
-		soundCountdown();
+		soundStart();
 		calcGyroZRef();
 		g_flag_control = 1;
 		g_log_count = 0;
 		g_distance = 0;
 
-		searchFurukawa();
+		searchAdachi();
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		g_current_x = START_X;
@@ -57,14 +58,16 @@ void main(void) {
 			waitButton();
 			switchSensorLED(ON);
 			waitSensor();
+			soundNotification();
 			driveRGB(GREEN, ON);
-			soundCountdown();
-			driveSuction(70, ON);
+			waitTime(1000);
+			soundStart();
+			driveSuction(70, OFF);
 			waitTime(1000);
 			g_flag_control = 1;
 			g_log_count = 0;
 			g_distance = 0;
-			g_target_velo=0;
+			g_target_velo = 0;
 			driveMotor(ON);
 			runPathDiagonal();
 			switchSensorLED(ON);
@@ -74,6 +77,8 @@ void main(void) {
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(GREEN, ON);
+
+		selectContest();
 
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
@@ -90,19 +95,22 @@ void main(void) {
 		break;
 	case 3: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(YELLOW, ON);
-		switchSensorLED(ON);
-		driveMotor(ON);
-		waitTime(2000);
-		calcGyroZRef();
 
+		switchSensorLED(ON);
+		waitSensor();
+		soundStart();
 		g_flag_control = 1;
 		g_log_count = 0;
 		g_distance = 0;
-		runStraight(5, SECTION * 2 + HALF_SECTION, 1.3, 1);
+		calcGyroZRef();
 
-		turnCorner(turn_135_out_R_1000);
+		driveMotor(ON);
 
-		runStraight(5, SECTION * 2 + HALF_SECTION, 1.3, 0);
+		runStraight(5, SECTION, 1.3, 1);
+
+		turnCorner(turn_180_R_1000);
+
+		runStraight(5, SECTION, 1.3, 0);
 		switchSensorLED(ON);
 		driveMotor(OFF);
 		waitButton();

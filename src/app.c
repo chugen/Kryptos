@@ -44,9 +44,9 @@ float checkBatt(void) {
 
 	if (battery < 7.4) {
 		while (1) {
-			driveRGB(100, 0, 0, 1);
+			driveRGB(RED, ON);
 			waitTime(200);
-			driveRGB(0, 0, 0, 0);
+			driveRGB(RGB_OFF, OFF);
 			waitTime(200);
 		}
 	}
@@ -235,6 +235,10 @@ int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off) {
 		TPU1.TIOR.BIT.IOA = 0x02;	//初期出力：H,コンペアマッチ：L
 		TPU2.TIOR.BIT.IOA = 0x02;	//初期出力：H,コンペアマッチ：L
 
+		TPU0.TCNT = 0;
+		TPU1.TCNT = 0;
+		TPU2.TCNT = 0;
+
 		TPU0.TGRD = 1500 - blue - 1;
 		TPU0.TGRC = 1500;
 
@@ -252,6 +256,10 @@ int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off) {
 
 	return 0;
 }
+/****************************************
+HSVtoRGB変換
+ ****************************************/
+
 
 /****************************************
  ブザー
@@ -262,7 +270,7 @@ void driveBuzzer(float freq, float wait_ms) {
 	if (freq == 0) {
 		waitTime(wait_ms);
 	} else {
-		cycle = (float) 312500 / (float) freq;
+		cycle = (float) 625000 / (float) freq;
 
 		MTU2.TGRA = (int) cycle / 2;
 
@@ -282,7 +290,7 @@ void driveBuzzer(float freq, float wait_ms) {
 int16_t selectMode(int16_t max_mode) {
 	int16_t mode = 0;
 	g_flag_mode_setting = 1;
-	driveRGB(20, 20, 20, 1);
+
 	while (pushButton()) {
 		driveLED(mode);
 		if (g_mode_velo < -0.3) {
@@ -295,7 +303,7 @@ int16_t selectMode(int16_t max_mode) {
 				mode = 0;
 			}
 			driveLED(mode);
-			waitTime(300);
+			soundCount(mode);
 		} else if (g_mode_velo > 0.3) {
 
 			mode++;
@@ -306,7 +314,7 @@ int16_t selectMode(int16_t max_mode) {
 				mode = 0;
 			}
 			driveLED(mode);
-			waitTime(300);
+			soundCount(mode);
 		}
 	}
 	g_flag_mode_setting = 0;
@@ -330,68 +338,6 @@ void printLog(void) {
 	}
 }
 
-/****************************************
- サーキット関数
- ****************************************/
-void runCircuit(uint8_t x, uint8_t y, uint8_t times, float velocity,
-		float accelaration, float turn_velo) {
-	int i;
-	driveMotor(ON);
-	switchSensorLED(ON);
-	driveSuction(70, ON);
-	waitTime(1000);
-	runStraight(accelaration, INIT_DIS + HALF_SECTION, velocity, turn_velo);
-	for (i = 0; i < times; i++) {
-		runStraight(accelaration, SECTION * (y - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
-		runStraight(accelaration, SECTION * (x - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
-		runStraight(accelaration, SECTION * (y - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
-		runStraight(accelaration, SECTION * (x - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
-	}
-	runStraight(accelaration, SECTION * 2, velocity, 0);
-	waitTime(500);
-	driveMotor(OFF);
-	switchSensorLED(OFF);
-}
-/****************************************
- 大会用関数
- ****************************************/
-void selectContest(void) {
-	switch (selectMode(4)) {
-	case 0:
-
-		break;
-	case 1:
-
-		break;
-	case 2:
-		waitButton();
-		countStepShortest();
-		waitTime(200);
-		printMap();
-		makePath();
-		makePath2();
-		makePath3();
-		printPath2();
-		printPath3();
-		printPathTest();
-		printPathTestDiagonal();
-		break;
-
-	case 3:
-
-		break;
-	case 4:
-
-		break;
-	default:
-		break;
-
-	}
-}
 /****************************************
  ゴール音
  ****************************************/
@@ -439,15 +385,83 @@ void soundError(void) {
 /****************************************
  スタート音
  ****************************************/
-void soundCountdown(void) {
-	driveBuzzer(BZ_A3, 800);
-	waitTime(200);
+void soundStart(void) {
+	driveBuzzer(BZ_A3, 600);
+	waitTime(150);
 
-	driveBuzzer(BZ_A3, 800);
-	waitTime(200);
+	driveBuzzer(BZ_A3, 600);
+	waitTime(150);
 
-	driveBuzzer(BZ_A3, 800);
-	waitTime(200);
+	driveBuzzer(BZ_A3, 600);
+	waitTime(150);
 
-	driveBuzzer(BZ_A4, 1000);
+	driveBuzzer(BZ_A4, 750);
 }
+/****************************************
+ 通知音
+ ****************************************/
+void soundNotification(void) {
+	driveBuzzer(BZ_A4, 50);
+	waitTime(30);
+	driveBuzzer(BZ_A5, 50);
+	waitTime(30);
+	driveBuzzer(BZ_B5, 30);
+}
+/****************************************
+ カウント音
+ ****************************************/
+void soundCount(int16_t mode) {
+	switch (mode) {
+	case 0:
+		driveBuzzer(BZ_A3, 200);
+		break;
+	case 1:
+		driveBuzzer(BZ_B3, 200);
+		break;
+	case 2:
+		driveBuzzer(BZ_C3, 200);
+		break;
+	case 3:
+		driveBuzzer(BZ_D3, 200);
+		break;
+	case 4:
+		driveBuzzer(BZ_E3, 200);
+		break;
+	case 5:
+		driveBuzzer(BZ_F3, 200);
+		break;
+	case 6:
+		driveBuzzer(BZ_G3, 200);
+		break;
+	case 7:
+		driveBuzzer(BZ_A4, 200);
+		break;
+	case 8:
+		driveBuzzer(BZ_B4, 200);
+		break;
+	case 9:
+		driveBuzzer(BZ_C4, 200);
+		break;
+	case 10:
+		driveBuzzer(BZ_D4, 200);
+		break;
+	case 11:
+		driveBuzzer(BZ_E4, 200);
+		break;
+	case 12:
+		driveBuzzer(BZ_F4, 200);
+		break;
+	case 13:
+		driveBuzzer(BZ_G4, 200);
+		break;
+	case 14:
+		driveBuzzer(BZ_A5, 200);
+		break;
+	case 15:
+		driveBuzzer(BZ_B5, 200);
+		break;
+	default:
+		break;
+	}
+}
+

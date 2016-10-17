@@ -18,6 +18,8 @@ typedef struct{
 	float velocity;
 	float front;
 	float rear;
+	uint16_t sensor_break;
+	float dis_break;
 	uint8_t diagonal;
 } turn_t;
 

@@ -66,34 +66,56 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo);
 /****************************************
  スラローム　大廻
  ****************************************/
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-//スラロームパラメータ				{度,alpha,M_omega,v,front,rear,dia}
+/*others~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 extern const turn_t turn_90_L ;
 extern const turn_t turn_90_R ;
-
+extern const turn_t pivot;
+/*1000~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 extern const turn_t turn_90_wide_L_1000 ;
 extern const turn_t turn_90_wide_R_1000 ;
-
-extern const turn_t turn_90_wide_L_1000;
-extern const turn_t turn_90_wide_R_1000 ;
-
-
 extern const turn_t turn_180_L_1000 ;
 extern const turn_t turn_180_R_1000 ;
-
-
 extern const turn_t turn_45_in_L_1000 ;
 extern const turn_t turn_45_in_R_1000 ;
 extern const turn_t turn_45_out_L_1000;
 extern const turn_t turn_45_out_R_1000 ;
-
 extern const turn_t turn_135_in_L_1000 ;
 extern const turn_t turn_135_in_R_1000 ;
 extern const turn_t turn_135_out_L_1000 ;
 extern const turn_t turn_135_out_R_1000 ;
-
 extern const turn_t turn_v90_L_1000;
 extern const turn_t turn_v90_R_1000 ;
+/*1200~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern const turn_t turn_90_wide_L_1200 ;
+extern const turn_t turn_90_wide_R_1200 ;
+extern const turn_t turn_180_L_1200 ;
+extern const turn_t turn_180_R_1200 ;
+extern const turn_t turn_45_in_L_1200 ;
+extern const turn_t turn_45_in_R_1200 ;
+extern const turn_t turn_45_out_L_1200;
+extern const turn_t turn_45_out_R_1200 ;
+extern const turn_t turn_135_in_L_1200 ;
+extern const turn_t turn_135_in_R_1200 ;
+extern const turn_t turn_135_out_L_1200 ;
+extern const turn_t turn_135_out_R_1200 ;
+extern const turn_t turn_v90_L_1200;
+extern const turn_t turn_v90_R_1200 ;
+/*1400~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern const turn_t turn_90_wide_L_1400 ;
+extern const turn_t turn_90_wide_R_1400 ;
+extern const turn_t turn_180_L_1400 ;
+extern const turn_t turn_180_R_1400 ;
+extern const turn_t turn_45_in_L_1400 ;
+extern const turn_t turn_45_in_R_1400 ;
+extern const turn_t turn_45_out_L_1400;
+extern const turn_t turn_45_out_R_1400 ;
+extern const turn_t turn_135_in_L_1400 ;
+extern const turn_t turn_135_in_R_1400 ;
+extern const turn_t turn_135_out_L_1400 ;
+extern const turn_t turn_135_out_R_1400 ;
+extern const turn_t turn_v90_L_1400;
+extern const turn_t turn_v90_R_1400 ;
 
 extern const turn_t pivot;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

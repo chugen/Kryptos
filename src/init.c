@@ -175,7 +175,7 @@ void initMTU(void) {
 //
 //	IPR( MTU4, TGIA4 )= 0x08;//割り込み優先度設定:8
 //	IEN( MTU4, TGIA4 )= 0x01;
-
+	MTU.TSTR.BYTE=0x00;		//全MTUストップ
 	MTU.TSTR.BIT.CST1 = 1;	//位相係数スタート
 
 }
@@ -236,9 +236,8 @@ void initTPU(void) {
 	TPU4.TMDR.BIT.MD = 0x07;	//位相係数モード4
 	TPU5.TMDR.BIT.MD = 0x03;	//PWMモード2
 
-	//TPUA.TSTR.BYTE = 0x3f;	//TPU0~5 TCNTカウントスタート
+	TPUA.TSTR.BYTE=0x00;	//全TPUストップ
 	TPUA.TSTR.BIT.CST4 = 1;	//位相係数スタート
-
 
 }
 
@@ -276,7 +275,6 @@ void initSCI(void) {
 
 	SCI1.SCR.BIT.TE = 1;	//送信許可
 	SCI1.SCR.BIT.RE = 1;	//受信許可
-
 
 }
 
@@ -339,7 +337,6 @@ void initSPI(void) {
 
 	RSPI1.SPCR.BIT.SPE = 1; 	//RSPI機能動作
 
-
 }
 
 void initMPU6000(void) {
@@ -351,7 +348,6 @@ void initMPU6000(void) {
 	commSPI(ACCEL_CONFIG, 0x18, WRITE);
 
 }
-
 
 void initMap(void) {
 	int i, j;

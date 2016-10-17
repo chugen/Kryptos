@@ -13,9 +13,21 @@
  ****************************************/
 void checkOrient(int ori_deg);
 /****************************************
+ 方位セット
+ ****************************************/
+void setOrient(uint8_t orient);
+/****************************************
  座標管理
  ****************************************/
 void countCoord(void);
+/****************************************
+現在座標セット
+ ****************************************/
+void setCurrentCoord(uint16_t x,uint16_t y);
+/****************************************
+ゴール座標セット
+ ****************************************/
+void setGoalCoord(uint16_t x,uint16_t y);
 /****************************************
  map表示
  ****************************************/
@@ -114,7 +126,7 @@ void runPathTestDiagonal(void) ;
  スピードコネクト
  ****************************************/
 float connectSpeedEnd(int esc);
-float connectSpeedEnd2(int esc);
+float connectSpeed1000(int esc);
 float connectSpeedEndTest(int esc);
 float connectSpeedEndTestDiagonal(int esc);
 /****************************************
