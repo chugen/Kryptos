@@ -100,6 +100,24 @@
 #define PWR_MGMT_1 0x6B
 #define PWR_MGMT_2 0x6C
 /****************************************
+ Flash関連
+ ****************************************/
+#define TE16K 100000
+#define P_E 0
+
+#define PROGRAM_S1 0xE8
+#define PROGRAM_S2 0x01
+#define PROGRAM_END 0xD0
+
+#define ERASE_S1 0x20
+#define ERASE_S2 0xD0
+
+#define STATUS_CLEAR 0x50
+
+#define BLANK_CHECK_S1 0x71
+#define BLANK_CHECK_S2 0xD0
+
+/****************************************
  センサー
  ****************************************/
 #define SEN_L 3

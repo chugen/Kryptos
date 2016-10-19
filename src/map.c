@@ -410,17 +410,8 @@ void searchAdachi(void) {
 				countCoord();
 
 			} else {
-				g_flag_gap = 1;
-				runStraight(5, HALF_SECTION, 0.5, 0);
 
-				waitTime(100);
-				g_flag_gap = 0;
-
-				turnCorner(pivot);
-
-				waitTime(100);
-
-				runStraight(5, HALF_SECTION, 0.5, 0.5);
+				runBlindAlley(0.5);
 
 				checkOrient(180);
 				countCoord();
@@ -454,18 +445,7 @@ void searchAdachi(void) {
 
 			} else {
 
-				g_flag_gap = 1;
-				runStraight(5, HALF_SECTION, 0.5, 0);
-
-				waitTime(100);
-				g_flag_gap = 0;
-
-				turnCorner(pivot);
-
-				waitTime(100);
-
-				runStraight(5, HALF_SECTION, 0.5, 0.5);
-
+				runBlindAlley(0.5);
 				checkOrient(180);
 				countCoord();
 
@@ -499,17 +479,7 @@ void searchAdachi(void) {
 
 			} else {
 
-				g_flag_gap = 1;
-				runStraight(5, HALF_SECTION, 0.5, 0);
-
-				waitTime(100);
-				g_flag_gap = 0;
-
-				turnCorner(pivot);
-
-				waitTime(100);
-
-				runStraight(5, HALF_SECTION, 0.5, 0.5);
+				runBlindAlley(0.5);
 
 				checkOrient(180);
 				countCoord();
@@ -543,18 +513,7 @@ void searchAdachi(void) {
 				countCoord();
 
 			} else {
-
-				g_flag_gap = 1;
-				runStraight(5, HALF_SECTION, 0.5, 0);
-
-				waitTime(100);
-				g_flag_gap = 0;
-
-				turnCorner(pivot);
-
-				waitTime(100);
-
-				runStraight(5, HALF_SECTION, 0.5, 0.5);
+				runBlindAlley(0.5);
 
 				checkOrient(180);
 				countCoord();
@@ -679,16 +638,7 @@ void searchFurukawa(void) {
 
 			} else {
 
-				g_flag_gap = 1;
-				runStraight(5, HALF_SECTION, 0.5, 0);
-
-				waitTime(100);
-				g_flag_gap = 0;
-				turnCorner(pivot);
-
-				waitTime(100);
-
-				runStraight(5, HALF_SECTION, 0.5, 0.5);
+				runBlindAlley(0.5);
 
 				checkOrient(180);
 				countCoord();
@@ -749,18 +699,7 @@ void searchFurukawa(void) {
 
 			} else {
 
-				g_flag_gap = 1;
-
-				runStraight(5, HALF_SECTION, 0.5, 0);
-
-				waitTime(100);
-				g_flag_gap = 0;
-
-				turnCorner(pivot);
-
-				waitTime(100);
-
-				runStraight(5, HALF_SECTION, 0.5, 0.5);
+				runBlindAlley(0.5);
 
 				checkOrient(180);
 				countCoord();
@@ -821,18 +760,7 @@ void searchFurukawa(void) {
 
 			} else {
 				checkWall();
-				g_flag_gap = 1;
-
-				runStraight(5, HALF_SECTION, 0.5, 0);
-
-				waitTime(100);
-				g_flag_gap = 0;
-
-				turnCorner(pivot);
-
-				waitTime(100);
-
-				runStraight(5, HALF_SECTION, 0.5, 0.5);
+				runBlindAlley(0.5);
 
 				checkOrient(180);
 				countCoord();
@@ -892,18 +820,7 @@ void searchFurukawa(void) {
 
 			} else {
 
-				g_flag_gap = 1;
-
-				runStraight(5, HALF_SECTION, 0.5, 0);
-				waitTime(100);
-
-				g_flag_gap = 0;
-
-				turnCorner(pivot);
-
-				waitTime(100);
-
-				runStraight(5, HALF_SECTION, 0.5, 0.5);
+				runBlindAlley(0.5);
 
 				checkOrient(180);
 				countCoord();
@@ -1877,7 +1794,7 @@ void runPathDiagonal(void) {
 			runStraight(15, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), 3,
 					connectSpeed1000(i));
 		} else {
-			//full_color(255, 0, 0);
+			driveRGB(RED,ON);
 		}
 		i++;
 		g_current_x = 1;
