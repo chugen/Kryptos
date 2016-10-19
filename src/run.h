@@ -58,11 +58,15 @@ float ctrlIntAngularVelocity(float ki);
  壁制御
  ****************************************/
 float ctrlWall(float kp);
-
+float ctrlWallFront(float kp,uint8_t fl_fr);
 /****************************************
  台形加速
  ****************************************/
 void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo);
+/****************************************
+袋小路
+ ****************************************/
+void runBlindAlley(float velo);
 /****************************************
  スラローム　大廻
  ****************************************/

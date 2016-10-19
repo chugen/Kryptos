@@ -26,6 +26,12 @@ void waitTime(int16_t wait_ms) {
 	}
 }
 
+void waitTimeMicro(uint16_t wait_us){
+	uint32_t i;
+	for(i=0;i<(wait_us*100);i++){
+
+	}
+}
 /****************************************
  バッテリーチェック/補正
  ****************************************/
@@ -72,10 +78,11 @@ float correctVoltage(void) {
  ****************************************/
 void waitSensor(void) {
 	uint16_t count = 0;
+	switchSensorLED(ON);
 	while (1) {
-		if ((g_sensor_L > 500) && (g_sensor_R > 500)) {
+		if ((g_sensor_L > 350) && (g_sensor_R > 350)) {
 			count++;
-			if (count > 700) {
+			if (count > 600) {
 				break;
 			}
 		} else {
@@ -83,6 +90,7 @@ void waitSensor(void) {
 		}
 		waitTime(1);
 	}
+	switchSensorLED(OFF);
 }
 /****************************************
  スイッチ

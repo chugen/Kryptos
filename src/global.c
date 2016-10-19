@@ -83,6 +83,8 @@ volatile uint8_t g_flag_diagonal=0;
 volatile int8_t g_flag_mode_setting = 0;
 volatile int8_t g_flag_control = 0;
 volatile int8_t g_flag_turn;
+volatile int8_t g_flag_failsafe=0;
+volatile int8_t g_flag_blindalley=0;
 //テスト用
 volatile int16_t g_wait_count = 0; //waitTime関数用カウンタ
 volatile int16_t g_log_count = 0;

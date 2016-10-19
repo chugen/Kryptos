@@ -85,6 +85,8 @@ extern volatile uint8_t g_flag_diagonal;
 extern volatile int8_t g_flag_mode_setting;
 extern volatile int8_t g_flag_turn;
 extern volatile int8_t g_flag_control;
+extern volatile int8_t g_flag_failsafe;
+extern volatile int8_t g_flag_blindalley;
 //テスト用
 
 extern volatile int16_t g_wait_count;

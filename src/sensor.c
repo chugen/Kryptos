@@ -50,7 +50,7 @@ int32_t returnEncoderDiffL(void) {
 
 	TPU4.TCNT = 0;
 
-	if (diff < INT16_MAX) {
+	if (diff <= INT16_MAX) {
 		return -diff * returnCountDirL();
 	} else {
 		return -(UINT16_MAX - diff) * returnCountDirL();
@@ -64,7 +64,7 @@ int32_t returnEncoderDiffR(void) {
 
 	MTU1.TCNT = 0;
 
-	if (diff < INT16_MAX) {
+	if (diff <= INT16_MAX) {
 		return diff * returnCountDirR();
 	} else {
 		return (UINT16_MAX - diff) * returnCountDirR();

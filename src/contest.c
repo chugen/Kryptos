@@ -45,9 +45,15 @@ void search1(void) {
 	setCurrentCoord(START_X, START_Y);
 	setTargetCoord(GOAL_X, GOAL_Y);
 	setOrient(NORTH);
-
 	switchSensorLED(ON);
+	waitSensor();
+	driveRGB(RGB_OFF, OFF);
+	driveMotor(ON);
 	soundStart();
+	calcGyroZRef();
+	g_flag_control = 1;
+	g_log_count = 0;
+	g_distance = 0;
 	searchAdachi();
 }
 /****************************************
@@ -59,12 +65,23 @@ void search2(void) {
 	setOrient(NORTH);
 
 	countStepQueue();
+
 	switchSensorLED(ON);
+	waitSensor();
+	driveRGB(RGB_OFF, OFF);
+	driveMotor(ON);
 	soundStart();
+	calcGyroZRef();
+	g_flag_control = 1;
+	g_log_count = 0;
+	g_distance = 0;
+
 	searchAdachi();
 	driveMotor(ON);
 	switchSensorLED(ON);
+	turnCorner(pivot);
 	checkOrient(180);
+
 	setTargetCoord(START_X, START_Y);
 	countStepQueue();
 	searchAdachi();
@@ -81,11 +98,24 @@ void search3(void) {
 	countStepQueue();
 
 	switchSensorLED(ON);
+	waitSensor();
+	driveRGB(RGB_OFF, OFF);
+	driveMotor(ON);
 	soundStart();
+	calcGyroZRef();
+	g_flag_control = 1;
+	g_log_count = 0;
+	g_distance = 0;
+
 	searchAdachi();
 	//
-	driveMotor(ON);
 	switchSensorLED(ON);
+	driveRGB(RGB_OFF, OFF);
+	driveMotor(ON);
+	calcGyroZRef();
+	g_flag_control = 1;
+	g_log_count = 0;
+	g_distance = 0;
 
 	checkOrient(180);
 	setTargetCoord(START_X, START_Y + 1);
@@ -93,8 +123,13 @@ void search3(void) {
 	countStepQueue();
 	searchAdachi();
 	//
-	driveMotor(ON);
 	switchSensorLED(ON);
+	driveRGB(RGB_OFF, OFF);
+	driveMotor(ON);
+	calcGyroZRef();
+	g_flag_control = 1;
+	g_log_count = 0;
+	g_distance = 0;
 
 	checkOrient(180);
 	setTargetCoord(GOAL_X, GOAL_Y);
@@ -112,7 +147,15 @@ void runFurukawa(void) {
 	setOrient(NORTH);
 
 	switchSensorLED(ON);
+	waitSensor();
+	driveRGB(RGB_OFF, OFF);
+	driveMotor(ON);
 	soundStart();
+	calcGyroZRef();
+	g_flag_control = 1;
+	g_log_count = 0;
+	g_distance = 0;
+
 	searchFurukawa();
 
 }
@@ -125,16 +168,41 @@ void runFurukawaAdachi(void) {
 	setOrient(NORTH);
 
 	countStepQueue();
+
 	switchSensorLED(ON);
-	soundStart();
-	searchFurukawa();
+	waitSensor();
+	driveRGB(RGB_OFF, OFF);
 	driveMotor(ON);
+	soundStart();
+	calcGyroZRef();
+	g_flag_control = 1;
+	g_log_count = 0;
+	g_distance = 0;
+
+	searchFurukawa();
+
 	switchSensorLED(ON);
+	driveRGB(RGB_OFF, OFF);
+	driveMotor(ON);
+	calcGyroZRef();
+	g_flag_control = 1;
+	g_log_count = 0;
+	g_distance = 0;
+
 	turnCorner(pivot);
 	checkOrient(180);
 	setTargetCoord(START_X, START_Y);
 
 	countStepQueue();
+
+	switchSensorLED(ON);
+	driveRGB(RGB_OFF, OFF);
+	driveMotor(ON);
+	calcGyroZRef();
+	g_flag_control = 1;
+	g_log_count = 0;
+	g_distance = 0;
+
 	searchAdachi();
 	turnCorner(pivot);
 	driveMotor(OFF);

@@ -30,7 +30,7 @@ void intrptCMT0(void) {
 	g_current_velo = returnVelocityL() + returnVelocityR();
 	g_current_angularvelo = returnGyroZVal() - g_gyro_reference;
 
-	getLog(g_target_angularvelo, g_current_angularvelo);
+	getLog(g_target_velo, g_current_velo);
 
 	if (g_flag_control == 1) {
 		setMotorDuty();
@@ -38,9 +38,9 @@ void intrptCMT0(void) {
 
 	if (fabsf(g_target_velo-g_current_velo) > 2
 			|| (fabsf(g_target_angularvelo-g_current_angularvelo) > 1500)) {
-
-		driveMotor(OFF);
-		driveSuction(70,OFF);
+		g_flag_failsafe=1;
+		g_target_velo=0;
+		PORTC.PODR.BIT.B6 = 0; //STBY
 	}
 
 }
@@ -82,11 +82,11 @@ void setMotorDuty(void) {
 	setMotorDutyL(
 			ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
 					- ctrlPropAngularVelocity(ANG_VELO_P)
-					- ctrlIntAngularVelocity(ANG_VELO_I) - ctrlWall(WALL_P));
+					- ctrlIntAngularVelocity(ANG_VELO_I) - ctrlWall(WALL_P)-ctrlWallFront(WALL_FRONT_P,SEN_FL));
 	setMotorDutyR(
 			ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
 					+ ctrlPropAngularVelocity(ANG_VELO_P)
-					+ ctrlIntAngularVelocity(ANG_VELO_I) + ctrlWall(WALL_P));
+					+ ctrlIntAngularVelocity(ANG_VELO_I) + ctrlWall(WALL_P)+ctrlWallFront(WALL_FRONT_P,SEN_FR));
 }
 /****************************************
  加速　割り込み

@@ -22,8 +22,8 @@
 //輪距(m)
 #define TREAD 0.065
 //タイヤ直径(m)
-#define DIAMETER_L 0.0208
-#define DIAMETER_R 0.0208
+#define DIAMETER_L 0.0210
+#define DIAMETER_R 0.0210
 //ギア歯数
 #define PINION 9.0
 #define SPUR 35.0
@@ -35,25 +35,29 @@
 #define MAX_VOLTAGE 8.4
 //初期距離
 #define INIT_DIS 0.054
+//袋小路脱出距離
+#define BLIND_ALLEY 0.014
 /****************************************
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 440//500
-#define SEN_REFERENCE_R 560//520
+#define SEN_REFERENCE_L 420//500
+#define SEN_REFERENCE_R 515//520
+#define SEN_REFERENCE_FL 1050
+#define SEN_REFERENCE_FR 430
 //変化量
 #define SEN_DERIVATIVE_L 5
 #define SEN_DERIVATIVE_R 5
 //制御閾値
-#define SEN_THRESHOLD_L 400
-#define SEN_THRESHOLD_R 400
+#define SEN_THRESHOLD_L 60//150
+#define SEN_THRESHOLD_R 60//150
 //壁有無判定基準値
-#define SEN_NOWALL_L 220
-#define SEN_NOWALL_R 220
-#define SEN_NOWALL_FL 180
+#define SEN_NOWALL_L 170
+#define SEN_NOWALL_R 200
+#define SEN_NOWALL_FL 160
 #define SEN_NOWALL_FR 60
 //死亡判定
-#define SEN_DEATH 1950
+#define SEN_DEATH 1600
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //速度P制御
 #define VELO_P 220
@@ -65,7 +69,7 @@
 #define ANG_VELO_I 1
 //壁制御
 #define WALL_P 0.05
-
+#define WALL_FRONT_P 0.01
 
 
 
