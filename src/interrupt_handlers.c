@@ -72,9 +72,9 @@ void Excep_CMT1_CMI1(void) {
 }
 
 // CMTU2_CMT2
-#pragma interrupt (Excep_CMT2_CMI2(enable,vect=30))
+//#pragma interrupt (Excep_CMT2_CMI2(enable,vect=30))
 void Excep_CMT2_CMI2(void) {
-	intrptCMT2();
+	//intrptCMT2();
 }
 
 // CMTU3_CMT3

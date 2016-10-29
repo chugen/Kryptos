@@ -20,27 +20,27 @@
  ****************************************/
 void intrptCMT0(void) {
 	g_wait_count++;
-	g_log_count++;
 	calcAcc();
 	calcDistance();
 	calcAngularAcc();
 	calcAngle();
+
 	getModeVelocity();
 
 	g_current_velo = returnVelocityL() + returnVelocityR();
 	g_current_angularvelo = returnGyroZVal() - g_gyro_reference;
 
-	getLog(g_target_velo, g_current_velo);
-
-	if (g_flag_control == 1) {
-		setMotorDuty();
-	}
+	//getLog(g_sensor_L, g_sensor_R);
+	getLog(g_target_angularvelo, g_current_angularvelo);
+	setMotorDuty();
 
 	if (fabsf(g_target_velo-g_current_velo) > 2
 			|| (fabsf(g_target_angularvelo-g_current_angularvelo) > 1500)) {
-		g_flag_failsafe=1;
-		g_target_velo=0;
+		g_flag_failsafe = 1;
+		g_target_velo = 0;
+		driveSuction(70, OFF);
 		PORTC.PODR.BIT.B6 = 0; //STBY
+		driveRGB(RED, ON);
 	}
 
 }
@@ -50,21 +50,19 @@ void intrptCMT0(void) {
 void intrptCMT1(void) {
 	getSensorVal();
 }
-/****************************************
- 割り込み関数2
- ****************************************/
-void intrptCMT2(void) {
-	//getSensorVal();
 
-}
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 /****************************************
  ログ取得関数　割り込み
  ****************************************/
 void getLog(float log1, float log2) {
+
 	if (g_log_count < LOG_TIMES) {
 		g_log_array[g_log_count] = log1;
 		g_log_array2[g_log_count] = log2;
+		g_log_count++;
+	} else {
+		g_log_count = LOG_TIMES;
 	}
 }
 /****************************************
@@ -79,14 +77,20 @@ void getModeVelocity(void) {
  Dutyセット関数　割り込み
  ****************************************/
 void setMotorDuty(void) {
-	setMotorDutyL(
-			ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
-					- ctrlPropAngularVelocity(ANG_VELO_P)
-					- ctrlIntAngularVelocity(ANG_VELO_I) - ctrlWall(WALL_P)-ctrlWallFront(WALL_FRONT_P,SEN_FL));
-	setMotorDutyR(
-			ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
-					+ ctrlPropAngularVelocity(ANG_VELO_P)
-					+ ctrlIntAngularVelocity(ANG_VELO_I) + ctrlWall(WALL_P)+ctrlWallFront(WALL_FRONT_P,SEN_FR));
+	if (g_flag_control == 1) {
+		setMotorDutyL(
+				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
+						- ctrlPropAngularVelocity(ANG_VELO_P)
+						- ctrlIntAngularVelocity(ANG_VELO_I) - ctrlWall(WALL_P)
+						- ctrlWallFrontAng(WALL_FRONT_P)
+						+ ctrlWallFrontDis(WALL_FRONT_P));
+		setMotorDutyR(
+				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
+						+ ctrlPropAngularVelocity(ANG_VELO_P)
+						+ ctrlIntAngularVelocity(ANG_VELO_I) + ctrlWall(WALL_P)
+						+ ctrlWallFrontAng(WALL_FRONT_P)
+						+ ctrlWallFrontDis(WALL_FRONT_P));
+	}
 }
 /****************************************
  加速　割り込み
@@ -126,8 +130,11 @@ void getSensorVal(void) {
 	uint16_t sensor_FR_off;
 	uint16_t sensor_L_off;
 	uint16_t sensor_R_off;
+	float battery_correct;
 	static uint16_t sensor_L_before;
 	static uint16_t sensor_R_before;
+
+	battery_correct = correctVoltage();
 
 	sensor_L_before = g_sensor_L;
 	sensor_R_before = g_sensor_R;
@@ -151,10 +158,10 @@ void getSensorVal(void) {
 	sensor_FL_on = returnSenVal(SEN_FL);
 	sensor_R_on = returnSenVal(SEN_R);
 	driveSensorLED(OFF);
-	g_sensor_FL = sensor_FL_on - sensor_FL_off;
-	g_sensor_FR = sensor_FR_on - sensor_FR_off;
-	g_sensor_L = sensor_L_on - sensor_L_off;
-	g_sensor_R = sensor_R_on - sensor_R_off;
+	g_sensor_FL = (sensor_FL_on - sensor_FL_off) * battery_correct;
+	g_sensor_FR = (sensor_FR_on - sensor_FR_off) * battery_correct;
+	g_sensor_L = (sensor_L_on - sensor_L_off) * battery_correct;
+	g_sensor_R = (sensor_R_on - sensor_R_off) * battery_correct;
 
 	g_sensor_L_derivative = g_sensor_L - sensor_L_before;
 	g_sensor_R_derivative = g_sensor_R - sensor_R_before;

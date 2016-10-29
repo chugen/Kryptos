@@ -58,7 +58,12 @@ float ctrlIntAngularVelocity(float ki);
  壁制御
  ****************************************/
 float ctrlWall(float kp);
-float ctrlWallFront(float kp,uint8_t fl_fr);
+float ctrlWallFrontAng(float kp);
+float ctrlWallFrontDis(float kp);
+/****************************************
+ 走行初期化
+ ****************************************/
+void initRun(void);
 /****************************************
  台形加速
  ****************************************/
@@ -75,6 +80,8 @@ void runBlindAlley(float velo);
 extern const turn_t turn_90_L ;
 extern const turn_t turn_90_R ;
 extern const turn_t pivot;
+extern const turn_t pivot_90_L;
+extern const turn_t pivot_90_R;
 /*1000~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 extern const turn_t turn_90_wide_L_1000 ;
 extern const turn_t turn_90_wide_R_1000 ;
@@ -120,6 +127,8 @@ extern const turn_t turn_135_out_L_1400 ;
 extern const turn_t turn_135_out_R_1400 ;
 extern const turn_t turn_v90_L_1400;
 extern const turn_t turn_v90_R_1400 ;
+
+extern const turn_t turn_90_wide_R_1800;
 
 extern const turn_t pivot;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

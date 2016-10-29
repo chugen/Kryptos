@@ -64,12 +64,14 @@ void soundError(void);
 /****************************************
  スタート音
  ****************************************/
-void soundStart(void) ;
+void soundStartSearch(void);
+void soundStartRun(void) ;
 
 /****************************************
  通知音
  ****************************************/
-void soundNotification(void);
+void soundSensor(void);
+void soundButton(void);
 /****************************************
  カウント音
  ****************************************/
