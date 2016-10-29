@@ -26,9 +26,9 @@ void waitTime(int16_t wait_ms) {
 	}
 }
 
-void waitTimeMicro(uint16_t wait_us){
+void waitTimeMicro(uint16_t wait_us) {
 	uint32_t i;
-	for(i=0;i<(wait_us*100);i++){
+	for (i = 0; i < (wait_us * 100); i++) {
 
 	}
 }
@@ -80,9 +80,9 @@ void waitSensor(void) {
 	uint16_t count = 0;
 	switchSensorLED(ON);
 	while (1) {
-		if ((g_sensor_L > 350) && (g_sensor_R > 350)) {
+		if ((g_sensor_L > 700) && (g_sensor_R > 700)) {
 			count++;
-			if (count > 600) {
+			if (count > 300) {
 				break;
 			}
 		} else {
@@ -90,17 +90,25 @@ void waitSensor(void) {
 		}
 		waitTime(1);
 	}
+	soundSensor();
 	switchSensorLED(OFF);
 }
 /****************************************
  スイッチ
  ****************************************/
 int16_t pushButton(void) {
-	return PORT3.PIDR.BIT.B1 != 1;
+	if (PORT3.PIDR.BIT.B1 != 1) {
+		return 1;
+	} else {
+		soundButton();
+		return 0;
+	}
+
 }
 int16_t waitButton(void) {
 	while (PORT3.PIDR.BIT.B1 != 1)
 		;
+	soundButton();
 	return 0;
 }
 
@@ -265,9 +273,8 @@ int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off) {
 	return 0;
 }
 /****************************************
-HSVtoRGB変換
+ HSVtoRGB変換
  ****************************************/
-
 
 /****************************************
  ブザー
@@ -278,7 +285,7 @@ void driveBuzzer(float freq, float wait_ms) {
 	if (freq == 0) {
 		waitTime(wait_ms);
 	} else {
-		cycle = (float) 625000 / (float) freq;
+		cycle = (float) 625000 / 2 / (float) freq;
 
 		MTU2.TGRA = (int) cycle / 2;
 
@@ -372,48 +379,70 @@ void soundGoal(void) {
  エラー音
  ****************************************/
 void soundError(void) {
-	driveBuzzer(BZ_C3, 100);
+	driveBuzzer(BZ_C2, 100);
 	driveBuzzer(0, 50);
-	driveBuzzer(BZ_CS3, 100);
+	driveBuzzer(BZ_CS2, 100);
 	driveBuzzer(0, 50);
-	driveBuzzer(BZ_D3, 100);
+	driveBuzzer(BZ_D2, 100);
 	driveBuzzer(0, 50);
-	driveBuzzer(BZ_CS3, 100);
+	driveBuzzer(BZ_CS2, 100);
 	driveBuzzer(0, 50);
-	driveBuzzer(BZ_C3, 100);
+	driveBuzzer(BZ_C2, 100);
 	driveBuzzer(0, 50);
-	driveBuzzer(BZ_CS3, 100);
+	driveBuzzer(BZ_CS2, 100);
 	driveBuzzer(0, 50);
-	driveBuzzer(BZ_D3, 100);
+	driveBuzzer(BZ_D2, 100);
 	driveBuzzer(0, 50);
-	driveBuzzer(BZ_CS3, 100);
+	driveBuzzer(BZ_CS2, 100);
 	driveBuzzer(0, 50);
-	driveBuzzer(BZ_C3, 300);
+	driveBuzzer(BZ_C2, 300);
 }
 /****************************************
  スタート音
  ****************************************/
-void soundStart(void) {
-	driveBuzzer(BZ_A3, 600);
+void soundStartSearch(void) {
+	driveBuzzer(BZ_A2, 50);
+	waitTime(30);
+	driveBuzzer(BZ_B2, 50);
+	driveBuzzer(BZ_A3, 50);
+	waitTime(30);
+	driveBuzzer(BZ_B3, 50);
+	driveBuzzer(BZ_A4, 50);
+	waitTime(30);
+	driveBuzzer(BZ_B4, 50);
+	driveBuzzer(BZ_A5, 50);
+	waitTime(30);
+	driveBuzzer(BZ_B5, 50);
+}
+void soundStartRun(void) {
+	driveBuzzer(BZ_A2, 600);
 	waitTime(150);
 
-	driveBuzzer(BZ_A3, 600);
+	driveBuzzer(BZ_A2, 600);
 	waitTime(150);
 
-	driveBuzzer(BZ_A3, 600);
+	driveBuzzer(BZ_A2, 600);
 	waitTime(150);
 
-	driveBuzzer(BZ_A4, 750);
+	driveBuzzer(BZ_A3, 750);
 }
 /****************************************
  通知音
  ****************************************/
-void soundNotification(void) {
+void soundSensor(void) {
 	driveBuzzer(BZ_A4, 50);
 	waitTime(30);
 	driveBuzzer(BZ_A5, 50);
 	waitTime(30);
 	driveBuzzer(BZ_B5, 30);
+}
+void soundButton(void) {
+	driveBuzzer(BZ_A4, 50);
+	waitTime(30);
+	driveBuzzer(BZ_B4, 50);
+	driveBuzzer(BZ_A4, 50);
+	waitTime(30);
+	driveBuzzer(BZ_B4, 50);
 }
 /****************************************
  カウント音

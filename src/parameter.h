@@ -36,21 +36,21 @@
 //初期距離
 #define INIT_DIS 0.054
 //袋小路脱出距離
-#define BLIND_ALLEY 0.014
+#define BLIND_ALLEY 0.024
 /****************************************
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 420//500
-#define SEN_REFERENCE_R 515//520
-#define SEN_REFERENCE_FL 1050
-#define SEN_REFERENCE_FR 430
+#define SEN_REFERENCE_L 525//500
+#define SEN_REFERENCE_R 535//520
+#define SEN_REFERENCE_FL 1030
+#define SEN_REFERENCE_FR 410
 //変化量
-#define SEN_DERIVATIVE_L 5
-#define SEN_DERIVATIVE_R 5
+#define SEN_DERIVATIVE_L 13
+#define SEN_DERIVATIVE_R 13
 //制御閾値
-#define SEN_THRESHOLD_L 60//150
-#define SEN_THRESHOLD_R 60//150
+#define SEN_THRESHOLD_L 400
+#define SEN_THRESHOLD_R 410
 //壁有無判定基準値
 #define SEN_NOWALL_L 170
 #define SEN_NOWALL_R 200
@@ -68,8 +68,8 @@
 //角速度I制御
 #define ANG_VELO_I 1
 //壁制御
-#define WALL_P 0.05
-#define WALL_FRONT_P 0.01
+#define WALL_P 0.02
+#define WALL_FRONT_P 0.1
 
 
 

@@ -28,7 +28,7 @@
 #define HALF_SECTION 0.09
 
 #define M_PI 3.141592653589793
-
+#define M_SQRT2 1.41421356237
 /****************************************
  map関連
  ****************************************/
@@ -39,8 +39,8 @@
 
 #define START_X 0
 #define START_Y 0
-#define GOAL_X  1
-#define GOAL_Y 0
+#define GOAL_X  7
+#define GOAL_Y 7
 /****************************************
  path
  ****************************************/

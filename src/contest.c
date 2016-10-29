@@ -15,6 +15,7 @@
 /****************************************
  サーキット関数
  ****************************************/
+
 void runCircuit(uint8_t x, uint8_t y, uint8_t times, float velocity,
 		float accelaration, float turn_velo) {
 	int i;
@@ -25,13 +26,13 @@ void runCircuit(uint8_t x, uint8_t y, uint8_t times, float velocity,
 	runStraight(accelaration, INIT_DIS + HALF_SECTION, velocity, turn_velo);
 	for (i = 0; i < times; i++) {
 		runStraight(accelaration, SECTION * (y - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
+		turnCorner(turn_90_wide_R_1800);
 		runStraight(accelaration, SECTION * (x - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
+		turnCorner(turn_90_wide_R_1800);
 		runStraight(accelaration, SECTION * (y - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
+		turnCorner(turn_90_wide_R_1800);
 		runStraight(accelaration, SECTION * (x - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
+		turnCorner(turn_90_wide_R_1800);
 	}
 	runStraight(accelaration, SECTION * 2, velocity, 0);
 	waitTime(500);
@@ -45,15 +46,17 @@ void search1(void) {
 	setCurrentCoord(START_X, START_Y);
 	setTargetCoord(GOAL_X, GOAL_Y);
 	setOrient(NORTH);
-	switchSensorLED(ON);
+	countStepQueue();
+
 	waitSensor();
-	driveRGB(RGB_OFF, OFF);
+
+	switchSensorLED(ON);
 	driveMotor(ON);
-	soundStart();
+	waitTime(1000);
+	soundStartSearch();
 	calcGyroZRef();
-	g_flag_control = 1;
-	g_log_count = 0;
-	g_distance = 0;
+	initRun();
+
 	searchAdachi();
 }
 /****************************************
@@ -66,17 +69,17 @@ void search2(void) {
 
 	countStepQueue();
 
-	switchSensorLED(ON);
 	waitSensor();
-	driveRGB(RGB_OFF, OFF);
+
+	switchSensorLED(ON);
 	driveMotor(ON);
-	soundStart();
+	waitTime(1000);
+	soundStartSearch();
 	calcGyroZRef();
-	g_flag_control = 1;
-	g_log_count = 0;
-	g_distance = 0;
+	initRun();
 
 	searchAdachi();
+
 	driveMotor(ON);
 	switchSensorLED(ON);
 	turnCorner(pivot);
@@ -84,60 +87,14 @@ void search2(void) {
 
 	setTargetCoord(START_X, START_Y);
 	countStepQueue();
+
+	switchSensorLED(ON);
+	driveMotor(ON);
+	initRun();
 	searchAdachi();
 
 }
-/****************************************
- 探索 3
- ****************************************/
-void search3(void) {
-	setCurrentCoord(START_X, START_Y);
-	setTargetCoord(GOAL_X, GOAL_Y);
-	setOrient(NORTH);
 
-	countStepQueue();
-
-	switchSensorLED(ON);
-	waitSensor();
-	driveRGB(RGB_OFF, OFF);
-	driveMotor(ON);
-	soundStart();
-	calcGyroZRef();
-	g_flag_control = 1;
-	g_log_count = 0;
-	g_distance = 0;
-
-	searchAdachi();
-	//
-	switchSensorLED(ON);
-	driveRGB(RGB_OFF, OFF);
-	driveMotor(ON);
-	calcGyroZRef();
-	g_flag_control = 1;
-	g_log_count = 0;
-	g_distance = 0;
-
-	checkOrient(180);
-	setTargetCoord(START_X, START_Y + 1);
-
-	countStepQueue();
-	searchAdachi();
-	//
-	switchSensorLED(ON);
-	driveRGB(RGB_OFF, OFF);
-	driveMotor(ON);
-	calcGyroZRef();
-	g_flag_control = 1;
-	g_log_count = 0;
-	g_distance = 0;
-
-	checkOrient(180);
-	setTargetCoord(GOAL_X, GOAL_Y);
-
-	countStepQueue();
-	searchAdachi();
-
-}
 /****************************************
  探索 古川
  ****************************************/
@@ -145,16 +102,16 @@ void runFurukawa(void) {
 	setCurrentCoord(START_X, START_Y);
 	setTargetCoord(GOAL_X, GOAL_Y);
 	setOrient(NORTH);
+	countStepQueue();
+
+	waitSensor();
 
 	switchSensorLED(ON);
-	waitSensor();
-	driveRGB(RGB_OFF, OFF);
 	driveMotor(ON);
-	soundStart();
+	waitTime(1000);
+	soundStartSearch();
 	calcGyroZRef();
-	g_flag_control = 1;
-	g_log_count = 0;
-	g_distance = 0;
+	initRun();
 
 	searchFurukawa();
 
@@ -169,25 +126,16 @@ void runFurukawaAdachi(void) {
 
 	countStepQueue();
 
-	switchSensorLED(ON);
 	waitSensor();
-	driveRGB(RGB_OFF, OFF);
+
+	switchSensorLED(ON);
 	driveMotor(ON);
-	soundStart();
+	waitTime(1000);
+	soundStartSearch();
 	calcGyroZRef();
-	g_flag_control = 1;
-	g_log_count = 0;
-	g_distance = 0;
+	initRun();
 
 	searchFurukawa();
-
-	switchSensorLED(ON);
-	driveRGB(RGB_OFF, OFF);
-	driveMotor(ON);
-	calcGyroZRef();
-	g_flag_control = 1;
-	g_log_count = 0;
-	g_distance = 0;
 
 	turnCorner(pivot);
 	checkOrient(180);
@@ -196,12 +144,8 @@ void runFurukawaAdachi(void) {
 	countStepQueue();
 
 	switchSensorLED(ON);
-	driveRGB(RGB_OFF, OFF);
 	driveMotor(ON);
-	calcGyroZRef();
-	g_flag_control = 1;
-	g_log_count = 0;
-	g_distance = 0;
+	initRun();
 
 	searchAdachi();
 	turnCorner(pivot);
@@ -242,21 +186,26 @@ void selectRun(void) {
 	switch (selectMode(5)) {
 	case 0:
 		setTargetCoord(GOAL_X, GOAL_Y);
-
 		countStepShortest();
 		setCurrentCoord(START_X, START_Y);
-
 		setOrient(NORTH);
 		makePath();
 		makePath2();
 
+		waitSensor();
+
+		waitTime(1000);
+		calcGyroZRef();
+		soundStartRun();
+		driveSuction(70, ON);
+		waitTime(1000);
+		initRun();
+		driveMotor(ON);
 		switchSensorLED(ON);
-		soundStart();
-		setCurrentCoord(START_X, START_Y);
-
 		runPath();
-
 		switchSensorLED(OFF);
+		driveMotor(OFF);
+		driveSuction(100, OFF);
 		break;
 	case 1:
 		setTargetCoord(GOAL_X, GOAL_Y);
@@ -266,15 +215,22 @@ void selectRun(void) {
 
 		setOrient(NORTH);
 		makePath();
-		makePath2();
+		makePath3();
 
+		waitSensor();
+
+		waitTime(1000);
+		calcGyroZRef();
+		soundStartRun();
+		driveSuction(70, ON);
+		waitTime(1000);
+		initRun();
+		driveMotor(ON);
 		switchSensorLED(ON);
-		soundStart();
-		setCurrentCoord(START_X, START_Y);
-
-		runPath();
-
+		runPathDiagonal();
 		switchSensorLED(OFF);
+		driveMotor(OFF);
+		driveSuction(100, OFF);
 		break;
 	case 2:
 		setTargetCoord(GOAL_X, GOAL_Y);
@@ -284,51 +240,28 @@ void selectRun(void) {
 
 		setOrient(NORTH);
 		makePath();
-		makePath2();
-
-		switchSensorLED(ON);
-		soundStart();
-		setCurrentCoord(START_X, START_Y);
-
-		runPath();
-
-		switchSensorLED(OFF);
-		break;
-	case 3:
-		setTargetCoord(GOAL_X, GOAL_Y);
-
-		countStepShortest();
-		setCurrentCoord(START_X, START_Y);
-
-		setOrient(NORTH);
-		makePath();
-		makePath2();
-
-		switchSensorLED(ON);
-		soundStart();
-		setCurrentCoord(START_X, START_Y);
-
-		runPath();
-
-		switchSensorLED(OFF);
-		break;
-	case 4:
-		setTargetCoord(GOAL_X, GOAL_Y);
-
-		countStepShortest();
-		setCurrentCoord(START_X, START_Y);
-
-		setOrient(NORTH);
-		makePath();
 		makePath3();
 
+		waitSensor();
+
+		waitTime(1000);
+		calcGyroZRef();
+		soundStartRun();
+		driveSuction(70, ON);
+		waitTime(1000);
+		initRun();
+		driveMotor(ON);
 		switchSensorLED(ON);
-		soundStart();
-		setCurrentCoord(START_X, START_Y);
-
-		runPathDiagonal();
-
+		runPathDiagonal2();
 		switchSensorLED(OFF);
+		driveMotor(OFF);
+		driveSuction(100, OFF);
+		break;
+	case 3:
+
+		break;
+	case 4:
+
 		break;
 	case 5:
 
@@ -370,7 +303,7 @@ void selectContest(void) {
 			break;
 
 		case 3:
-
+			runCircuit(16, 16, 2, 4.5, 25, 1.8);
 			break;
 		case 4:
 

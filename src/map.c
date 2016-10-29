@@ -45,8 +45,8 @@ void checkOrient(int ori_deg) {
 /****************************************
  方位セット
  ****************************************/
-void setOrient(uint8_t orient){
-	g_orient=orient;
+void setOrient(uint8_t orient) {
+	g_orient = orient;
 }
 
 /****************************************
@@ -69,18 +69,18 @@ void countCoord(void) {
 	g_wall_data_temp[g_current_x][g_current_y] |= 0xf0;
 }
 /****************************************
-現在座標セット
+ 現在座標セット
  ****************************************/
-void setCurrentCoord(uint16_t x,uint16_t y){
-	g_current_x=x;
-	g_current_y=y;
+void setCurrentCoord(uint16_t x, uint16_t y) {
+	g_current_x = x;
+	g_current_y = y;
 }
 /****************************************
-目標座標セット
+ 目標座標セット
  ****************************************/
-void setTargetCoord(uint16_t x,uint16_t y){
-	g_target_x=x;
-	g_target_y=y;
+void setTargetCoord(uint16_t x, uint16_t y) {
+	g_target_x = x;
+	g_target_y = y;
 }
 
 /****************************************
@@ -344,11 +344,11 @@ void countStepQueue(void) {
  ****************************************/
 void searchAdachi(void) {
 	runStraight(5, HALF_SECTION, 0.5, 0.5);
-	driveRGB(YELLOW, ON);
+
 	countCoord();
 	checkWall();
 	countStepQueue();
-	driveRGB(WHITE, ON);
+
 	while (1) {
 		//////////////////////////////////////////////////////////////////////////
 		g_flag_adachi_goal = 0;
@@ -1342,19 +1342,20 @@ void makePath2(void) {
 void makePath3(void) {
 	int i, j = 0;
 	int s_count = 0;
-	int slant_count = 0;
-	char slant_flag = 0;
+	int diagonal_count = 0;
+	char diagonal_flag = 0;
 
 	for (i = 0; i <= g_flag_step_goal; i++) {
 		if (g_path[i] == STRAIGHT) {
 			s_count++;
 		} else if (g_path[i] == L_CURVE) {
-			if (i == 1) {
-				g_path_3[j] = s_count;
-				j++;
-				g_path_3[j] = S_L_CURVE;
-				s_count = 0;
-			} else if (g_path[i - 1] == STRAIGHT && g_path[i + 1] == STRAIGHT) {
+			/*if (i == 1) {
+			 g_path_3[j] = s_count;
+			 j++;
+			 g_path_3[j] = S_L_CURVE;
+			 s_count = 0;
+			 } else */
+			if (g_path[i - 1] == STRAIGHT && g_path[i + 1] == STRAIGHT) {
 				//大回り
 				if (s_count - 1 > 0) {
 					g_path_3[j] = s_count - 1;
@@ -1382,24 +1383,24 @@ void makePath3(void) {
 					s_count = 0;
 				}
 				g_path_3[j] = L_45_I;
-				slant_flag = 1;
-			} else if (g_path[i + 1] == STRAIGHT && slant_flag == 1) {
+				diagonal_flag = 1;
+			} else if (g_path[i + 1] == STRAIGHT && diagonal_flag == 1) {
 				//出45度ターン
-				if (slant_count > 0) {
-					g_path_3[j] = DIAGONAL + slant_count;
+				if (diagonal_count > 0) {
+					g_path_3[j] = DIAGONAL + diagonal_count;
 					j++;
-					slant_count = 0;
+					diagonal_count = 0;
 				}
 				g_path_3[j] = L_45_O;
 				s_count = -1;
-				slant_flag = 0;
+				diagonal_flag = 0;
 			} else if (g_path[i + 1] == L_CURVE && g_path[i + 2] == R_CURVE
-					&& slant_flag == 1) {
+					&& diagonal_flag == 1) {
 				//斜め90度ターン
-				if (slant_count > 0) {
-					g_path_3[j] = DIAGONAL + slant_count;
+				if (diagonal_count > 0) {
+					g_path_3[j] = DIAGONAL + diagonal_count;
 					j++;
-					slant_count = 0;
+					diagonal_count = 0;
 				}
 				g_path_3[j] = L_V90;
 				i += 1;
@@ -1412,23 +1413,23 @@ void makePath3(void) {
 				}
 				g_path_3[j] = L_135_I;
 				i += 1;
-				slant_flag = 1;
+				diagonal_flag = 1;
 			} else if (g_path[i + 1] == L_CURVE && g_path[i + 2] == STRAIGHT
-					&& slant_flag == 1) {
+					&& diagonal_flag == 1) {
 				//出135度ターン
-				if (slant_count > 0) {
-					g_path_3[j] = DIAGONAL + slant_count;
+				if (diagonal_count > 0) {
+					g_path_3[j] = DIAGONAL + diagonal_count;
 					j++;
-					slant_count = 0;
+					diagonal_count = 0;
 				}
 				s_count = -1;
 				g_path_3[j] = L_135_O;
 				i += 1;
-				slant_flag = 0;
+				diagonal_flag = 0;
 			} else if (g_path[i - 1] == R_CURVE && g_path[i + 1] == R_CURVE
-					&& slant_flag == 1) {
+					&& diagonal_flag == 1) {
 				//斜め直線
-				slant_count += 1;
+				diagonal_count += 1;
 				j--;
 			} else {
 				if (s_count > 0) {
@@ -1440,12 +1441,13 @@ void makePath3(void) {
 			}
 			j++;
 		} else if (g_path[i] == R_CURVE) {
-			if (i == 1) {
-				g_path_3[j] = s_count;
-				j++;
-				g_path_3[j] = S_R_CURVE;
-				s_count = 0;
-			} else if (g_path[i - 1] == STRAIGHT && g_path[i + 1] == STRAIGHT) {
+			/*if (i == 1) {
+			 g_path_3[j] = s_count;
+			 j++;
+			 g_path_3[j] = S_R_CURVE;
+			 s_count = 0;
+			 } else*/
+			if (g_path[i - 1] == STRAIGHT && g_path[i + 1] == STRAIGHT) {
 				//大回り
 				if (s_count - 1 > 0) {
 					g_path_3[j] = s_count - 1;
@@ -1474,24 +1476,24 @@ void makePath3(void) {
 					s_count = 0;
 				}
 				g_path_3[j] = R_45_I;
-				slant_flag = 1;
-			} else if (g_path[i + 1] == STRAIGHT && slant_flag == 1) {
+				diagonal_flag = 1;
+			} else if (g_path[i + 1] == STRAIGHT && diagonal_flag == 1) {
 				//出45度ターン
-				if (slant_count > 0) {
-					g_path_3[j] = DIAGONAL + slant_count;
+				if (diagonal_count > 0) {
+					g_path_3[j] = DIAGONAL + diagonal_count;
 					j++;
-					slant_count = 0;
+					diagonal_count = 0;
 				}
 				g_path_3[j] = R_45_O;
 				s_count = -1;
-				slant_flag = 0;
+				diagonal_flag = 0;
 			} else if (g_path[i + 1] == R_CURVE && g_path[i + 2] == L_CURVE
-					&& slant_flag == 1) {
+					&& diagonal_flag == 1) {
 				//斜め90度ターン
-				if (slant_count > 0) {
-					g_path_3[j] = DIAGONAL + slant_count;
+				if (diagonal_count > 0) {
+					g_path_3[j] = DIAGONAL + diagonal_count;
 					j++;
-					slant_count = 0;
+					diagonal_count = 0;
 				}
 				g_path_3[j] = R_V90;
 				i += 1;
@@ -1504,23 +1506,23 @@ void makePath3(void) {
 				}
 				g_path_3[j] = R_135_I;
 				i += 1;
-				slant_flag = 1;
+				diagonal_flag = 1;
 			} else if (g_path[i + 1] == R_CURVE && g_path[i + 2] == STRAIGHT
-					&& slant_flag == 1) {
+					&& diagonal_flag == 1) {
 				//出135度ターン
-				if (slant_count > 0) {
-					g_path_3[j] = DIAGONAL + slant_count;
+				if (diagonal_count > 0) {
+					g_path_3[j] = DIAGONAL + diagonal_count;
 					j++;
-					slant_count = 0;
+					diagonal_count = 0;
 				}
 				s_count = -1;
 				g_path_3[j] = R_135_O;
 				i += 1;
-				slant_flag = 0;
+				diagonal_flag = 0;
 			} else if (g_path[i - 1] == L_CURVE && g_path[i + 1] == L_CURVE
-					&& slant_flag == 1) {
+					&& diagonal_flag == 1) {
 				//斜め直線
-				slant_count += 1;
+				diagonal_count += 1;
 				j--;
 			} else {
 				if (s_count > 0) {
@@ -1707,7 +1709,7 @@ void runPath(void) {
 			g_flag_path_run_goal = 1;
 			break;
 		}
-		if (g_sensor_FL + g_sensor_FR >= SEN_DEATH)
+		if ((g_sensor_FL + g_sensor_FR >= SEN_DEATH) || (g_flag_failsafe == 1))
 			break;
 		if (g_path_2[i] > 0 && g_path_2[i] <= 30) {
 			runStraight(10, HALF_SECTION * g_path_2[i] + addInitDis(i), 4,
@@ -1745,6 +1747,7 @@ void runPath(void) {
 void runPathDiagonal(void) {
 	int i = 0;
 	g_flag_gap = 0;
+	g_flag_failsafe = 0;
 	g_flag_diagonal = 0;
 	while (1) {
 		g_flag_path_run_goal = 0;
@@ -1752,11 +1755,10 @@ void runPathDiagonal(void) {
 			g_flag_path_run_goal = 1;
 			break;
 		}
-		if (g_sensor_FL + g_sensor_FR >= SEN_DEATH)
+		if ((g_sensor_FL + g_sensor_FR >= SEN_DEATH) || (g_flag_failsafe == 1))
 			break;
 		if (g_path_3[i] > 0 && g_path_3[i] <= 30) {
-
-			runStraight(15, HALF_SECTION * g_path_3[i] + addInitDis(i), 4,
+			runStraight(25, HALF_SECTION * g_path_3[i] + addInitDis(i), 4,
 					connectSpeed1000(i));
 		} else if (g_path_3[i] == S_L_CURVE) {
 			turnCorner(turn_90_L);
@@ -1791,17 +1793,18 @@ void runPathDiagonal(void) {
 		} else if (g_path_3[i] == R_V90) {
 			turnCorner(turn_v90_R_1000);
 		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
-			runStraight(15, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), 3,
+			runStraight(25, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), 3,
 					connectSpeed1000(i));
 		} else {
-			driveRGB(RED,ON);
+			//	driveRGB(RED, ON);
 		}
 		i++;
+		//	driveRGB(YELLOW, ON);
 		g_current_x = 1;
 	}
 	driveMotor(OFF);
 	switchSensorLED(OFF);
-	driveSuction(70,OFF);
+	driveSuction(70, OFF);
 	if (g_flag_path_run_goal == 1) {
 		soundGoal();
 	} else {
@@ -1809,119 +1812,72 @@ void runPathDiagonal(void) {
 	}
 }
 
-/****************************************
- path走行test
- ****************************************/
-void runPathTest(void) {
+/*-----------------------------------------------------------*/
+void runPathDiagonal2(void) {
 	int i = 0;
 	g_flag_gap = 0;
+	g_flag_failsafe = 0;
 	g_flag_diagonal = 0;
 	while (1) {
 		g_flag_path_run_goal = 0;
-		if (g_path_test[i] == 0) {
+		if (i > g_flag_step_goal_3) {
 			g_flag_path_run_goal = 1;
 			break;
 		}
-		if (g_sensor_FL + g_sensor_FR >= SEN_DEATH)
+		if ((g_sensor_FL + g_sensor_FR >= SEN_DEATH) || (g_flag_failsafe == 1))
 			break;
-		if (g_path_test[i] > 0 && g_path_test[i] <= 30) {
-			runStraight(5, HALF_SECTION * g_path[i], 2, connectSpeedEndTest(i));
-
-		} else if (g_path_test[i] == S_L_CURVE) {
+		if (g_path_3[i] > 0 && g_path_3[i] <= 30) {
+			runStraight(25, HALF_SECTION * g_path_3[i] + addInitDis(i), 4,
+					connectSpeed1200(i));
+		} else if (g_path_3[i] == S_L_CURVE) {
 			turnCorner(turn_90_L);
-		} else if (g_path_test[i] == S_BIG_L_CURVE) {
-			turnCorner(turn_90_wide_L_1000);
-		} else if (g_path_test[i] == S_U_L_CURVE) {
-			turnCorner(turn_180_L_1000);
-		} else if (g_path_test[i] == S_R_CURVE) {
+		} else if (g_path_3[i] == S_BIG_L_CURVE) {
+			turnCorner(turn_90_wide_L_1200);
+		} else if (g_path_3[i] == S_U_L_CURVE) {
+			turnCorner(turn_180_L_1200);
+		} else if (g_path_3[i] == S_R_CURVE) {
 			turnCorner(turn_90_R);
-		} else if (g_path_test[i] == S_BIG_R_CURVE) {
-			turnCorner(turn_90_wide_R_1000);
-		} else if (g_path_test[i] == S_U_R_CURVE) {
-			turnCorner(turn_180_R_1000);
+		} else if (g_path_3[i] == S_BIG_R_CURVE) {
+			turnCorner(turn_90_wide_R_1200);
+		} else if (g_path_3[i] == S_U_R_CURVE) {
+			turnCorner(turn_180_R_1200);
+		} else if (g_path_3[i] == L_45_I) {
+			turnCorner(turn_45_in_L_1200);
+		} else if (g_path_3[i] == R_45_I) {
+			turnCorner(turn_45_in_R_1200);
+		} else if (g_path_3[i] == L_45_O) {
+			turnCorner(turn_45_out_L_1200);
+		} else if (g_path_3[i] == R_45_O) {
+			turnCorner(turn_45_out_R_1200);
+		} else if (g_path_3[i] == L_135_I) {
+			turnCorner(turn_135_in_L_1200);
+		} else if (g_path_3[i] == R_135_I) {
+			turnCorner(turn_135_in_R_1200);
+		} else if (g_path_3[i] == L_135_O) {
+			turnCorner(turn_135_out_L_1200);
+		} else if (g_path_3[i] == R_135_O) {
+			turnCorner(turn_135_out_R_1200);
+		} else if (g_path_3[i] == L_V90) {
+			turnCorner(turn_v90_L_1200);
+		} else if (g_path_3[i] == R_V90) {
+			turnCorner(turn_v90_R_1200);
+		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
+			runStraight(25, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), 3,
+					connectSpeed1000(i));
 		} else {
-			//full_color(0, 255, 0);
+			//		driveRGB(RED, ON);
 		}
 		i++;
+		//	driveRGB(YELLOW, ON);
 		g_current_x = 1;
 	}
 	driveMotor(OFF);
 	switchSensorLED(OFF);
+	driveSuction(70, OFF);
 	if (g_flag_path_run_goal == 1) {
-		//goal_ctrl();
+		soundGoal();
 	} else {
-		//error_ctrl();
-	}
-}
-/****************************************
- path走行test斜め
- ****************************************/
-void runPathTestDiagonal(void) {
-	int i = 0;
-
-	g_flag_gap = 0;
-	g_flag_diagonal = 0;
-
-	while (1) {
-		g_flag_path_run_goal = 0;
-		if (g_path_test_slant[i] == 0) {
-			g_flag_path_run_goal = 1;
-			break;
-		}
-		if (g_sensor_FL + g_sensor_FR >= SEN_DEATH)
-			break;
-		if (g_path_test_slant[i] > 0 && g_path_test_slant[i] <= 30) {
-			runStraight(5, HALF_SECTION * g_path_test_slant[i], 2,
-					connectSpeedEndTestDiagonal(i));
-		} else if (g_path_test_slant[i] == S_L_CURVE) {
-			turnCorner(turn_90_L);
-		} else if (g_path_test_slant[i] == S_BIG_L_CURVE) {
-			turnCorner(turn_90_wide_L_1000);
-		} else if (g_path_test_slant[i] == S_U_L_CURVE) {
-			turnCorner(turn_180_L_1000);
-		} else if (g_path_test_slant[i] == S_R_CURVE) {
-			turnCorner(turn_90_R);
-		} else if (g_path_test_slant[i] == S_BIG_R_CURVE) {
-			turnCorner(turn_90_wide_R_1000);
-		} else if (g_path_test_slant[i] == S_U_R_CURVE) {
-			turnCorner(turn_180_L_1000);
-		} else if (g_path_test_slant[i] == L_45_I) {
-			turnCorner(turn_45_in_L_1000);
-		} else if (g_path_test_slant[i] == R_45_I) {
-			turnCorner(turn_45_in_R_1000);
-		} else if (g_path_test_slant[i] == L_45_O) {
-			turnCorner(turn_45_out_L_1000);
-		} else if (g_path_test_slant[i] == R_45_O) {
-			turnCorner(turn_45_out_R_1000);
-		} else if (g_path_test_slant[i] == L_135_I) {
-			turnCorner(turn_135_in_L_1000);
-		} else if (g_path_test_slant[i] == R_135_I) {
-			turnCorner(turn_135_in_R_1000);
-		} else if (g_path_test_slant[i] == L_135_O) {
-			turnCorner(turn_135_out_L_1000);
-		} else if (g_path_test_slant[i] == R_135_O) {
-			turnCorner(turn_135_out_L_1000);
-		} else if (g_path_test_slant[i] == L_V90) {
-			turnCorner(turn_v90_L_1000);
-		} else if (g_path_test_slant[i] == R_V90) {
-			turnCorner(turn_v90_R_1000);
-		} else if (g_path_test_slant[i] > 47 && g_path_test_slant[i] <= 113) {
-			runStraight(5,
-					sqrtf(2) * HALF_SECTION * (g_path_test_slant[i] - 47), 2,
-					connectSpeedEndTestDiagonal(i));
-		} else {
-			//	full_color(255, 0, 0);
-			break;
-		}
-		i++;
-		g_current_x = 1;
-	}
-	driveMotor(OFF);
-	switchSensorLED(OFF);
-	if (g_flag_path_run_goal == 1) {
-		//	goal_ctrl();
-	} else {
-		//	error_ctrl();
+		soundError();
 	}
 }
 
@@ -1967,46 +1923,28 @@ float connectSpeed1000(int esc) {
 	}
 }
 
-float connectSpeedEndTest(int esc) {
-	if ((g_path_2[esc] & 0x80) == 0x80) {
+float connectSpeed1200(int esc) {
+	if (esc == g_flag_step_goal_3) {
 		return 0;
-	} else if (g_path_2[esc + 1] == S_L_CURVE || g_path_2[esc + 1] == S_R_CURVE) {
+	} else if (g_path_3[esc + 1] == S_L_CURVE || g_path_3[esc + 1] == S_L_CURVE) {
 		return turn_90_L.velocity;
-	} else if (g_path_2[esc + 1] == S_BIG_L_CURVE
-			|| g_path_2[esc + 1] == S_BIG_R_CURVE) {
-		return turn_90_wide_L_1000.velocity;
-	} else if (g_path_2[esc + 1] == S_U_L_CURVE
-			|| g_path_2[esc + 1] == S_U_R_CURVE) {
-		return turn_180_L_1000.velocity;
+	} else if (g_path_3[esc + 1] == S_BIG_L_CURVE
+			|| g_path_3[esc + 1] == S_BIG_R_CURVE) {
+		return turn_90_wide_L_1200.velocity;
+	} else if (g_path_3[esc + 1] == S_U_L_CURVE
+			|| g_path_3[esc + 1] == S_U_R_CURVE) {
+		return turn_180_L_1200.velocity;
+	} else if (g_path_3[esc + 1] == L_45_I || g_path_3[esc + 1] == R_45_I) {
+		return turn_45_in_L_1200.velocity;
+	} else if (g_path_3[esc + 1] == L_135_I || g_path_3[esc + 1] == R_135_I) {
+		return turn_135_in_L_1200.velocity;
+	} else if (g_path_3[esc + 1] == L_V90 || g_path_3[esc + 1] == R_V90) {
+		return turn_v90_L_1200.velocity;
 	} else {
 		return 1;
 	}
 }
 
-float connectSpeedEndTestDiagonal(int esc) {
-
-	if (g_path_test_slant[esc + 1] == S_L_CURVE
-			|| g_path_test_slant[esc + 1] == S_L_CURVE) {
-		return turn_90_L.velocity;
-	} else if (g_path_test_slant[esc + 1] == S_BIG_L_CURVE
-			|| g_path_test_slant[esc + 1] == S_BIG_R_CURVE) {
-		return turn_90_wide_L_1000.velocity;
-	} else if (g_path_test_slant[esc + 1] == S_U_L_CURVE
-			|| g_path_test_slant[esc + 1] == S_U_R_CURVE) {
-		return turn_180_L_1000.velocity;
-	} else if (g_path_test_slant[esc + 1] == L_45_I
-			|| g_path_test_slant[esc + 1] == R_45_I) {
-		return turn_45_in_L_1000.velocity;
-	} else if (g_path_test_slant[esc + 1] == L_135_I
-			|| g_path_test_slant[esc + 1] == R_135_I) {
-		return turn_135_in_L_1000.velocity;
-	} else if (g_path_test_slant[esc + 1] == L_V90
-			|| g_path_test_slant[esc + 1] == R_V90) {
-		return turn_v90_L_1000.velocity;
-	} else {
-		return 700;
-	}
-}
 /****************************************
  path走行　初期距離追加
  ****************************************/

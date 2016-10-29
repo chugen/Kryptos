@@ -24,6 +24,7 @@
 #include "parameter.h"
 #include "map.h"
 #include "contest.h"
+#include "adjustment.h"
 
 void main(void) {
 	init();
@@ -32,66 +33,19 @@ void main(void) {
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
-		waitSensor();
-
-		driveRGB(CYAN, ON);
-		switchSensorLED(ON);
-		driveMotor(ON);
-		soundStart();
-		calcGyroZRef();
-		g_flag_control = 1;
-		g_log_count = 0;
-		g_distance = 0;
-
-		searchAdachi();
-		switchSensorLED(OFF);
-		driveMotor(OFF);
-		g_current_x = START_X;
-		g_current_y = START_Y;
-		g_orient = 0x01;
-		countStepShortest();
-		makePath();
-		makePath2();
-		makePath3();
-
-		driveRGB(BLUE, ON);
-		waitButton();
-
-		waitSensor();
-		switchSensorLED(ON);
-		soundNotification();
-		driveRGB(GREEN, ON);
-		waitTime(1000);
-		calcGyroZRef();
-		soundStart();
-		driveSuction(70, OFF);
-		waitTime(1000);
-		g_flag_control = 1;
-		g_log_count = 0;
-		g_distance = 0;
-		g_target_velo = 0;
-		driveMotor(ON);
-		runPathDiagonal();
-		switchSensorLED(ON);
-		driveMotor(OFF);
-		driveSuction(100, OFF);
-
-		waitButton();
-		 printLog();
+		selectContest();
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-		waitButton();
-
+		selectAdjustment();
+		break;
+	case 2: //////////////////////////////////////////////////////////////////////////////////////
+		driveRGB(BLUE, ON);
 		waitSensor();
 
-		soundNotification();
 		driveRGB(GREEN, ON);
 		waitTime(1000);
-		g_flag_control = 1;
-		g_log_count = 0;
-		g_distance = 0;
-		g_target_velo = 0;
+		initRun();
 		driveMotor(ON);
 		runStraight(5, HALF_SECTION, 0.5, 0.5);
 		while (1) {
@@ -99,21 +53,15 @@ void main(void) {
 			runStraight(5, SECTION, 0.5, 0.5);
 			turnCorner(turn_90_L);
 		}
+
 		break;
-	case 2: //////////////////////////////////////////////////////////////////////////////////////
-		driveRGB(BLUE, ON);
-
-		waitButton();
-
+	case 3: //////////////////////////////////////////////////////////////////////////////////////
+		driveRGB(YELLOW, ON);
 		waitSensor();
 
-		soundNotification();
 		driveRGB(GREEN, ON);
 		waitTime(1000);
-		g_flag_control = 1;
-		g_log_count = 0;
-		g_distance = 0;
-		g_target_velo = 0;
+		initRun();
 		driveMotor(ON);
 		runStraight(5, HALF_SECTION, 0.5, 0.5);
 		while (1) {
@@ -121,92 +69,81 @@ void main(void) {
 			runStraight(5, SECTION, 0.5, 0.5);
 			turnCorner(turn_90_R);
 		}
-
-		break;
-	case 3: //////////////////////////////////////////////////////////////////////////////////////
-		driveRGB(YELLOW, ON);
-
-		waitButton();
-
-		waitSensor();
-
-		soundNotification();
-		driveRGB(GREEN, ON);
-		waitTime(1000);
-		g_flag_control = 1;
-		g_log_count = 0;
-		g_distance = 0;
-		g_target_velo = 0;
-		driveMotor(ON);
-
-		runStraight(5, SECTION, 0.5, 0.5);
-		turnCorner(turn_90_L);
-		runStraight(5, SECTION, 0.5, 0);
-
 		break;
 	case 4: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(CYAN, ON);
-
-		waitButton();
-
 		waitSensor();
 
-		soundNotification();
 		driveRGB(GREEN, ON);
 		waitTime(1000);
-		g_flag_control = 1;
-		g_log_count = 0;
-		g_distance = 0;
-		g_target_velo = 0;
+		calcGyroZRef();
+		driveSuction(70, ON);
+		waitTime(1000);
+		initRun();
 		driveMotor(ON);
+		switchSensorLED(ON);
+		runStraight(25, SECTION * 2, 1.8, 1.8);
 
-		runStraight(5, SECTION, 0.5, 0.5);
-		turnCorner(turn_90_R);
-		runStraight(5, SECTION, 0.5, 0);
+		turnCorner(turn_90_wide_R_1800);
+		switchSensorLED(OFF);
+		runStraight(25, SECTION * 2, 1.8, 0);
+		driveMotor(OFF);
+		driveSuction(70, OFF);
+		waitButton();
+		printLog();
 		break;
 	case 5: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-		waitButton();
 
 		waitSensor();
-		//switchSensorLED(OFF);
-		soundNotification();
+
 		driveRGB(GREEN, ON);
 		waitTime(1000);
-		g_flag_control = 1;
-		g_log_count = 0;
-		g_distance = 0;
-		g_target_velo = 0;
+		initRun();
 		driveMotor(ON);
 		runStraight(5, SECTION, 0.5, 0.5);
+		switchSensorLED(ON);
 		runBlindAlley(0.5);
 		runStraight(5, SECTION, 0.5, 0);
 		break;
 	case 6: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WHITE, ON);
 
-		waitButton();
-
 		waitSensor();
-
-		soundNotification();
+		waitTime(100);
+		calcGyroZRef();
 		driveRGB(GREEN, ON);
 		waitTime(1000);
-		g_flag_control = 1;
-		g_log_count = 0;
-		g_distance = 0;
-		g_target_velo = 0;
+		initRun();
 		driveMotor(ON);
 
 		while (1) {
-			turnCorner(pivot);
+			turnCorner(pivot_90_L);
 			waitTime(200);
 		}
 
 		break;
 	case 7: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
+		waitSensor();
+		switchSensorLED(ON);
 
+		driveRGB(GREEN, ON);
+		waitTime(1000);
+		calcGyroZRef();
+		soundStartRun();
+		driveSuction(70, OFF);
+		waitTime(1000);
+		initRun();
+		driveMotor(ON);
+		runStraight(5, SECTION * 4, 0.5, 0);
+		switchSensorLED(ON);
+		driveMotor(OFF);
+		driveSuction(70, OFF);
+		driveSuction(100, OFF);
+
+		waitButton();
+		printLog();
 		break;
 	case 8: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WATER, ON);
@@ -221,15 +158,16 @@ void main(void) {
 	case 9: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LBLUE, ON);
 		driveSuction(100, ON);
+
 		break;
 	case 10: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LRED, ON);
 		waitSensor();
-		soundNotification();
+
 		calcGyroZRef();
 		switchSensorLED(ON);
 		g_flag_control = 1;
-		g_flag_blindalley=1;
+		g_flag_blindalley_dis = 1;
 		driveMotor(ON);
 		while (1) {
 
@@ -286,5 +224,52 @@ void main(void) {
  myprintf("%f %f\n", g_current_angularvelo, g_angle);
 
  }
+
+
+
+ waitSensor();
+ driveRGB(CYAN, ON);
+ switchSensorLED(ON);
+ driveMotor(ON);
+ waitTime(1000);
+ soundStartSearch();
+ calcGyroZRef();
+ initRun();
+
+ searchAdachi();
+ switchSensorLED(OFF);
+ driveMotor(OFF);
+ setCurrentCoord(START_X, START_Y);
+
+ g_orient = 0x01;
+ countStepShortest();
+ makePath();
+ makePath2();
+ makePath3();
+
+ //for (i = 0; i < 2; i++) {
+ while(1){
+ driveRGB(BLUE, ON);
+ waitButton();
+ waitSensor();
+ switchSensorLED(ON);
+
+ driveRGB(GREEN, ON);
+ waitTime(1000);
+ calcGyroZRef();
+ soundStartRun();
+ driveSuction(70, ON);
+ waitTime(1000);
+ initRun();
+ driveMotor(ON);
+ runPathDiagonal2();
+ switchSensorLED(ON);
+ driveMotor(OFF);
+ driveSuction(100, OFF);
+ }
+ waitButton();
+ printLog();
+
+
 
  */

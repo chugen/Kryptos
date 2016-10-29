@@ -90,7 +90,7 @@ void initLowPowerConsumption(void) {
 	MSTP(MTU) = 0;		// MTU:モジュールストップ状態解除
 	MSTP(TPU0) = 0;		// TPUユニット0:モジュールストップ状態解除
 	MSTP(CMT0) = 0;		// CMTユニット0:モジュールストップ状態解除
-	MSTP(CMT1) = 0;		// CMTユニット0:モジュールストップ状態解除
+	//MSTP(CMT1) = 0;		// CMTユニット0:モジュールストップ状態解除
 	MSTP(S12AD) = 0;	// S12AD(12bitADC):モジュールストップ状態解除
 	MSTP(RSPI0) = 0;	// RSPI0:モジュールストップ状態解除
 	MSTP(SCI1) = 0;		// SCI1:モジュールストップ解除
@@ -118,13 +118,11 @@ void initCMT(void) {
 	CMT1.CMCR.BIT.CMIE = 0x01;	//コンペアマッチ割り込み許可
 	CMT1.CMCOR = 6250 - 1;		//割り込み周期設定 1ms
 
-	//IR(CMT1, CMI1)= 0x00;
 	IPR( CMT1, CMI1 )= 0x0E;	//割り込み優先度設定:14
 	IEN( CMT1, CMI1 )= 0x01;	//割り込み許可
 
 	CMT.CMSTR0.BIT.STR0 = 0x01;
 	CMT.CMSTR0.BIT.STR1 = 0x01;
-	CMT.CMSTR1.BIT.STR2 = 0x0;
 
 }
 
@@ -176,7 +174,7 @@ void initMTU(void) {
 //
 //	IPR( MTU4, TGIA4 )= 0x08;//割り込み優先度設定:8
 //	IEN( MTU4, TGIA4 )= 0x01;
-	MTU.TSTR.BYTE=0x00;		//全MTUストップ
+	MTU.TSTR.BYTE = 0x00;		//全MTUストップ
 	MTU.TSTR.BIT.CST1 = 1;	//位相係数スタート
 
 }
@@ -237,7 +235,7 @@ void initTPU(void) {
 	TPU4.TMDR.BIT.MD = 0x07;	//位相係数モード4
 	TPU5.TMDR.BIT.MD = 0x03;	//PWMモード2
 
-	TPUA.TSTR.BYTE=0x00;	//全TPUストップ
+	TPUA.TSTR.BYTE = 0x00;	//全TPUストップ
 	TPUA.TSTR.BIT.CST4 = 1;	//位相係数スタート
 
 }
@@ -340,7 +338,7 @@ void initSPI(void) {
 
 }
 
-void initFlash(void){
+void initFlash(void) {
 
 //
 //	//DMACの準備

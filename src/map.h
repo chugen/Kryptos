@@ -114,21 +114,15 @@ void runPath(void) ;
  斜めpath走行1
  ****************************************/
 void runPathDiagonal(void);
-/****************************************
- path走行test
- ****************************************/
-void runPathTest(void);
-/****************************************
- path走行test斜め
- ****************************************/
-void runPathTestDiagonal(void) ;
+void runPathDiagonal2(void);
+
 /****************************************
  スピードコネクト
  ****************************************/
 float connectSpeedEnd(int esc);
 float connectSpeed1000(int esc);
-float connectSpeedEndTest(int esc);
-float connectSpeedEndTestDiagonal(int esc);
+float connectSpeed1200(int esc);
+
 /****************************************
  path走行　初期距離追加
  ****************************************/
