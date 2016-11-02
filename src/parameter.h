@@ -41,13 +41,13 @@
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 525//500
-#define SEN_REFERENCE_R 535//520
-#define SEN_REFERENCE_FL 1030
-#define SEN_REFERENCE_FR 410
+#define SEN_REFERENCE_L 400//430//470//525//500
+#define SEN_REFERENCE_R 550//520//520
+#define SEN_REFERENCE_FL 1030//1030
+#define SEN_REFERENCE_FR 395//400//410
 //変化量
-#define SEN_DERIVATIVE_L 13
-#define SEN_DERIVATIVE_R 13
+#define SEN_DERIVATIVE_L 5//13
+#define SEN_DERIVATIVE_R 5//13
 //制御閾値
 #define SEN_THRESHOLD_L 400
 #define SEN_THRESHOLD_R 410
@@ -66,9 +66,15 @@
 //角速度P制御
 #define ANG_VELO_P 160
 //角速度I制御
-#define ANG_VELO_I 1
+#define ANG_VELO_I 7//10//1
+//角度P制御
+#define ANG_P 0 //1000
+//角度I制御
+#define ANG_I 0 //100
+
 //壁制御
-#define WALL_P 0.02
+#define WALL_P 0.05
+#define WALL_HIGH_SPEED 0.05
 #define WALL_FRONT_P 0.1
 
 

@@ -1712,7 +1712,7 @@ void runPath(void) {
 		if ((g_sensor_FL + g_sensor_FR >= SEN_DEATH) || (g_flag_failsafe == 1))
 			break;
 		if (g_path_2[i] > 0 && g_path_2[i] <= 30) {
-			runStraight(10, HALF_SECTION * g_path_2[i] + addInitDis(i), 4,
+			runStraight(20, HALF_SECTION * g_path_2[i] + addInitDis(i), 4,
 					connectSpeedEnd(i));
 		} else if (g_path_2[i] == S_L_CURVE) {
 			turnCorner(turn_90_L);
@@ -1732,6 +1732,7 @@ void runPath(void) {
 		i++;
 		g_current_x = 1;
 	}
+	driveSuction(70,OFF);
 	driveMotor(OFF);
 	switchSensorLED(OFF);
 	if (g_flag_path_run_goal == 1) {
@@ -1802,9 +1803,10 @@ void runPathDiagonal(void) {
 		//	driveRGB(YELLOW, ON);
 		g_current_x = 1;
 	}
+	driveSuction(70, OFF);
 	driveMotor(OFF);
 	switchSensorLED(OFF);
-	driveSuction(70, OFF);
+
 	if (g_flag_path_run_goal == 1) {
 		soundGoal();
 	} else {

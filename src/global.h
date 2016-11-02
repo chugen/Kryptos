@@ -21,7 +21,7 @@ extern volatile float g_target_velo;
 //現在速度
 extern volatile float g_current_velo;
 //現在偏差
-extern volatile float g_current_velo_error;
+extern volatile float g_velo_error;
 //偏差積分
 extern volatile float g_velo_error_integral;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -32,7 +32,7 @@ extern volatile float g_target_angularvelo;
 extern volatile float g_current_angularvelo;
 
 //現在偏差
-extern volatile float g_current_angularvelo_error;
+extern volatile float g_angularvelo_error;
 
 //偏差積分
 extern volatile float g_angularvelo_error_integral;
@@ -40,12 +40,21 @@ extern volatile float g_angularvelo_error_integral;
 //Gyro　リファレンス
 extern volatile float g_gyro_reference;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//目標角度
+extern volatile float g_target_angle;
+//現在角度
+extern volatile float g_current_angle;
+//現在偏差
+extern volatile float g_angle_error;
+//偏差積分
+extern volatile float g_angle_error_integral;
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //距離
 extern volatile float g_distance;
 //加速度
 extern volatile float g_accele;
-//角度
-extern volatile float g_angle;
+
 //各加速度
 extern volatile float g_angularaccele;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -80,6 +89,7 @@ extern volatile uint8_t g_flag_gap;
 extern volatile uint8_t g_flag_adachi_goal;
 extern volatile uint8_t g_flag_path_run_goal;
 extern volatile uint8_t g_flag_diagonal;
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //フラグ
 extern volatile int8_t g_flag_mode_setting;
@@ -88,12 +98,17 @@ extern volatile int8_t g_flag_control;
 extern volatile int8_t g_flag_failsafe;
 extern volatile int8_t g_flag_blindalley_ang;
 extern volatile int8_t g_flag_blindalley_dis;
+extern volatile int8_t g_flag_circuit;
 //テスト用
 
+extern volatile float g_duty_L;
+extern volatile float g_duty_R;
 extern volatile int16_t g_wait_count;
 extern volatile int16_t g_log_count;
 extern volatile float g_log_array[];
 extern volatile float g_log_array2[];
+extern volatile int16_t g_log_array_int[];
+extern volatile int16_t g_log_array2_int[];
 extern volatile int8_t g_flag_control;
 extern volatile uint16_t g_path_test[];
 extern volatile uint16_t g_path_test_slant[];

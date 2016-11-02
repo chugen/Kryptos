@@ -21,7 +21,7 @@ volatile float g_target_velo = 0;
 //現在速度
 volatile float g_current_velo;
 //現在偏差
-volatile float g_current_velo_error;
+volatile float g_velo_error;
 //偏差積分
 volatile float g_velo_error_integral;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -29,19 +29,29 @@ volatile float g_velo_error_integral;
 volatile float g_target_angularvelo = 0;
 //現在角速度
 volatile float g_current_angularvelo;
+
 //現在偏差
-volatile float g_current_angularvelo_error;
+volatile float g_angularvelo_error;
 //偏差積分
 volatile float g_angularvelo_error_integral;
 //Gyro　リファレンス
 volatile float g_gyro_reference;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//目標角度
+volatile float g_target_angle;
+//現在角度
+volatile float g_current_angle;
+//現在偏差
+volatile float g_angle_error;
+//偏差積分
+volatile float g_angle_error_integral;
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //距離
 volatile float g_distance;
 //加速度
 volatile float g_accele;
-//角度
-volatile float g_angle;
+
 //角加速度
 volatile float g_angularaccele;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -68,7 +78,6 @@ volatile uint16_t g_path[1024];
 volatile uint16_t g_path_2[1024];
 volatile uint16_t g_path_3[256];
 
-
 volatile uint8_t g_flag_step_goal;
 volatile uint8_t g_flag_step_goal_2;
 volatile uint8_t g_flag_step_goal_3;
@@ -76,22 +85,28 @@ volatile uint8_t g_flag_curve = 0;
 volatile uint8_t g_flag_gap = 0;
 volatile uint8_t g_flag_adachi_goal = 0;
 volatile uint8_t g_flag_path_run_goal = 0;
-volatile uint8_t g_flag_diagonal=0;
+volatile uint8_t g_flag_diagonal = 0;
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //フラグ
 volatile int8_t g_flag_mode_setting = 0;
 volatile int8_t g_flag_control = 0;
 volatile int8_t g_flag_turn;
-volatile int8_t g_flag_failsafe=0;
-volatile int8_t g_flag_blindalley_ang=0;
-volatile int8_t g_flag_blindalley_dis=0;
+volatile int8_t g_flag_failsafe = 0;
+volatile int8_t g_flag_blindalley_ang = 0;
+volatile int8_t g_flag_blindalley_dis = 0;
+volatile int8_t g_flag_circuit = 0;
 
 //テスト用
+volatile float g_duty_L;
+volatile float g_duty_R;
+
 volatile int16_t g_wait_count = 0; //waitTime関数用カウンタ
 volatile int16_t g_log_count = 0;
 volatile float g_log_array[LOG_TIMES];
 volatile float g_log_array2[LOG_TIMES];
+volatile int16_t g_log_array_int[LOG_TIMES];
+volatile int16_t g_log_array2_int[LOG_TIMES];
 
 volatile uint16_t g_path_test[256];
 volatile uint16_t g_path_test_slant[256];

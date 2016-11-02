@@ -52,6 +52,7 @@ float convDegreeToRadian(float degree);
  ログ書き出し関数
  ****************************************/
 void printLog(void);
+void printLogInt(void);
 
 /****************************************
  ゴール音

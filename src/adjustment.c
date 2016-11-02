@@ -76,7 +76,7 @@ void selectAdjustment(void) {
 		break;
 	case 4:
 		initAdjustment();
-		runStraight(15, SECTION * M_SQRT2, 1, 1);
+		runStraight(15, SECTION , 1, 1);
 		turnCorner(turn_45_in_L_1000);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, 1, 0);
@@ -84,7 +84,7 @@ void selectAdjustment(void) {
 		break;
 	case 5:
 		initAdjustment();
-		runStraight(15, SECTION * M_SQRT2, 1, 1);
+		runStraight(15, SECTION, 1, 1);
 		turnCorner(turn_45_in_R_1000);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, 1, 0);
@@ -95,7 +95,7 @@ void selectAdjustment(void) {
 		runStraight(15, SECTION * M_SQRT2, 1, 1);
 		turnCorner(turn_45_out_L_1000);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION * M_SQRT2, 1, 0);
+		runStraight(15, SECTION , 1, 0);
 
 		break;
 	case 7:
@@ -103,12 +103,12 @@ void selectAdjustment(void) {
 		runStraight(15, SECTION * M_SQRT2, 1, 1);
 		turnCorner(turn_45_out_R_1000);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION * M_SQRT2, 1, 0);
+		runStraight(15, SECTION , 1, 0);
 
 		break;
 	case 8:
 		initAdjustment();
-		runStraight(15, SECTION * M_SQRT2, 1, 1);
+		runStraight(15, SECTION , 1, 1);
 		turnCorner(turn_135_in_L_1000);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, 1, 0);
@@ -116,7 +116,7 @@ void selectAdjustment(void) {
 		break;
 	case 9:
 		initAdjustment();
-		runStraight(15, SECTION * M_SQRT2, 1, 1);
+		runStraight(15, SECTION , 1, 1);
 		turnCorner(turn_135_in_R_1000);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, 1, 0);
@@ -127,7 +127,7 @@ void selectAdjustment(void) {
 		runStraight(15, SECTION * M_SQRT2, 1, 1);
 		turnCorner(turn_135_out_L_1000);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION * M_SQRT2, 1, 0);
+		runStraight(15, SECTION , 1, 0);
 
 		break;
 	case 11:
@@ -135,7 +135,7 @@ void selectAdjustment(void) {
 		runStraight(15, SECTION * M_SQRT2, 1, 1);
 		turnCorner(turn_135_out_R_1000);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION * M_SQRT2, 1, 0);
+		runStraight(15, SECTION , 1, 0);
 
 		break;
 	case 12:

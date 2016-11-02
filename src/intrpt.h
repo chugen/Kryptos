@@ -21,6 +21,7 @@ void intrptCMT1();
  ログ取得関数　割り込み
  ****************************************/
 void getLog(float log1, float log2);
+void getLogInt(int16_t log1, int16_t log2);
 /****************************************
  モード用速度取得関数　割り込み
  ****************************************/
@@ -50,4 +51,8 @@ void calcAngle(void);
  センサー値取得　割り込み
  ****************************************/
 void getSensorVal(void);
+/****************************************
+フェイルセーフ　割り込み
+ ****************************************/
+void checkFailsafe(float velo,float angularvelo,float sensor);
 #endif /* INTRPT_H_ */

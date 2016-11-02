@@ -9,6 +9,7 @@
 #include "sensor.h"
 #include "common.h"
 #include "global.h"
+#include <mathf.h>
 
 /****************************************
  SPI送受信
@@ -97,12 +98,39 @@ int8_t returnCountDirR(void) {
  GYRO_Zの値を返す
  ****************************************/
 float returnGyroZVal(void) {
-	int16_t temp;
+	int16_t temp = 0;
+	float value;
+	static int16_t currentL;
+	static int16_t pastL;
+	static int16_t currentH;
 
-	temp = (((int16_t) (commSPI(GYRO_ZOUT_H, 0x00, READ))) << 8);
-	temp += ((int16_t) (commSPI(GYRO_ZOUT_L, 0x00, READ)));
+	pastL = currentL;
+	currentL = (int16_t) commSPI(GYRO_ZOUT_L, 0x0f, READ);
+	if (fabsf(pastL-currentL) > 240 || fabsf(currentL) > 240) {
+		currentL = 0x00;
+	}
 
-	return  (float) (temp * 2000.0 / INT16_MAX);
+	currentH = (int16_t) commSPI(GYRO_ZOUT_H, 0x0f, READ);
+
+	if (currentH == 129) {
+		currentH = 0x00;
+	}
+	temp |= currentL;
+	temp |= (currentH << 8);
+
+	if (temp <= -250 && temp >= -256) {
+		temp = 0;
+	}
+
+	value = (float) (temp * 2000.0 / INT16_MAX);
+
+	if (value < 0) {
+		value *= 90.0 / 90.67;
+	} else {
+		value *= 90.0 / 87.9;
+	}
+
+	return value;
 }
 /****************************************
  GYRO_Zのリファレンス値を算出
@@ -111,11 +139,12 @@ int8_t calcGyroZRef(void) {
 	int i = 0;
 	float temp;
 	g_gyro_reference = 0;
-	for (i = 0; i < 500; i++) {
+	for (i = 0; i < 1000; i++) {
+
 		temp += returnGyroZVal();
 		waitTime(1);
 	}
-	g_gyro_reference = temp / 500.0;
+	g_gyro_reference = temp / 1000.0;
 	return 0;
 }
 /****************************************
@@ -165,26 +194,26 @@ default:
 static uint8_t switch_sensorLED;
 void driveSensorLED(uint8_t mode) {
 	if (switch_sensorLED == OFF) {
-		mode=OFF;
+		mode = OFF;
 	}
-		switch (mode) {
-		case OFF:
-			PORT5.PODR.BIT.B4 = 0;
-			PORT5.PODR.BIT.B5 = 0;
-			break;
-		case FR_L:
-			PORT5.PODR.BIT.B4 = 1;
-			PORT5.PODR.BIT.B5 = 0;
-			break;
-		case FL_R:
-			PORT5.PODR.BIT.B4 = 0;
-			PORT5.PODR.BIT.B5 = 1;
-			break;
-		default:
-			PORT5.PODR.BIT.B4 = 0;
-			PORT5.PODR.BIT.B5 = 0;
-			break;
-		}
+	switch (mode) {
+	case OFF:
+		PORT5.PODR.BIT.B4 = 0;
+		PORT5.PODR.BIT.B5 = 0;
+		break;
+	case FR_L:
+		PORT5.PODR.BIT.B4 = 1;
+		PORT5.PODR.BIT.B5 = 0;
+		break;
+	case FL_R:
+		PORT5.PODR.BIT.B4 = 0;
+		PORT5.PODR.BIT.B5 = 1;
+		break;
+	default:
+		PORT5.PODR.BIT.B4 = 0;
+		PORT5.PODR.BIT.B5 = 0;
+		break;
+	}
 }
 
 void switchSensorLED(uint8_t on_off) {

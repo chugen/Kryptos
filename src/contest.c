@@ -11,6 +11,7 @@
 #include "run.h"
 #include "serial.h"
 #include "app.h"
+#include "map.h"
 
 /****************************************
  サーキット関数
@@ -19,25 +20,32 @@
 void runCircuit(uint8_t x, uint8_t y, uint8_t times, float velocity,
 		float accelaration, float turn_velo) {
 	int i;
+	g_flag_circuit = 1;
+	waitSensor();
+	waitTime(500);
+	calcGyroZRef();
 	driveMotor(ON);
 	switchSensorLED(ON);
+	initRun();
 	driveSuction(70, ON);
 	waitTime(1000);
-	runStraight(accelaration, INIT_DIS + HALF_SECTION, velocity, turn_velo);
+	runStraight(accelaration, INIT_DIS + SECTION, velocity, turn_velo);
 	for (i = 0; i < times; i++) {
 		runStraight(accelaration, SECTION * (y - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1800);
+		turnCorner(turn_90_wide_R_1000);
 		runStraight(accelaration, SECTION * (x - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1800);
+		turnCorner(turn_90_wide_R_1000);
 		runStraight(accelaration, SECTION * (y - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1800);
+		turnCorner(turn_90_wide_R_1000);
 		runStraight(accelaration, SECTION * (x - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1800);
+		turnCorner(turn_90_wide_R_1000);
 	}
 	runStraight(accelaration, SECTION * 2, velocity, 0);
+	driveSuction(70, OFF);
 	waitTime(500);
 	driveMotor(OFF);
 	switchSensorLED(OFF);
+	g_flag_circuit = 0;
 }
 /****************************************
  探索 1
@@ -137,6 +145,8 @@ void runFurukawaAdachi(void) {
 
 	searchFurukawa();
 
+	driveMotor(ON);
+	switchSensorLED(ON);
 	turnCorner(pivot);
 	checkOrient(180);
 	setTargetCoord(START_X, START_Y);
@@ -258,7 +268,8 @@ void selectRun(void) {
 		driveSuction(100, OFF);
 		break;
 	case 3:
-
+		waitButton();
+		printLog();
 		break;
 	case 4:
 
@@ -303,10 +314,10 @@ void selectContest(void) {
 			break;
 
 		case 3:
-			runCircuit(16, 16, 2, 4.5, 25, 1.8);
+			runCircuit(16, 16, 2, 4, 20, 1);
 			break;
 		case 4:
-
+			runCircuit(16, 16, 2, 4.5, 25, 1);
 			break;
 		default:
 			break;

@@ -80,7 +80,7 @@ void waitSensor(void) {
 	uint16_t count = 0;
 	switchSensorLED(ON);
 	while (1) {
-		if ((g_sensor_L > 700) && (g_sensor_R > 700)) {
+		if ((g_sensor_L > 600) && (g_sensor_R > 600)) {
 			count++;
 			if (count > 300) {
 				break;
@@ -352,7 +352,12 @@ void printLog(void) {
 		myprintf("%d	%f	%f\n", i, *(g_log_array + i), *(g_log_array2 + i));
 	}
 }
-
+void printLogInt(void) {
+	int32_t i;
+	for (i = 0; i < LOG_TIMES; i++) {
+		myprintf("%d	%d	%d\n", i, *(g_log_array_int + i), *(g_log_array2_int + i));
+	}
+}
 /****************************************
  ゴール音
  ****************************************/
