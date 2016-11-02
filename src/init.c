@@ -322,7 +322,7 @@ void initSPI(void) {
 
 	RSPI1.SPCMD0.BIT.CPHA = 1;	//奇数エッジ:データ変化,偶数エッジ：データサンプル
 	RSPI1.SPCMD0.BIT.CPOL = 1;	//アイドル時：RSPCKがHigh
-	RSPI1.SPCMD0.BIT.BRDV = 1;	//ビットレート分周設定 0:分周しない 1:2分周　2:4分周
+	RSPI1.SPCMD0.BIT.BRDV = 1;	//ビットレート分周設定 0:分周しない 1:2分周　2:4分周　3:8分周
 	RSPI1.SPCMD0.BIT.SSLA = 1;	//SSL信号アサート設定
 	RSPI1.SPCMD0.BIT.SSLKP = 1;	//SSL信号レベル保持 1:転送終了時保持
 	RSPI1.SPCMD0.BIT.SPB = 0x07;	//データ長設定ビット :8 Bit
@@ -399,8 +399,8 @@ void initFlash(void) {
 }
 
 void initMPU6000(void) {
-	commSPI(SIGNAL_PATH_RESET, 0x07, WRITE); 	//シグナルパスリセット
 	commSPI(USER_CTRL, 0x10, WRITE);			//I2C無効，SPI有効
+	commSPI(SIGNAL_PATH_RESET, 0x07, WRITE); 	//シグナルパスリセット
 	commSPI(PWR_MGMT_1, 0x08, WRITE);			//温度センサ無効，
 	commSPI(PWR_MGMT_2, 0x0E, WRITE);
 	commSPI(GYRO_CONFIG, 0x18, WRITE);

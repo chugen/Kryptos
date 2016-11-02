@@ -19,8 +19,8 @@ typedef struct{
 	float front;
 	float rear;
 	uint16_t sensor_break;
-	float dis_break;
-	uint8_t diagonal;
+	int8_t dia;
+	int8_t mode;
 } turn_t;
 
 #endif /* MY_TYPEDEF_H_ */

@@ -33,7 +33,21 @@ void main(void) {
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
-		selectContest();
+		//selectContest();
+		waitSensor();
+		waitTime(1000);
+		calcGyroZRef();
+		g_current_angle = 0;
+		g_current_angularvelo = 0;
+		g_log_count = 0;
+		waitTime(1500);
+		while (1) {
+			myprintf("%f	%f	%f\n", g_current_angle, g_current_angularvelo,
+					g_gyro_reference);
+
+		}
+		soundSensor();
+		printLog();
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
@@ -84,7 +98,7 @@ void main(void) {
 		switchSensorLED(ON);
 		runStraight(25, SECTION * 2, 1.8, 1.8);
 
-		turnCorner(turn_90_wide_R_1800);
+		turnCorner(turn_90_wide_R_1500);
 		switchSensorLED(OFF);
 		runStraight(25, SECTION * 2, 1.8, 0);
 		driveMotor(OFF);
@@ -99,12 +113,21 @@ void main(void) {
 
 		driveRGB(GREEN, ON);
 		waitTime(1000);
+
+		calcGyroZRef();
 		initRun();
 		driveMotor(ON);
-		runStraight(5, SECTION, 0.5, 0.5);
 		switchSensorLED(ON);
-		runBlindAlley(0.5);
-		runStraight(5, SECTION, 0.5, 0);
+		g_flag_diagonal = 1;
+		runStraight(5, SECTION * M_SQRT2 * 3, 0.5, 0.5);
+		//switchSensorLED(ON);
+		//runBlindAlley(0.5);
+		//runStraight(5, SECTION, 0.5, 0);
+		driveMotor(OFF);
+		driveSuction(70, OFF);
+		waitButton();
+		printLog();
+
 		break;
 	case 6: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WHITE, ON);
@@ -117,11 +140,13 @@ void main(void) {
 		initRun();
 		driveMotor(ON);
 
-		while (1) {
-			turnCorner(pivot_90_L);
-			waitTime(200);
-		}
-
+		//while (1) {
+		turnCorner(pivot_90_L);
+		waitTime(200);
+		//}
+		driveMotor(OFF);
+		waitButton();
+		printLog();
 		break;
 	case 7: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
@@ -157,7 +182,22 @@ void main(void) {
 		break;
 	case 9: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LBLUE, ON);
-		driveSuction(100, ON);
+		//driveSuction(100, ON);
+		waitSensor();
+		waitTime(1000);
+		calcGyroZRef();
+		g_flag_circuit = 1;
+
+		driveSuction(70, ON);
+		driveMotor(ON);
+		waitTime(1000);
+		switchSensorLED(ON);
+		initRun();
+		runStraight(25, SECTION * 7, 4.5, 0);
+		driveSuction(70, OFF);
+		driveMotor(OFF);
+		waitButton();
+		printLog();
 
 		break;
 	case 10: //////////////////////////////////////////////////////////////////////////////////////

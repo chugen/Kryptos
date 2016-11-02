@@ -31,17 +31,15 @@ void intrptCMT0(void) {
 	g_current_angularvelo = returnGyroZVal() - g_gyro_reference;
 
 	//getLog(g_sensor_L, g_sensor_R);
-	getLog(g_target_angularvelo, g_current_angularvelo);
+	//getLog(g_target_angularvelo, g_current_angularvelo);
+	//getLog(g_target_velo, g_current_velo);
+	//getLog(g_duty_L, g_duty_R);
+	getLog(g_target_angle, g_current_angle);
+
+
 	setMotorDuty();
 
-	if (fabsf(g_target_velo-g_current_velo) > 2
-			|| (fabsf(g_target_angularvelo-g_current_angularvelo) > 1500)) {
-		g_flag_failsafe = 1;
-		g_target_velo = 0;
-		driveSuction(70, OFF);
-		PORTC.PODR.BIT.B6 = 0; //STBY
-		driveRGB(RED, ON);
-	}
+	checkFailsafe(2, 1500, 2600);
 
 }
 /****************************************
@@ -65,6 +63,16 @@ void getLog(float log1, float log2) {
 		g_log_count = LOG_TIMES;
 	}
 }
+void getLogInt(int16_t log1, int16_t log2) {
+
+	if (g_log_count < LOG_TIMES) {
+		g_log_array_int[g_log_count] = log1;
+		g_log_array2_int[g_log_count] = log2;
+		g_log_count++;
+	} else {
+		g_log_count = LOG_TIMES;
+	}
+}
 /****************************************
  モード用速度取得関数　割り込み
  ****************************************/
@@ -81,13 +89,19 @@ void setMotorDuty(void) {
 		setMotorDutyL(
 				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
 						- ctrlPropAngularVelocity(ANG_VELO_P)
-						- ctrlIntAngularVelocity(ANG_VELO_I) - ctrlWall(WALL_P)
+						- ctrlIntAngularVelocity(ANG_VELO_I)
+						- ctrlPropAngle(ANG_P)
+						- ctrlIntAngle(ANG_I)
+						- ctrlWall(WALL_P)
 						- ctrlWallFrontAng(WALL_FRONT_P)
 						+ ctrlWallFrontDis(WALL_FRONT_P));
 		setMotorDutyR(
 				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
 						+ ctrlPropAngularVelocity(ANG_VELO_P)
-						+ ctrlIntAngularVelocity(ANG_VELO_I) + ctrlWall(WALL_P)
+						+ ctrlIntAngularVelocity(ANG_VELO_I)
+						+ ctrlPropAngle(ANG_P)
+						+ ctrlIntAngle(ANG_I)
+						+ ctrlWall(WALL_P)
 						+ ctrlWallFrontAng(WALL_FRONT_P)
 						+ ctrlWallFrontDis(WALL_FRONT_P));
 	}
@@ -114,9 +128,9 @@ void calcAngularAcc(void) {
  角度加算　割り込み
  ****************************************/
 void calcAngle(void) {
-	g_angle += g_target_angularvelo * 0.001;
+	g_target_angle += g_target_angularvelo * 0.001;
+	g_current_angle += g_current_angularvelo * 0.001;
 }
-
 /****************************************
  センサー値取得　割り込み
  ****************************************/
@@ -166,4 +180,17 @@ void getSensorVal(void) {
 	g_sensor_L_derivative = g_sensor_L - sensor_L_before;
 	g_sensor_R_derivative = g_sensor_R - sensor_R_before;
 }
-
+/****************************************
+ フェイルセーフ　割り込み
+ ****************************************/
+void checkFailsafe(float velo, float angularvelo, float sensor) {
+	if (fabsf(g_target_velo-g_current_velo) > velo
+			|| (fabsf(g_target_angularvelo-g_current_angularvelo) > angularvelo)
+			|| (g_sensor_FL + g_sensor_FR >= sensor)) {
+		g_flag_failsafe = 1;
+		g_target_velo = 0;
+		driveSuction(70, OFF);
+		PORTC.PODR.BIT.B6 = 0; //STBY
+		driveRGB(RED, ON);
+	}
+}

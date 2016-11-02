@@ -55,6 +55,14 @@ float ctrlPropAngularVelocity(float kp);
  ****************************************/
 float ctrlIntAngularVelocity(float ki);
 /****************************************
+ 角度P制御
+ ****************************************/
+float ctrlPropAngle(float kp);
+/****************************************
+ 角度I制御
+ ****************************************/
+float ctrlIntAngle(float ki);
+/****************************************
  壁制御
  ****************************************/
 float ctrlWall(float kp);
@@ -128,7 +136,7 @@ extern const turn_t turn_135_out_R_1400 ;
 extern const turn_t turn_v90_L_1400;
 extern const turn_t turn_v90_R_1400 ;
 
-extern const turn_t turn_90_wide_R_1800;
+extern const turn_t turn_90_wide_R_1500;
 
 extern const turn_t pivot;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
