@@ -207,7 +207,7 @@ void selectRun(void) {
 		waitTime(1000);
 		calcGyroZRef();
 		soundStartRun();
-		driveSuction(70, ON);
+		driveSuction(70, OFF);
 		waitTime(1000);
 		initRun();
 		driveMotor(ON);
@@ -232,7 +232,7 @@ void selectRun(void) {
 		waitTime(1000);
 		calcGyroZRef();
 		soundStartRun();
-		driveSuction(70, ON);
+		driveSuction(100, ON);
 		waitTime(1000);
 		initRun();
 		driveMotor(ON);
@@ -314,10 +314,24 @@ void selectContest(void) {
 			break;
 
 		case 3:
-			runCircuit(16, 16, 2, 4, 20, 1);
+			//runCircuit(16, 16, 2, 4, 20, 1);
+			setTargetCoord(GOAL_X, GOAL_Y);
+
+			countStepShortest();
+			setCurrentCoord(START_X, START_Y);
+
+			setOrient(NORTH);
+			makePath();
+			makePath3();
+
+			printMap();
+			printSearch();
+			printPath3();
 			break;
 		case 4:
-			runCircuit(16, 16, 2, 4.5, 25, 1);
+			//runCircuit(16, 16, 2, 4.5, 25, 1);
+			waitButton();
+			printLog();
 			break;
 		default:
 			break;

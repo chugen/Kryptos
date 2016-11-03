@@ -343,6 +343,7 @@ void countStepQueue(void) {
  足立法
  ****************************************/
 void searchAdachi(void) {
+	g_flag_run_mode=SEARCH;
 	runStraight(5, HALF_SECTION, 0.5, 0.5);
 
 	countCoord();
@@ -533,12 +534,13 @@ void searchAdachi(void) {
 		switchSensorLED(OFF);
 
 	}
+	g_flag_run_mode=DEFAULT;
 }
 /****************************************
  古川法
  ****************************************/
 void searchFurukawa(void) {
-
+	g_flag_run_mode=SEARCH;
 	runStraight(5, HALF_SECTION, 0.5, 0.5);
 	countCoord();
 	checkWall();
@@ -840,6 +842,7 @@ void searchFurukawa(void) {
 		switchSensorLED(OFF);
 
 	}
+	g_flag_run_mode=SEARCH;
 }
 
 /****************************************
@@ -1005,7 +1008,7 @@ void countStepShortest(void) {
 		head++;
 		if (y < 16) {
 			if ((g_wall_data[x][y] & 0x01) == 0
-					&& (g_wall_data[x][y + 1] & 0xf10) == 0x10) {
+					&& (g_wall_data[x][y + 1] & 0x10) == 0x10) {
 				if (g_step_map[x][y + 1] == 255) {
 					g_step_map[x][y + 1] = g_step_map[x][y] + 1;
 					queue_s[tail] = (x + (y + 1) * 16);
@@ -1703,6 +1706,7 @@ void runPath(void) {
 	int i = 0;
 	g_flag_gap = 0;
 	g_flag_diagonal = 0;
+	g_flag_run_mode=RUN;
 	while (1) {
 		g_flag_path_run_goal = 0;
 		if (i > g_flag_step_goal_2) {
@@ -1740,6 +1744,7 @@ void runPath(void) {
 	} else {
 		soundError();
 	}
+	g_flag_run_mode=DEFAULT;
 }
 
 /****************************************
@@ -1750,6 +1755,7 @@ void runPathDiagonal(void) {
 	g_flag_gap = 0;
 	g_flag_failsafe = 0;
 	g_flag_diagonal = 0;
+	g_flag_run_mode=RUN;
 	while (1) {
 		g_flag_path_run_goal = 0;
 		if (i > g_flag_step_goal_3) {
@@ -1759,7 +1765,7 @@ void runPathDiagonal(void) {
 		if ((g_sensor_FL + g_sensor_FR >= SEN_DEATH) || (g_flag_failsafe == 1))
 			break;
 		if (g_path_3[i] > 0 && g_path_3[i] <= 30) {
-			runStraight(25, HALF_SECTION * g_path_3[i] + addInitDis(i), 4,
+			runStraight(20, HALF_SECTION * g_path_3[i] + addInitDis(i), 4,
 					connectSpeed1000(i));
 		} else if (g_path_3[i] == S_L_CURVE) {
 			turnCorner(turn_90_L);
@@ -1794,7 +1800,7 @@ void runPathDiagonal(void) {
 		} else if (g_path_3[i] == R_V90) {
 			turnCorner(turn_v90_R_1000);
 		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
-			runStraight(25, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), 3,
+			runStraight(20, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), 3,
 					connectSpeed1000(i));
 		} else {
 			//	driveRGB(RED, ON);
@@ -1812,6 +1818,7 @@ void runPathDiagonal(void) {
 	} else {
 		soundError();
 	}
+	g_flag_run_mode=DEFAULT;
 }
 
 /*-----------------------------------------------------------*/
@@ -1820,6 +1827,7 @@ void runPathDiagonal2(void) {
 	g_flag_gap = 0;
 	g_flag_failsafe = 0;
 	g_flag_diagonal = 0;
+	g_flag_run_mode=RUN;
 	while (1) {
 		g_flag_path_run_goal = 0;
 		if (i > g_flag_step_goal_3) {
@@ -1881,6 +1889,7 @@ void runPathDiagonal2(void) {
 	} else {
 		soundError();
 	}
+	g_flag_run_mode=DEFAULT;
 }
 
 /****************************************
