@@ -136,9 +136,7 @@ float returnVelocityR(void) {
  速度P制御
  ****************************************/
 float ctrlPropVelocity(float kp) {
-
 	g_velo_error = g_target_velo - g_current_velo;
-
 	return g_velo_error * kp;
 }
 
@@ -147,6 +145,9 @@ float ctrlPropVelocity(float kp) {
  ****************************************/
 float ctrlIntVelocity(float ki) {
 	g_velo_error_integral += g_velo_error;
+	if (g_flag_blindalley == 1) {
+		g_velo_error_integral = 0;
+	}
 	return g_velo_error_integral * ki;
 }
 
@@ -167,7 +168,7 @@ float ctrlIntAngularVelocity(float ki) {
 			&& g_flag_turn == 0) {
 		g_angularvelo_error_integral = 0;
 		return 0;
-	} else if (g_flag_blindalley_ang == 1) {
+	} else if (g_flag_blindalley == 1) {
 		g_angularvelo_error_integral = 0;
 		return 0;
 	} else {
@@ -179,7 +180,7 @@ float ctrlIntAngularVelocity(float ki) {
  角度P制御
  ****************************************/
 float ctrlPropAngle(float kp) {
-	g_angle_error = g_target_angle- g_current_angle;
+	g_angle_error = g_target_angle - g_current_angle;
 
 	return convDegreeToRadian(g_angle_error) * TREAD / 2.0 * kp;
 }
@@ -192,12 +193,11 @@ float ctrlIntAngle(float ki) {
 			&& g_flag_turn == 0) {
 		g_angle_error_integral = 0;
 		return 0;
-	} else if (g_flag_blindalley_ang == 1) {
+	} else if (g_flag_blindalley == 1) {
 		g_angle_error_integral = 0;
 		return 0;
 	} else {
-		return convDegreeToRadian(g_angle_error_integral) * TREAD / 2.0
-				* ki;
+		return convDegreeToRadian(g_angle_error_integral) * TREAD / 2.0 * ki;
 	}
 }
 /****************************************
@@ -209,14 +209,14 @@ float ctrlWall(float kp) {
 
 		temp = 0;
 
-	} else if ((g_flag_turn == 1)
-			|| (g_flag_blindalley_ang == 1) || (g_flag_blindalley_dis == 1)) {
+	} else if ((g_flag_turn == 1) || (g_flag_blindalley == 1)) {
 
 		temp = 0;
 
-	}else if(g_flag_diagonal == 1){
+	} else if (g_flag_diagonal == 1) {
 
-		temp = (-( SEN_REFERENCE_FL - g_sensor_FL)
+		temp = 0.01
+				* (-( SEN_REFERENCE_FL - g_sensor_FL)
 						+ ( SEN_REFERENCE_FR - g_sensor_FR));
 
 	} else if (g_flag_circuit == 1) {
@@ -268,7 +268,7 @@ float ctrlWall(float kp) {
 
 float ctrlWallFrontAng(float kp) {
 	float temp = 0;
-	if ((g_flag_blindalley_ang == 1) && (g_sensor_FL > SEN_NOWALL_FL)
+	if ((g_flag_blindalley == 1) && (g_sensor_FL > SEN_NOWALL_FL)
 			&& (g_sensor_FR > SEN_NOWALL_FR)) {
 		g_angularvelo_error_integral = 0;
 		temp = -kp
@@ -282,7 +282,7 @@ float ctrlWallFrontAng(float kp) {
 }
 float ctrlWallFrontDis(float kp) {
 	float temp = 0;
-	if ((g_flag_blindalley_dis == 1) && (g_sensor_FL > SEN_NOWALL_FL)
+	if ((g_flag_blindalley == 1) && (g_sensor_FL > SEN_NOWALL_FL)
 			&& (g_sensor_FR > SEN_NOWALL_FR)) {
 
 		temp = kp
@@ -298,45 +298,62 @@ float ctrlWallFrontDis(float kp) {
  袋小路
  ****************************************/
 void runBlindAlley(float velo) {
+	static uint16_t times_count = 0;
 	g_flag_gap = 1;
 	g_flag_turn = 1;
+	times_count++;
+	if (times_count > 5) {
+		times_count = 0;
+	}
 
 	runStraight(5, HALF_SECTION, velo, 0);
-	g_flag_blindalley_ang = 1;
-	waitTime(400);
+	g_flag_blindalley = 1;
+
+	waitTime(500);
+
 	g_flag_gap = 0;
-	g_flag_blindalley_ang = 0;
-	calcGyroZRef();
-	g_flag_blindalley_dis = 1;
-	waitTime(300);
-	g_flag_blindalley_dis = 0;
+
+	if (times_count == 0) {
+		calcGyroZRef();
+	}
+
+	g_flag_blindalley = 0;
+
+	initRun();
 	if (SEN_REFERENCE_L - g_sensor_L < -170) {
 		turnCorner(pivot_90_R);
-		g_flag_blindalley_ang = 1;
-		waitTime(200);
+		g_flag_blindalley = 1;
+
 		g_flag_gap = 0;
-		g_flag_blindalley_ang = 0;
-		g_flag_blindalley_dis = 1;
-		waitTime(200);
-		g_flag_blindalley_dis = 0;
+
+		waitTime(500);
+		g_flag_blindalley = 0;
+
+		initRun();
 		turnCorner(pivot_90_R);
 		waitTime(300);
-		runStraight(5, HALF_SECTION, velo, velo);
+		g_distance = 0;
+
+		runStraight(5, HALF_SECTION+0.01, velo, velo);
 	} else if (SEN_REFERENCE_R - g_sensor_R < -170) {
 		turnCorner(pivot_90_L);
-		g_flag_blindalley_ang = 1;
-		waitTime(200);
+		g_flag_blindalley = 1;
+
 		g_flag_gap = 0;
-		g_flag_blindalley_ang = 0;
-		g_flag_blindalley_dis = 1;
-		waitTime(200);
-		g_flag_blindalley_dis = 0;
+
+		waitTime(500);
+		g_flag_blindalley = 0;
+
+		initRun();
 		turnCorner(pivot_90_L);
 		waitTime(300);
-		runStraight(5, HALF_SECTION, velo, velo);
+		g_distance = 0;
+		runStraight(5, HALF_SECTION+0.01, velo, velo);
 	} else {
+		g_target_angle = 0;
 		turnCorner(pivot);
 		waitTime(300);
+		g_distance = 0;
 		runStraight(5, HALF_SECTION + BLIND_ALLEY, velo, velo);
 	}
 
@@ -351,8 +368,8 @@ void initRun(void) {
 	g_log_count = 0;
 	g_distance = 0;
 	g_target_velo = 0;
-	g_target_angle=0;
-	g_current_angle=0;
+	g_target_angle = 0;
+	g_current_angle = 0;
 	g_flag_failsafe = 0;
 
 	g_velo_error = 0;
@@ -430,31 +447,31 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
  ****************************************/
 /*others~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,sen	,dia	,mode}
-const turn_t turn_90_L = 			{ 90	,9000	,603	,0.5	,0.018	,0.038	,15000	,0		,-1 };
-const turn_t turn_90_R = 			{-90	,9000	,603	,0.5	,0.015	,0.036	,15000	,0		,-1	};
+const turn_t turn_90_L = 			{ 90.8	,9000	,603	,0.5	,0.030	,0.04	,15000	,0		,-1 };
+const turn_t turn_90_R = 			{-88	,9000	,603	,0.5	,0.018	,0.039	,15000	,0		,-1	};
 const turn_t pivot = 				{ 182	,6000	,500	,0		,0		,0		,10000	,0		,-2 };
-const turn_t pivot_90_L =			{ 93.5	,6000	,400	,0		,0		,0		,10000	,0		,-2 };
-const turn_t pivot_90_R =			{ -93.5	,6000	,400	,0		,0		,0		,10000	,0		,-2 };
+const turn_t pivot_90_L =			{ 92	,6000	,400	,0		,0		,0		,10000	,0		,-2 };
+const turn_t pivot_90_R =			{ -88	,6000	,400	,0		,0		,0		,10000	,0		,-2 };
 /*1000~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,sen	,dia	,mode}
-const turn_t turn_90_wide_L_1000 =	{ 90	,7000	,651	,1		,0.035	,0.06	,380	,0		,0 };
-const turn_t turn_90_wide_R_1000 = 	{-90	,7000	,651	,1		,0.04	,0.06	,380	,0		,0 };
+const turn_t turn_90_wide_L_1000 =	{ 90	,7000	,651	,1		,0.035	,0.00	,380	,0		,0 };
+const turn_t turn_90_wide_R_1000 = 	{-90	,7000	,651	,1		,0.04	,0.00	,380	,0		,0 };
 
-const turn_t turn_180_L_1000 = 		{ 180	,5900	,680	,1		,0.05	,0.04	,380	,0		,0 };
-const turn_t turn_180_R_1000 =		{-178	,5000	,640	,1		,0.05	,0.04	,380	,0		,0 };
+const turn_t turn_180_L_1000 = 		{ 180	,5900	,680	,1		,0.05	,0.00	,380	,0		,0 };
+const turn_t turn_180_R_1000 =		{-178	,5000	,640	,1		,0.05	,0.00	,380	,0		,0 };
 
-const turn_t turn_45_in_L_1000 = 	{ 45	,15500	,654	,1		,0.02	,0.09	,380	,1		,0 };
-const turn_t turn_45_in_R_1000 = 	{-45	,15500	,654	,1		,0.055	,0.065	,380	,1		,0 };
-const turn_t turn_45_out_L_1000 = 	{ 45	,15500	,634	,1		,0.095	,0.028	,800	,0		,1 };
-const turn_t turn_45_out_R_1000 =	{-45	,15500	,634	,1		,0.085	,0.028	,800	,0		,1 };
+const turn_t turn_45_in_L_1000 = 	{ 45	,15500	,654	,1		,0.02	,0.00	,380	,1		,0 };
+const turn_t turn_45_in_R_1000 = 	{-45	,15500	,654	,1		,0.03	,0.00	,380	,1		,0 };
+const turn_t turn_45_out_L_1000 = 	{ 45	,15500	,634	,1		,0.085	,0.00	,800	,0		,1 };
+const turn_t turn_45_out_R_1000 =	{-45	,15500	,634	,1		,0.075	,0.00	,800	,0		,1 };
 
-const turn_t turn_135_in_L_1000 = 	{ 135	,10000	,1000	,1		,0.05	,0.055	,380	,1		,0 };
-const turn_t turn_135_in_R_1000 = 	{-135	,7300	,810	,1		,0.068	,0.06	,380	,1		,0 };
-const turn_t turn_135_out_L_1000 = 	{ 135	,10000	,1000	,1		,0.069	,0.08	,800	,0		,1 };
-const turn_t turn_135_out_R_1000 = 	{-135	,10000	,1000	,1		,0.086	,0.08	,800	,0		,1 };
+const turn_t turn_135_in_L_1000 = 	{ 135	,10000	,1000	,1		,0.05	,0.00	,380	,1		,0 };
+const turn_t turn_135_in_R_1000 = 	{-135	,7300	,810	,1		,0.068	,0.00	,380	,1		,0 };
+const turn_t turn_135_out_L_1000 = 	{ 135	,10000	,1000	,1		,0.069	,0.00	,800	,0		,1 };
+const turn_t turn_135_out_R_1000 = 	{-135	,10000	,1000	,1		,0.086	,0.00	,800	,0		,1 };
 
-const turn_t turn_v90_L_1000 = 		{ 90	,22000	,1056	,1		,0.05	,0.06	,800	,1		,1 };
-const turn_t turn_v90_R_1000 =		{-90	,22000	,1056	,1		,0.095	,0.06	,800	,1		,1 };
+const turn_t turn_v90_L_1000 = 		{ 90	,22000	,1056	,1		,0.075	,0.00	,800	,1		,1 };
+const turn_t turn_v90_R_1000 =		{-90	,22000	,1056	,1		,0.095	,0.00	,800	,1		,1 };
 /*1200~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,sen	,dia	,mode}
 const turn_t turn_90_wide_L_1200 =	{ 90	,8000	,696	,1.2	,0.026	,0.037	,500	,0		,0 };
@@ -463,7 +480,7 @@ const turn_t turn_90_wide_R_1200 = 	{-90	,8000	,696	,1.2	,0.026	,0.037	,500	,0		
 const turn_t turn_180_L_1200 = 		{ 178	,8000	,824	,1.2	,0.022	,0.02	,500	,0		,0 };
 const turn_t turn_180_R_1200 =		{-178	,8000	,824	,1.2	,0.022	,0.02	,500	,0		,0 };
 
-const turn_t turn_45_in_L_1200 = 	{ 45	,12000	,600	,1.2	,0.014	,0.050	,10000	,1		,0 };
+const turn_t turn_45_in_L_1200 = 	{ 45	,12000	,600	,1.2	,0.014	,0.030	,10000	,1		,0 };
 const turn_t turn_45_in_R_1200 = 	{-45	,12000	,600	,1.2	,0.014	,0.050	,10000	,1		,0 };
 const turn_t turn_45_out_L_1200 = 	{ 45	,12000	,600	,1.2	,0.050	,0.014	,10000	,0		,1 };
 const turn_t turn_45_out_R_1200 =	{-45	,12000	,600	,1.2	,0.050	,0.014	,10000	,0		,1 };
@@ -504,7 +521,7 @@ void turnCorner(turn_t p) {
 	double section3 = 0;
 
 	float angacc_temp;
-	if (p.mode == 0) {//通常壁切れ
+	if (p.mode == 0) { //通常壁切れ
 		if (p.angle >= 0) {
 			while (g_sensor_L < 350)
 				;
@@ -526,10 +543,10 @@ void turnCorner(turn_t p) {
 			runStraight(5, p.front, p.velocity, p.velocity);
 
 		}
-	} else if (p.mode == 1) {//斜め中壁切れ
+	} else if (p.mode == 1) { //斜め中壁切れ
 		g_flag_turn = 1; //ターンフラグ立てる
 		if (p.angle >= 0) {
-			while (g_sensor_L < 600)
+			while (g_sensor_L < 700)
 				;
 
 			while (g_sensor_L > p.sensor_break)
@@ -539,7 +556,7 @@ void turnCorner(turn_t p) {
 			runStraight(5, p.front, p.velocity, p.velocity);
 
 		} else {
-			while (g_sensor_R < 600)
+			while (g_sensor_R < 700)
 				;
 
 			while (g_sensor_R > p.sensor_break)
@@ -554,7 +571,6 @@ void turnCorner(turn_t p) {
 	} else {
 
 	}
-
 
 	g_flag_turn = 1; //ターンフラグ立てる
 	g_flag_diagonal = p.dia;
@@ -622,7 +638,8 @@ void turnCorner(turn_t p) {
 	g_angularaccele = angacc_temp * -1;
 
 	while (g_flag_failsafe != 1) {
-		if (fabsf(g_target_angle) >= section3 || fabsf(g_target_angularvelo) < 0.0001)
+		if (fabsf(g_target_angle) >= section3
+				|| fabsf(g_target_angularvelo) < 0.0001)
 			break;
 	}
 	g_angularaccele = 0;
@@ -631,12 +648,12 @@ void turnCorner(turn_t p) {
 	g_target_angle = 0;
 	g_distance = 0;
 
-	g_current_angle=0;
+	g_current_angle = 0;
 
-	g_angle_error=0;
-	g_angle_error_integral=0;
+	g_angle_error = 0;
+	g_angle_error_integral = 0;
 
-	g_angularvelo_error=0;
+	g_angularvelo_error = 0;
 	g_angularvelo_error_integral = 0;
 
 	g_flag_turn = 0; //ターンフラグおろす

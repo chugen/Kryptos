@@ -41,9 +41,9 @@
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 400//430//470//525//500
-#define SEN_REFERENCE_R 550//520//520
-#define SEN_REFERENCE_FL 1030//1030
+#define SEN_REFERENCE_L 430//400//430//470//525//500
+#define SEN_REFERENCE_R 480//550//520//520
+#define SEN_REFERENCE_FL 1000//1030//1030
 #define SEN_REFERENCE_FR 395//400//410
 //変化量
 #define SEN_DERIVATIVE_L 5//13
@@ -54,7 +54,7 @@
 //壁有無判定基準値
 #define SEN_NOWALL_L 170
 #define SEN_NOWALL_R 200
-#define SEN_NOWALL_FL 160
+#define SEN_NOWALL_FL 70//160
 #define SEN_NOWALL_FR 60
 //死亡判定
 #define SEN_DEATH 1600
@@ -64,18 +64,19 @@
 //速度I制御
 #define VELO_I 1000
 //角速度P制御
-#define ANG_VELO_P 160
+#define ANG_VELO_P 200//160
 //角速度I制御
-#define ANG_VELO_I 7//10//1
+#define ANG_VELO_I 5//1
 //角度P制御
 #define ANG_P 0 //1000
 //角度I制御
 #define ANG_I 0 //100
 
 //壁制御
-#define WALL_P 0.05
+#define WALL_P 0.1
 #define WALL_HIGH_SPEED 0.05
-#define WALL_FRONT_P 0.1
+#define WALL_FRONT_ANG 0.07
+#define WALL_FRONT_DIS 0.1
 
 
 

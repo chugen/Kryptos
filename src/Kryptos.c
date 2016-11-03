@@ -33,21 +33,8 @@ void main(void) {
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
-		//selectContest();
-		waitSensor();
-		waitTime(1000);
-		calcGyroZRef();
-		g_current_angle = 0;
-		g_current_angularvelo = 0;
-		g_log_count = 0;
-		waitTime(1500);
-		while (1) {
-			myprintf("%f	%f	%f\n", g_current_angle, g_current_angularvelo,
-					g_gyro_reference);
+		selectContest();
 
-		}
-		soundSensor();
-		printLog();
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
@@ -61,12 +48,15 @@ void main(void) {
 		waitTime(1000);
 		initRun();
 		driveMotor(ON);
-		runStraight(5, HALF_SECTION, 0.5, 0.5);
-		while (1) {
-
-			runStraight(5, SECTION, 0.5, 0.5);
-			turnCorner(turn_90_L);
-		}
+		//runStraight(5, HALF_SECTION, 0.5, 0.5);
+		//runStraight(5,SECTION, 0.5, 0.5);
+		//while (1) {
+		//turnCorner(turn_90_L);
+		runStraight(5, -SECTION, 0.5, 0);
+		driveMotor(OFF);
+		waitButton();
+		printLog();
+		//}
 
 		break;
 	case 3: //////////////////////////////////////////////////////////////////////////////////////
@@ -77,12 +67,13 @@ void main(void) {
 		waitTime(1000);
 		initRun();
 		driveMotor(ON);
-		runStraight(5, HALF_SECTION, 0.5, 0.5);
-		while (1) {
+		//runStraight(5, HALF_SECTION, 0.5, 0.5);
+		runStraight(5, SECTION, 0.5, 0.5);
+		//while (1) {
+		turnCorner(turn_90_R);
+		runStraight(5, SECTION, 0.5, 0);
 
-			runStraight(5, SECTION, 0.5, 0.5);
-			turnCorner(turn_90_R);
-		}
+		//}
 		break;
 	case 4: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(CYAN, ON);
@@ -117,12 +108,12 @@ void main(void) {
 		calcGyroZRef();
 		initRun();
 		driveMotor(ON);
+		switchSensorLED(OFF);
+		//runStraight(5, SECTION * M_SQRT2 * 3, 0.5, 0.5);
+		runStraight(5, SECTION, 0.5, 0.5);
 		switchSensorLED(ON);
-		g_flag_diagonal = 1;
-		runStraight(5, SECTION * M_SQRT2 * 3, 0.5, 0.5);
-		//switchSensorLED(ON);
-		//runBlindAlley(0.5);
-		//runStraight(5, SECTION, 0.5, 0);
+		runBlindAlley(0.5);
+		runStraight(5, SECTION, 0.5, 0);
 		driveMotor(OFF);
 		driveSuction(70, OFF);
 		waitButton();
@@ -207,7 +198,7 @@ void main(void) {
 		calcGyroZRef();
 		switchSensorLED(ON);
 		g_flag_control = 1;
-		g_flag_blindalley_dis = 1;
+		g_flag_blindalley = 1;
 		driveMotor(ON);
 		while (1) {
 
@@ -312,4 +303,18 @@ void main(void) {
 
 
 
+ waitSensor();
+ waitTime(1000);
+ calcGyroZRef();
+ g_current_angle = 0;
+ g_current_angularvelo = 0;
+ g_log_count = 0;
+ waitTime(1500);
+ while (1) {
+ myprintf("%f	%f	%f\n", g_current_angle, g_current_angularvelo,
+ g_gyro_reference);
+
+ }
+ soundSensor();
+ printLog();
  */

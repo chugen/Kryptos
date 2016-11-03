@@ -93,9 +93,9 @@ volatile int8_t g_flag_mode_setting = 0;
 volatile int8_t g_flag_control = 0;
 volatile int8_t g_flag_turn;
 volatile int8_t g_flag_failsafe = 0;
-volatile int8_t g_flag_blindalley_ang = 0;
-volatile int8_t g_flag_blindalley_dis = 0;
+volatile int8_t g_flag_blindalley = 0;
 volatile int8_t g_flag_circuit = 0;
+volatile int8_t g_flag_run_mode=0; //0:デフォルト,1:探索,2:最短
 
 //テスト用
 volatile float g_duty_L;

@@ -27,6 +27,10 @@
 #define SECTION 0.18
 #define HALF_SECTION 0.09
 
+#define DEFAULT 0
+#define SEARCH 1
+#define RUN 2
+/*math*/
 #define M_PI 3.141592653589793
 #define M_SQRT2 1.41421356237
 /****************************************

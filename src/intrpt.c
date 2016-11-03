@@ -32,9 +32,9 @@ void intrptCMT0(void) {
 
 	//getLog(g_sensor_L, g_sensor_R);
 	//getLog(g_target_angularvelo, g_current_angularvelo);
-	//getLog(g_target_velo, g_current_velo);
+	getLog(g_target_velo, g_current_velo);
 	//getLog(g_duty_L, g_duty_R);
-	getLog(g_target_angle, g_current_angle);
+	//getLog(g_target_angle, g_current_angle);
 
 
 	setMotorDuty();
@@ -93,8 +93,8 @@ void setMotorDuty(void) {
 						- ctrlPropAngle(ANG_P)
 						- ctrlIntAngle(ANG_I)
 						- ctrlWall(WALL_P)
-						- ctrlWallFrontAng(WALL_FRONT_P)
-						+ ctrlWallFrontDis(WALL_FRONT_P));
+						- ctrlWallFrontAng(WALL_FRONT_ANG)
+						+ ctrlWallFrontDis(WALL_FRONT_DIS));
 		setMotorDutyR(
 				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
 						+ ctrlPropAngularVelocity(ANG_VELO_P)
@@ -102,8 +102,8 @@ void setMotorDuty(void) {
 						+ ctrlPropAngle(ANG_P)
 						+ ctrlIntAngle(ANG_I)
 						+ ctrlWall(WALL_P)
-						+ ctrlWallFrontAng(WALL_FRONT_P)
-						+ ctrlWallFrontDis(WALL_FRONT_P));
+						+ ctrlWallFrontAng(WALL_FRONT_ANG)
+						+ ctrlWallFrontDis(WALL_FRONT_DIS));
 	}
 }
 /****************************************
@@ -186,7 +186,7 @@ void getSensorVal(void) {
 void checkFailsafe(float velo, float angularvelo, float sensor) {
 	if (fabsf(g_target_velo-g_current_velo) > velo
 			|| (fabsf(g_target_angularvelo-g_current_angularvelo) > angularvelo)
-			|| (g_sensor_FL + g_sensor_FR >= sensor)) {
+			|| ((g_sensor_FL + g_sensor_FR >= sensor)&&(g_flag_run_mode==RUN))) {
 		g_flag_failsafe = 1;
 		g_target_velo = 0;
 		driveSuction(70, OFF);

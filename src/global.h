@@ -96,9 +96,9 @@ extern volatile int8_t g_flag_mode_setting;
 extern volatile int8_t g_flag_turn;
 extern volatile int8_t g_flag_control;
 extern volatile int8_t g_flag_failsafe;
-extern volatile int8_t g_flag_blindalley_ang;
-extern volatile int8_t g_flag_blindalley_dis;
+extern volatile int8_t g_flag_blindalley;
 extern volatile int8_t g_flag_circuit;
+extern volatile int8_t g_flag_run_mode;
 //テスト用
 
 extern volatile float g_duty_L;
