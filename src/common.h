@@ -43,8 +43,8 @@
 
 #define START_X 0
 #define START_Y 0
-#define GOAL_X  1
-#define GOAL_Y 0
+#define GOAL_X  7
+#define GOAL_Y 7
 /****************************************
  path
  ****************************************/
@@ -111,16 +111,24 @@
 
 #define PROGRAM_S1 0xE8
 #define PROGRAM_S2 0x01
-#define PROGRAM_END 0xD0
+
 
 #define ERASE_S1 0x20
-#define ERASE_S2 0xD0
+
 
 #define STATUS_CLEAR 0x50
 
-#define BLANK_CHECK_S1 0x71
-#define BLANK_CHECK_S2 0xD0
+#define CLOCK_S1 0xE9
+#define CLOCK_S2 0x03
+#define CLOCK_S3 0x0F0F
 
+
+#define BLANK_CHECK_S1 0x71
+
+#define BYTE_MODE 0
+#define WORD_MODE 1
+
+#define END 0xD0
 /****************************************
  センサー
  ****************************************/

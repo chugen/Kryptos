@@ -1750,7 +1750,7 @@ void runPath(void) {
 /****************************************
  斜めpath走行
  ****************************************/
-void runPathDiagonal(void) {
+void runPathDiagonal1000(float velo,float acc,float d_velo,float d_acc) {
 	int i = 0;
 	g_flag_gap = 0;
 	g_flag_failsafe = 0;
@@ -1765,7 +1765,7 @@ void runPathDiagonal(void) {
 		if ((g_sensor_FL + g_sensor_FR >= SEN_DEATH) || (g_flag_failsafe == 1))
 			break;
 		if (g_path_3[i] > 0 && g_path_3[i] <= 30) {
-			runStraight(20, HALF_SECTION * g_path_3[i] + addInitDis(i), 4,
+			runStraight(acc, HALF_SECTION * g_path_3[i] + addInitDis(i), velo,
 					connectSpeed1000(i));
 		} else if (g_path_3[i] == S_L_CURVE) {
 			turnCorner(turn_90_L);
@@ -1800,7 +1800,7 @@ void runPathDiagonal(void) {
 		} else if (g_path_3[i] == R_V90) {
 			turnCorner(turn_v90_R_1000);
 		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
-			runStraight(20, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), 3,
+			runStraight(d_acc, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), d_velo,
 					connectSpeed1000(i));
 		} else {
 			//	driveRGB(RED, ON);
@@ -1822,7 +1822,7 @@ void runPathDiagonal(void) {
 }
 
 /*-----------------------------------------------------------*/
-void runPathDiagonal2(void) {
+void runPathDiagonal1200(float velo,float acc,float d_velo,float d_acc)  {
 	int i = 0;
 	g_flag_gap = 0;
 	g_flag_failsafe = 0;
@@ -1837,7 +1837,7 @@ void runPathDiagonal2(void) {
 		if ((g_sensor_FL + g_sensor_FR >= SEN_DEATH) || (g_flag_failsafe == 1))
 			break;
 		if (g_path_3[i] > 0 && g_path_3[i] <= 30) {
-			runStraight(25, HALF_SECTION * g_path_3[i] + addInitDis(i), 4,
+			runStraight(acc, HALF_SECTION * g_path_3[i] + addInitDis(i), velo,
 					connectSpeed1200(i));
 		} else if (g_path_3[i] == S_L_CURVE) {
 			turnCorner(turn_90_L);
@@ -1872,7 +1872,7 @@ void runPathDiagonal2(void) {
 		} else if (g_path_3[i] == R_V90) {
 			turnCorner(turn_v90_R_1200);
 		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
-			runStraight(25, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), 3,
+			runStraight(d_acc, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), d_velo,
 					connectSpeed1000(i));
 		} else {
 			//		driveRGB(RED, ON);
@@ -1892,6 +1892,7 @@ void runPathDiagonal2(void) {
 	g_flag_run_mode=DEFAULT;
 }
 
+/*-----------------------------------------------------------*/
 /****************************************
  スピードコネクト
  ****************************************/

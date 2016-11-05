@@ -215,7 +215,7 @@ float ctrlWall(float kp) {
 
 	} else if (g_flag_diagonal == 1) {
 
-		temp = 0.01
+		temp = 0.007
 				* (-( SEN_REFERENCE_FL - g_sensor_FL)
 						+ ( SEN_REFERENCE_FR - g_sensor_FR));
 
@@ -334,7 +334,7 @@ void runBlindAlley(float velo) {
 		waitTime(300);
 		g_distance = 0;
 
-		runStraight(5, HALF_SECTION+0.01, velo, velo);
+		runStraight(5, HALF_SECTION + 0.01, velo, velo);
 	} else if (SEN_REFERENCE_R - g_sensor_R < -170) {
 		turnCorner(pivot_90_L);
 		g_flag_blindalley = 1;
@@ -348,7 +348,7 @@ void runBlindAlley(float velo) {
 		turnCorner(pivot_90_L);
 		waitTime(300);
 		g_distance = 0;
-		runStraight(5, HALF_SECTION+0.01, velo, velo);
+		runStraight(5, HALF_SECTION + 0.01, velo, velo);
 	} else {
 		g_target_angle = 0;
 		turnCorner(pivot);
@@ -384,20 +384,22 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 	double section1 = 0;
 	double section2 = 0;
 	double section3 = 0;
+	float acc_temp;
+	int8_t sign;
 
 	section1 = (t_max_velo * t_max_velo - g_target_velo * g_target_velo)
 			/ (2 * t_acc);
 	section3 = (t_max_velo * t_max_velo - t_end_velo * t_end_velo)
 			/ (2 * t_acc);
-	section2 = t_dis - section1 - section3;
+	section2 = fabsf(t_dis) - section1 - section3;
 
 	if (section2 <= 0) {
 		if (section1 <= 0 && section3 >= 0) {
 			section1 = 0;
 			section2 = 0;
-			section3 = t_dis;
+			section3 = fabsf(t_dis);
 		} else if (section1 >= 0 && section3 <= 0) {
-			section1 = t_dis;
+			section1 = fabsf(t_dis);
 			section2 = 0;
 			section3 = 0;
 		} else {
@@ -405,19 +407,27 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 			section2 = 0;
 
 			section1 = (t_end_velo * t_end_velo - g_target_velo * g_target_velo)
-					/ (4 * t_acc) + t_dis / 2;
+					/ (4 * t_acc) + fabsf(t_dis) / 2;
 			section3 = (g_target_velo * g_target_velo - t_end_velo * t_end_velo)
-					/ (4 * t_acc) + t_dis / 2;
+					/ (4 * t_acc) + fabsf(t_dis) / 2;
 		}
 
 	}
 	section2 += section1;
 	section3 += section2;
 
+	if ((t_dis) <= 0) {
+		acc_temp = -t_acc;
+		sign=-1;
+	} else {
+		acc_temp = t_acc;
+		sign=1;
+	}
+
 //section1////////////////////////////////////////////////////////////////////
-	g_accele = t_acc;
+	g_accele = acc_temp;
 	while (g_flag_failsafe != 1) {
-		if (g_distance >= section1)
+		if (fabsf(g_distance) >= section1)
 			break;
 	}
 
@@ -425,15 +435,15 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 
 	g_accele = 0;
 	while (g_flag_failsafe != 1) {
-		if (g_distance >= section2)
+		if (fabsf(g_distance) >= section2)
 			break;
 	}
 
 //section3////////////////////////////////////////////////////////////////////
 
-	g_accele = -1.0 * t_acc;
+	g_accele = -1.0 * acc_temp;
 	while (g_flag_failsafe != 1) {
-		if (g_distance >= section3 || g_target_velo < 0)
+		if (fabsf(g_distance) >= section3 || ((g_target_velo*sign) < 0))
 			break;
 	}
 	g_accele = 0;
@@ -447,31 +457,31 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
  ****************************************/
 /*others~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,sen	,dia	,mode}
-const turn_t turn_90_L = 			{ 90.8	,9000	,603	,0.5	,0.030	,0.04	,15000	,0		,-1 };
-const turn_t turn_90_R = 			{-88	,9000	,603	,0.5	,0.018	,0.039	,15000	,0		,-1	};
+const turn_t turn_90_L = 			{ 90.8	,9000	,603	,0.5	,0.016	,0.04	,15000	,0		,-1 };
+const turn_t turn_90_R = 			{-88.3	,9000	,603	,0.5	,0.016	,0.039	,15000	,0		,-1	};
 const turn_t pivot = 				{ 182	,6000	,500	,0		,0		,0		,10000	,0		,-2 };
 const turn_t pivot_90_L =			{ 92	,6000	,400	,0		,0		,0		,10000	,0		,-2 };
 const turn_t pivot_90_R =			{ -88	,6000	,400	,0		,0		,0		,10000	,0		,-2 };
 /*1000~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,sen	,dia	,mode}
-const turn_t turn_90_wide_L_1000 =	{ 90	,7000	,651	,1		,0.035	,0.00	,380	,0		,0 };
-const turn_t turn_90_wide_R_1000 = 	{-90	,7000	,651	,1		,0.04	,0.00	,380	,0		,0 };
+const turn_t turn_90_wide_L_1000 =	{ 90	,7000	,651	,1		,0.025	,0.00	,380	,0		,0 };
+const turn_t turn_90_wide_R_1000 = 	{-90	,7000	,651	,1		,0.037	,0.00	,380	,0		,0 };
 
-const turn_t turn_180_L_1000 = 		{ 180	,5900	,680	,1		,0.05	,0.00	,380	,0		,0 };
-const turn_t turn_180_R_1000 =		{-178	,5000	,640	,1		,0.05	,0.00	,380	,0		,0 };
+const turn_t turn_180_L_1000 = 		{ 180	,6600	,690	,1		,0.03	,0.00	,380	,0		,0 };
+const turn_t turn_180_R_1000 =		{-178	,5000	,640	,1		,0.03	,0.00	,380	,0		,0 };
 
-const turn_t turn_45_in_L_1000 = 	{ 45	,15500	,654	,1		,0.02	,0.00	,380	,1		,0 };
+const turn_t turn_45_in_L_1000 = 	{ 45	,15500	,654	,1		,0.035	,0.00	,380	,1		,0 };
 const turn_t turn_45_in_R_1000 = 	{-45	,15500	,654	,1		,0.03	,0.00	,380	,1		,0 };
 const turn_t turn_45_out_L_1000 = 	{ 45	,15500	,634	,1		,0.085	,0.00	,800	,0		,1 };
 const turn_t turn_45_out_R_1000 =	{-45	,15500	,634	,1		,0.075	,0.00	,800	,0		,1 };
 
-const turn_t turn_135_in_L_1000 = 	{ 135	,10000	,1000	,1		,0.05	,0.00	,380	,1		,0 };
-const turn_t turn_135_in_R_1000 = 	{-135	,7300	,810	,1		,0.068	,0.00	,380	,1		,0 };
-const turn_t turn_135_out_L_1000 = 	{ 135	,10000	,1000	,1		,0.069	,0.00	,800	,0		,1 };
-const turn_t turn_135_out_R_1000 = 	{-135	,10000	,1000	,1		,0.086	,0.00	,800	,0		,1 };
+const turn_t turn_135_in_L_1000 = 	{ 135	,10000	,1000	,1		,0.053	,0.00	,380	,1		,0 };
+const turn_t turn_135_in_R_1000 = 	{-135	,7300	,810	,1		,0.048	,0.00	,380	,1		,0 };
+const turn_t turn_135_out_L_1000 = 	{ 135	,10000	,1000	,1		,0.059	,0.00	,800	,0		,1 };
+const turn_t turn_135_out_R_1000 = 	{-133.8	,10000	,1000	,1		,0.08	,0.00	,800	,0		,1 };
 
-const turn_t turn_v90_L_1000 = 		{ 90	,22000	,1056	,1		,0.075	,0.00	,800	,1		,1 };
-const turn_t turn_v90_R_1000 =		{-90	,22000	,1056	,1		,0.095	,0.00	,800	,1		,1 };
+const turn_t turn_v90_L_1000 = 		{ 90	,22000	,1056	,1		,0.059	,0.00	,800	,1		,1 };
+const turn_t turn_v90_R_1000 =		{-90	,22000	,1056	,1		,0.072	,0.00	,800	,1		,1 };
 /*1200~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,sen	,dia	,mode}
 const turn_t turn_90_wide_L_1200 =	{ 90	,8000	,696	,1.2	,0.026	,0.037	,500	,0		,0 };

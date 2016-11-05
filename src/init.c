@@ -10,6 +10,7 @@
 #include "sensor.h"
 #include "common.h"
 #include "global.h"
+#include "flash.h"
 void init(void) {
 	initClock();
 	initIO();
@@ -340,62 +341,8 @@ void initSPI(void) {
 
 void initFlash(void) {
 
-//
-//	//DMACの準備
-//
-//	SYSTEM.PRCR.WORD = 0xA502; //WORDで変更しないとNG！ MSTPCRAはﾌﾟﾛﾃｸﾄ1
-//
-//	MSTP_DMAC0 = 0; //DMACﾓｼﾞｭｰﾙｽﾄｯﾌﾟを0:解除   P255
-//
-//	DMAC0.DMCNT.BIT.DTE = 0; //DMA転送を禁止
-//
-//	DMAC0.DMSAR = (long *)0xFEFFE000; //DMA転送元ｱﾄﾞﾚｽSET!
-//
-//	DMAC0.DMDAR = (long *)0x007F8000; //DMA転送先ｱﾄﾞﾚｽSET!
-//
-//	DMAC0.DMTMD.BIT.DCTG = 0; //DMA起動要因がｿﾌﾄｳｴｱ P481
-//
-//	DMAC0.DMTMD.BIT.SZ = 2; //32ﾋﾞｯﾄ転送
-//
-//	DMAC0.DMTMD.BIT.MD = 2; //ﾌﾞﾛｯｸ転送ﾓｰﾄﾞ
-//
-//	DMAC0.DMAMD.BIT.SM = 2; //転送元ｱﾄﾞﾚｽ更新ｲﾝｸﾘﾒﾝﾄ
-//
-//	DMAC0.DMAMD.BIT.DM = 2; //転送先ｱﾄﾞﾚｽ更新ｲﾝｸﾘﾒﾝﾄ
-//
-//	DMAC0.DMTMD.BIT.DTS = 2; //※ﾘﾋﾟｰﾄ領域選択しない
-//
-//	DMAC0.DMCRA = 0x000; //1ﾌﾞﾛｯｸ=1024ﾃﾞｰﾀ(1K) DMCRAH=000h=1024 P450_
-//
-//	DMAC0.DMCRB = 8; //ﾌﾞﾛｯｸ転送回数　　　　　　1K×8=8K
-//
-//	DMAC0.DMREQ.BIT.CLRS = 0; //ｿﾌﾄ起動後SWREQをｸﾘｱ P481
-//
-//	DMAC.DMAST.BIT.DMST = 1; //DMAC起動を許可 P480
-//
-//	DMAC0.DMCNT.BIT.DTE = 1; //DMA転送を許可 P480
-//
-//	SYSTEM.PRCR.WORD = 0xA500;
-//
-//	//P1557 FCU RAMへのファーム転送
-//
-//	if(FLASH.FENTRYR.WORD != 0x0000){FLASH.FENTRYR.WORD = 0xAA00;}
-//
-//	//FCU RAM イネーブルレジスタ
-//
-//	FLASH.FCURAME.WORD = 0xC401; //FCU RAM アクセス許可 P1534_
-//
-//	//DMAC 起動 FUUﾌｧｰﾑの転送(ｺﾋﾟｰ)
-//
-//	//DMA転送開始　0xFEFFE000-0xFeFFFFFF⇒0x007F8000-0x007F9FF
-//
-//	while(DMAC0.DMREQ.BIT.SWREQ){} //※ソフト起動では　32bit×1024個　=　4K　を１回のみ
-//
-//	DMAC0.DMREQ.BIT.SWREQ = 1;
-//
-//	while(DMAC0.DMREQ.BIT.SWREQ){} //※ソフト起動では　32bit×1024個　=　4K　を１回のみ　8K分
-//
-//	DMAC0.DMREQ.BIT.SWREQ = 1;
+	 trancefarFirmwareToRam();
+
 }
 
 void initMPU6000(void) {
