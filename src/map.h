@@ -113,8 +113,8 @@ void runPath(void) ;
 /****************************************
  斜めpath走行1
  ****************************************/
-void runPathDiagonal(void);
-void runPathDiagonal2(void);
+void runPathDiagonal1000(float velo,float acc,float d_velo,float d_acc) ;
+void runPathDiagonal1200(float velo,float acc,float d_velo,float d_acc) ;
 
 /****************************************
  スピードコネクト

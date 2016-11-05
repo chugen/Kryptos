@@ -196,23 +196,25 @@ void selectRun(void) {
 	switch (selectMode(5)) {
 	case 0:
 		setTargetCoord(GOAL_X, GOAL_Y);
+
 		countStepShortest();
 		setCurrentCoord(START_X, START_Y);
+
 		setOrient(NORTH);
 		makePath();
-		makePath2();
+		makePath3();
 
 		waitSensor();
 
 		waitTime(1000);
 		calcGyroZRef();
 		soundStartRun();
-		driveSuction(70, OFF);
+		driveSuction(100, ON);
 		waitTime(1000);
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPath();
+		runPathDiagonal1000(2, 10, 2, 10);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -237,7 +239,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal();
+		runPathDiagonal1000(3, 15, 3, 10);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -257,25 +259,90 @@ void selectRun(void) {
 		waitTime(1000);
 		calcGyroZRef();
 		soundStartRun();
-		driveSuction(70, ON);
+		driveSuction(100, ON);
 		waitTime(1000);
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal2();
+		runPathDiagonal1000(4, 15, 3, 15);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
 		break;
 	case 3:
-		waitButton();
-		printLog();
+		setTargetCoord(GOAL_X, GOAL_Y);
+
+		countStepShortest();
+		setCurrentCoord(START_X, START_Y);
+
+		setOrient(NORTH);
+		makePath();
+		makePath3();
+
+		waitSensor();
+
+		waitTime(1000);
+		calcGyroZRef();
+		soundStartRun();
+		driveSuction(100, ON);
+		waitTime(1000);
+		initRun();
+		driveMotor(ON);
+		switchSensorLED(ON);
+		runPathDiagonal1000(4, 20, 3, 20);
+		switchSensorLED(OFF);
+		driveMotor(OFF);
+		driveSuction(100, OFF);
 		break;
 	case 4:
+		setTargetCoord(GOAL_X, GOAL_Y);
 
+		countStepShortest();
+		setCurrentCoord(START_X, START_Y);
+
+		setOrient(NORTH);
+		makePath();
+		makePath3();
+
+		waitSensor();
+
+		waitTime(1000);
+		calcGyroZRef();
+		soundStartRun();
+		driveSuction(100, ON);
+		waitTime(1000);
+		initRun();
+		driveMotor(ON);
+		switchSensorLED(ON);
+		runPathDiagonal1000(4, 20, 4, 20);
+		switchSensorLED(OFF);
+		driveMotor(OFF);
+		driveSuction(100, OFF);
 		break;
 	case 5:
+		setTargetCoord(GOAL_X, GOAL_Y);
 
+		countStepShortest();
+		setCurrentCoord(START_X, START_Y);
+
+		setOrient(NORTH);
+		makePath();
+		makePath3();
+
+		waitSensor();
+
+		waitTime(1000);
+		calcGyroZRef();
+		soundStartRun();
+		driveSuction(100, ON);
+		waitTime(1000);
+		initRun();
+		driveMotor(ON);
+		switchSensorLED(ON);
+		runPathDiagonal1000(4.5, 20, 4.5, 20);
+		switchSensorLED(OFF);
+		driveMotor(OFF);
+		driveSuction(100, OFF);
 		break;
 	default:
 		break;

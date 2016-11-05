@@ -25,6 +25,7 @@
 #include "map.h"
 #include "contest.h"
 #include "adjustment.h"
+#include "flash.h"
 
 void main(void) {
 	init();
@@ -35,10 +36,25 @@ void main(void) {
 		driveRGB(ORANGE, ON);
 		selectContest();
 
+//		FLASH.DFLWE0.WORD = 0x1EFF; //プロテクト解除
+//		changeFCUMode(0, 0, P_E);
+//		driveRGB(RED, ON);
+//		notificateClock(0, 0);
+//
+//		eraseFCU(0, 0);
+//		driveRGB(BLUE, ON);
+//		programFCU(0, 0, 0xff33);
+//
+//		driveRGB(GREEN, ON);
+//		changeFCUMode(0, 0, READ);
+//		myprintf("%d\n", readFCUValue(0, 0));
+//
+//		FLASH.DFLWE0.WORD = 0x1E00; // disable
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
 		selectAdjustment();
+
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
@@ -49,10 +65,13 @@ void main(void) {
 		initRun();
 		driveMotor(ON);
 		//runStraight(5, HALF_SECTION, 0.5, 0.5);
-		//runStraight(5,SECTION, 0.5, 0.5);
+
 		//while (1) {
-		//turnCorner(turn_90_L);
-		runStraight(5, -SECTION, 0.5, 0);
+			runStraight(5, SECTION, 0.5, 0.5);
+			turnCorner(turn_90_L);
+			runStraight(5, SECTION, 0.5, 0);
+		//}
+
 		driveMotor(OFF);
 		waitButton();
 		printLog();
@@ -68,10 +87,11 @@ void main(void) {
 		initRun();
 		driveMotor(ON);
 		//runStraight(5, HALF_SECTION, 0.5, 0.5);
-		runStraight(5, SECTION, 0.5, 0.5);
+
 		//while (1) {
-		turnCorner(turn_90_R);
-		runStraight(5, SECTION, 0.5, 0);
+			runStraight(5, SECTION, 0.5, 0.5);
+			turnCorner(turn_90_R);
+			runStraight(5, SECTION, 0.5, 0);
 
 		//}
 		break;

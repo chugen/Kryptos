@@ -43,7 +43,7 @@ float ctrlPropVelocity(float kp);
 /****************************************
  速度I制御
  ****************************************/
-float ctrlIntVelocityL(float ki);
+float ctrlIntVelocity(float ki);
 
 /****************************************
  角速度P制御
