@@ -30,12 +30,12 @@ void intrptCMT0(void) {
 	g_current_velo = returnVelocityL() + returnVelocityR();
 	g_current_angularvelo = returnGyroZVal() - g_gyro_reference;
 
-	getLog(g_sensor_L, g_sensor_R);
+	//getLog(g_sensor_L, g_sensor_R);
+	getLog(g_sensor_L,g_flag_pillar_edge_L);
 	//getLog(g_target_angularvelo, g_current_angularvelo);
 	//getLog(g_target_velo, g_current_velo);
 	//getLog(g_duty_L, g_duty_R);
 	//getLog(g_target_angle, g_current_angle);
-
 
 	setMotorDuty();
 
@@ -47,6 +47,8 @@ void intrptCMT0(void) {
  ****************************************/
 void intrptCMT1(void) {
 	getSensorVal();
+	checkPillarEdgeL();
+	checkPillarEdgeR();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,19 +92,15 @@ void setMotorDuty(void) {
 				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
 						- ctrlPropAngularVelocity(ANG_VELO_P)
 						- ctrlIntAngularVelocity(ANG_VELO_I)
-						- ctrlPropAngle(ANG_P)
-						- ctrlIntAngle(ANG_I)
-						- ctrlWall(WALL_P)
-						- ctrlWallFrontAng(WALL_FRONT_ANG)
+						- ctrlPropAngle(ANG_P) - ctrlIntAngle(ANG_I)
+						- ctrlWall(WALL_P) - ctrlWallFrontAng(WALL_FRONT_ANG)
 						+ ctrlWallFrontDis(WALL_FRONT_DIS));
 		setMotorDutyR(
 				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
 						+ ctrlPropAngularVelocity(ANG_VELO_P)
 						+ ctrlIntAngularVelocity(ANG_VELO_I)
-						+ ctrlPropAngle(ANG_P)
-						+ ctrlIntAngle(ANG_I)
-						+ ctrlWall(WALL_P)
-						+ ctrlWallFrontAng(WALL_FRONT_ANG)
+						+ ctrlPropAngle(ANG_P) + ctrlIntAngle(ANG_I)
+						+ ctrlWall(WALL_P) + ctrlWallFrontAng(WALL_FRONT_ANG)
 						+ ctrlWallFrontDis(WALL_FRONT_DIS));
 	}
 }
@@ -180,13 +178,62 @@ void getSensorVal(void) {
 	g_sensor_L_derivative = g_sensor_L - sensor_L_before;
 	g_sensor_R_derivative = g_sensor_R - sensor_R_before;
 }
+
+/****************************************
+ 壁切れ判定
+ ****************************************/
+uint8_t checkPillarEdgeL() {
+	int16_t i;
+	static float sensor_L_before[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+	static float sensor_L_pillar = 0;
+
+	for (i = 6; i >= 0; i--) {
+		sensor_L_before[i + 1] = sensor_L_before[i];
+	}
+	sensor_L_before[0] = g_sensor_L;
+
+	sensor_L_pillar = ((sensor_L_before[0] + sensor_L_before[1] + sensor_L_before[2])
+					- (sensor_L_before[5] + sensor_L_before[6] + sensor_L_before[7]))/3;
+
+	if (sensor_L_pillar < -100) {
+		g_flag_pillar_edge_L = 1;
+	} else {
+		g_flag_pillar_edge_L = 0;
+	}
+
+	return 0;
+}
+uint8_t checkPillarEdgeR() {
+	int16_t i;
+		static float sensor_R_before[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+		static float sensor_R_pillar = 0;
+
+		for (i = 6; i >= 0; i--) {
+			sensor_R_before[i + 1] = sensor_R_before[i];
+		}
+		sensor_R_before[0] = g_sensor_R;
+
+		sensor_R_pillar = ((sensor_R_before[0] + sensor_R_before[1] + sensor_R_before[2])
+						- (sensor_R_before[5] + sensor_R_before[6] + sensor_R_before[7]))/3;
+
+		if (sensor_R_pillar < -100) {
+			g_flag_pillar_edge_R = 1;
+		} else {
+			g_flag_pillar_edge_R = 0;
+		}
+
+		return 0;
+}
 /****************************************
  フェイルセーフ　割り込み
  ****************************************/
 void checkFailsafe(float velo, float angularvelo, float sensor) {
 	if (fabsf(g_target_velo-g_current_velo) > velo
 			|| (fabsf(g_target_angularvelo-g_current_angularvelo) > angularvelo)
-			|| ((g_sensor_FL + g_sensor_FR >= sensor)&&(g_flag_run_mode==RUN))) {
+			|| ((g_sensor_FL + g_sensor_FR >= sensor)
+					&& (g_flag_run_mode == RUN))) {
 		g_flag_failsafe = 1;
 		g_target_velo = 0;
 		driveSuction(70, OFF);

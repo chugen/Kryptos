@@ -1756,6 +1756,10 @@ void runPathDiagonal1000(float velo,float acc,float d_velo,float d_acc) {
 	g_flag_failsafe = 0;
 	g_flag_diagonal = 0;
 	g_flag_run_mode=RUN;
+	if(g_path_3[0]>=31){
+		runStraight(25,INIT_DIS, velo,
+							connectSpeed1000(i));
+	}
 	while (1) {
 		g_flag_path_run_goal = 0;
 		if (i > g_flag_step_goal_3) {

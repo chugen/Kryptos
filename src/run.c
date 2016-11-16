@@ -215,9 +215,10 @@ float ctrlWall(float kp) {
 
 	} else if (g_flag_diagonal == 1) {
 
-		temp = 0.007
-				* (-( SEN_REFERENCE_FL - g_sensor_FL)
-						+ ( SEN_REFERENCE_FR - g_sensor_FR));
+//		temp = 0.002
+//				* (-( SEN_REFERENCE_FL - g_sensor_FL)
+//						+ ( SEN_REFERENCE_FR - g_sensor_FR));
+		return 0;
 
 	} else if (g_flag_circuit == 1) {
 		temp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
@@ -294,6 +295,7 @@ float ctrlWallFrontDis(float kp) {
 	}
 	return temp;
 }
+
 /****************************************
  袋小路
  ****************************************/
@@ -418,10 +420,10 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 
 	if ((t_dis) <= 0) {
 		acc_temp = -t_acc;
-		sign=-1;
+		sign = -1;
 	} else {
 		acc_temp = t_acc;
-		sign=1;
+		sign = 1;
 	}
 
 //section1////////////////////////////////////////////////////////////////////
@@ -443,7 +445,7 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 
 	g_accele = -1.0 * acc_temp;
 	while (g_flag_failsafe != 1) {
-		if (fabsf(g_distance) >= section3 || ((g_target_velo*sign) < 0))
+		if (fabsf(g_distance) >= section3 || ((g_target_velo * sign) < 0))
 			break;
 	}
 	g_accele = 0;
@@ -456,74 +458,75 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
  スラローム
  ****************************************/
 /*others~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-//スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,sen	,dia	,mode}
-const turn_t turn_90_L = 			{ 90.8	,9000	,603	,0.5	,0.016	,0.04	,15000	,0		,-1 };
-const turn_t turn_90_R = 			{-88.3	,9000	,603	,0.5	,0.016	,0.039	,15000	,0		,-1	};
-const turn_t pivot = 				{ 182	,6000	,500	,0		,0		,0		,10000	,0		,-2 };
-const turn_t pivot_90_L =			{ 92	,6000	,400	,0		,0		,0		,10000	,0		,-2 };
-const turn_t pivot_90_R =			{ -88	,6000	,400	,0		,0		,0		,10000	,0		,-2 };
+//スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,dia	,mode}
+const turn_t turn_90_L = 			{ 90.8	,9000	,603	,0.5	,0.016	,0.04	,0		,-1 };
+const turn_t turn_90_R = 			{-88.3	,9000	,603	,0.5	,0.016	,0.039	,0		,-1	};
+const turn_t pivot = 				{ 182	,6000	,500	,0		,0		,0		,0		,-2 };
+const turn_t pivot_90_L =			{ 92	,6000	,400	,0		,0		,0		,0		,-2 };
+const turn_t pivot_90_R =			{ -88	,6000	,400	,0		,0		,0		,0		,-2 };
 /*1000~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-//スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,sen	,dia	,mode}
-const turn_t turn_90_wide_L_1000 =	{ 90	,7000	,651	,1		,0.025	,0.00	,380	,0		,0 };
-const turn_t turn_90_wide_R_1000 = 	{-90	,7000	,651	,1		,0.037	,0.00	,380	,0		,0 };
+//スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,dia	,mode}
+const turn_t turn_90_wide_L_1000 =	{ 90	,7000	,651	,1		,0.022	,0.00	,0		,0 };
+const turn_t turn_90_wide_R_1000 = 	{-90	,7000	,651	,1		,0.034	,0.00	,0		,0 };
 
-const turn_t turn_180_L_1000 = 		{ 180	,6600	,690	,1		,0.03	,0.00	,380	,0		,0 };
-const turn_t turn_180_R_1000 =		{-178	,5000	,640	,1		,0.03	,0.00	,380	,0		,0 };
+const turn_t turn_180_L_1000 = 		{ 184	,6650	,680	,1		,0.03	,0.00	,0		,0 };
+const turn_t turn_180_R_1000 =		{-178.5	,6400	,650	,1		,0.03	,0.00	,0		,0 };
 
-const turn_t turn_45_in_L_1000 = 	{ 45	,15500	,654	,1		,0.035	,0.00	,380	,1		,0 };
-const turn_t turn_45_in_R_1000 = 	{-45	,15500	,654	,1		,0.03	,0.00	,380	,1		,0 };
-const turn_t turn_45_out_L_1000 = 	{ 45	,15500	,634	,1		,0.085	,0.00	,800	,0		,1 };
-const turn_t turn_45_out_R_1000 =	{-45	,15500	,634	,1		,0.075	,0.00	,800	,0		,1 };
+const turn_t turn_45_in_L_1000 = 	{ 45	,15500	,654	,1		,0.025	,0.00	,1		,0 };
+const turn_t turn_45_in_R_1000 = 	{-45	,15500	,654	,1		,0.02	,0.00	,1		,0 };
+const turn_t turn_45_out_L_1000 = 	{ 45	,15500	,634	,1		,0.085	,0.00	,0		,1 };
+const turn_t turn_45_out_R_1000 =	{-45	,15500	,634	,1		,0.075	,0.00	,0		,1 };
 
-const turn_t turn_135_in_L_1000 = 	{ 135	,10000	,1000	,1		,0.053	,0.00	,380	,1		,0 };
-const turn_t turn_135_in_R_1000 = 	{-135	,7300	,810	,1		,0.048	,0.00	,380	,1		,0 };
-const turn_t turn_135_out_L_1000 = 	{ 135	,10000	,1000	,1		,0.059	,0.00	,800	,0		,1 };
-const turn_t turn_135_out_R_1000 = 	{-133.8	,10000	,1000	,1		,0.08	,0.00	,800	,0		,1 };
+const turn_t turn_135_in_L_1000 = 	{ 135	,10000	,1000	,1		,0.053	,0.00	,1		,0 };
+const turn_t turn_135_in_R_1000 = 	{-135	,7300	,810	,1		,0.048	,0.00	,1		,0 };
+const turn_t turn_135_out_L_1000 = 	{ 135	,10000	,1000	,1		,0.059	,0.00	,0		,1 };
+const turn_t turn_135_out_R_1000 = 	{-133.8	,10000	,1000	,1		,0.08	,0.00	,0		,1 };
 
-const turn_t turn_v90_L_1000 = 		{ 90	,22000	,1056	,1		,0.059	,0.00	,800	,1		,1 };
-const turn_t turn_v90_R_1000 =		{-90	,22000	,1056	,1		,0.072	,0.00	,800	,1		,1 };
+const turn_t turn_v90_L_1000 = 		{ 90	,22000	,1056	,1		,0.042	,0.00	,1		,1 };
+const turn_t turn_v90_R_1000 =		{-89.5	,22000	,1056	,1		,0.053	,0.00	,1		,1 };
 /*1200~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-//スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,sen	,dia	,mode}
-const turn_t turn_90_wide_L_1200 =	{ 90	,8000	,696	,1.2	,0.026	,0.037	,500	,0		,0 };
-const turn_t turn_90_wide_R_1200 = 	{-90	,8000	,696	,1.2	,0.026	,0.037	,500	,0		,0 };
+//スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,dia	,mode}
+const turn_t turn_90_wide_L_1200 =	{ 90	,8000	,696	,1.2	,0.026	,0.037	,0		,0 };
+const turn_t turn_90_wide_R_1200 = 	{-90	,8000	,696	,1.2	,0.026	,0.037	,0		,0 };
 
-const turn_t turn_180_L_1200 = 		{ 178	,8000	,824	,1.2	,0.022	,0.02	,500	,0		,0 };
-const turn_t turn_180_R_1200 =		{-178	,8000	,824	,1.2	,0.022	,0.02	,500	,0		,0 };
+const turn_t turn_180_L_1200 = 		{ 178	,8000	,824	,1.2	,0.022	,0.02	,0		,0 };
+const turn_t turn_180_R_1200 =		{-178	,8000	,824	,1.2	,0.022	,0.02	,0		,0 };
 
-const turn_t turn_45_in_L_1200 = 	{ 45	,12000	,600	,1.2	,0.014	,0.030	,10000	,1		,0 };
-const turn_t turn_45_in_R_1200 = 	{-45	,12000	,600	,1.2	,0.014	,0.050	,10000	,1		,0 };
-const turn_t turn_45_out_L_1200 = 	{ 45	,12000	,600	,1.2	,0.050	,0.014	,10000	,0		,1 };
-const turn_t turn_45_out_R_1200 =	{-45	,12000	,600	,1.2	,0.050	,0.014	,10000	,0		,1 };
+const turn_t turn_45_in_L_1200 = 	{ 45	,12000	,600	,1.2	,0.014	,0.030	,1		,0 };
+const turn_t turn_45_in_R_1200 = 	{-45	,12000	,600	,1.2	,0.014	,0.050	,1		,0 };
+const turn_t turn_45_out_L_1200 = 	{ 45	,12000	,600	,1.2	,0.050	,0.014	,0		,1 };
+const turn_t turn_45_out_R_1200 =	{-45	,12000	,600	,1.2	,0.050	,0.014	,0		,1 };
 
-const turn_t turn_135_in_L_1200 = 	{ 135	,15500	,1200	,1.2	,0.072	,0.062	,10000	,1		,0 };
-const turn_t turn_135_in_R_1200 = 	{-135	,15500	,1200	,1.2	,0.072	,0.062	,10000	,1		,0 };
-const turn_t turn_135_out_L_1200 = 	{ 135	,15500	,1200	,1.2	,0.062	,0.072	,10000	,0		,1 };
-const turn_t turn_135_out_R_1200 = 	{-135	,15500	,1200	,1.2	,0.062	,0.072	,10000	,0		,1 };
+const turn_t turn_135_in_L_1200 = 	{ 135	,15500	,1200	,1.2	,0.072	,0.062	,1		,0 };
+const turn_t turn_135_in_R_1200 = 	{-135	,15500	,1200	,1.2	,0.072	,0.062	,1		,0 };
+const turn_t turn_135_out_L_1200 = 	{ 135	,15500	,1200	,1.2	,0.062	,0.072	,0		,1 };
+const turn_t turn_135_out_R_1200 = 	{-135	,15500	,1200	,1.2	,0.062	,0.072	,0		,1 };
 
-const turn_t turn_v90_L_1200 = 		{ 90	,22000	,1056	,1.2	,0.052	,0.052	,10000	,1		,1 };
-const turn_t turn_v90_R_1200 =		{-90	,22000	,1056	,1.2	,0.052	,0.052	,10000	,1		,1 };
+const turn_t turn_v90_L_1200 = 		{ 90	,22000	,1056	,1.2	,0.052	,0.052	,1		,1 };
+const turn_t turn_v90_R_1200 =		{-90	,22000	,1056	,1.2	,0.052	,0.052	,1		,1 };
 /*1400~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-//スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,sen	,dia	,mode}
-const turn_t turn_90_wide_L_1400 =	{ 90	,12000	,852	,1.4	,0.043	,0.04	,500	,0		,0 };
-const turn_t turn_90_wide_R_1400 = 	{-90	,12000	,852	,1.4	,0.043	,0.04	,500	,0		,0 };
+//スラロームパラメータ						{degree	,alpha	,omega	,velo	,front	,rear	,dia	,mode}
+const turn_t turn_90_wide_L_1400 =	{ 90	,12000	,852	,1.4	,0.043	,0.04	,0		,0 };
+const turn_t turn_90_wide_R_1400 = 	{-90	,12000	,852	,1.4	,0.043	,0.04	,0		,0 };
 
-const turn_t turn_180_L_1400 = 		{ 178	,11500	,954	,1.4	,0.022	,0.019	,500	,0		,0 };
-const turn_t turn_180_R_1400 =		{-178	,11500	,954	,1.4	,0.022	,0.019	,500	,0		,0 };
+const turn_t turn_180_L_1400 = 		{ 178	,11500	,954	,1.4	,0.022	,0.019	,0		,0 };
+const turn_t turn_180_R_1400 =		{-178	,11500	,954	,1.4	,0.022	,0.019	,0		,0 };
 
-const turn_t turn_45_in_L_1400 = 	{ 45	,26000	,884	,1.4	,0.029	,0.069	,10000	,1		,0 };
-const turn_t turn_45_in_R_1400 = 	{-45	,26000	,884	,1.4	,0.029	,0.069	,10000	,1		,0 };
-const turn_t turn_45_out_L_1400 = 	{ 45	,26000	,884	,1.4	,0.069	,0.029	,10000	,0		,1 };
-const turn_t turn_45_out_R_1400 =	{-45	,26000	,884	,1.4	,0.069	,0.029	,10000	,0		,1 };
+const turn_t turn_45_in_L_1400 = 	{ 45	,26000	,884	,1.4	,0.029	,0.069	,1		,0 };
+const turn_t turn_45_in_R_1400 = 	{-45	,26000	,884	,1.4	,0.029	,0.069	,1		,0 };
+const turn_t turn_45_out_L_1400 = 	{ 45	,26000	,884	,1.4	,0.069	,0.029	,0		,1 };
+const turn_t turn_45_out_R_1400 =	{-45	,26000	,884	,1.4	,0.069	,0.029	,0		,1 };
 
-const turn_t turn_135_in_L_1400 = 	{ 135	,17000	,1241	,1.4	,0.050	,0.039	,10000	,1		,0 };
-const turn_t turn_135_in_R_1400 = 	{-135	,17000	,1241	,1.4	,0.050	,0.039	,10000	,1		,0 };
-const turn_t turn_135_out_L_1400 = 	{ 135	,17000	,1241	,1.4	,0.039	,0.050	,10000	,0		,1 };
-const turn_t turn_135_out_R_1400 = 	{-135	,17000	,1241	,1.4	,0.039	,0.050	,10000	,0		,1 };
+const turn_t turn_135_in_L_1400 = 	{ 135	,17000	,1241	,1.4	,0.050	,0.039	,1		,0 };
+const turn_t turn_135_in_R_1400 = 	{-135	,17000	,1241	,1.4	,0.050	,0.039	,1		,0 };
+const turn_t turn_135_out_L_1400 = 	{ 135	,17000	,1241	,1.4	,0.039	,0.050	,0		,1 };
+const turn_t turn_135_out_R_1400 = 	{-135	,17000	,1241	,1.4	,0.039	,0.050	,0		,1 };
 
-const turn_t turn_v90_L_1400 = 		{ 90	,45500	,1501	,1.4	,0.050	,0.050	,10000	,1		,1 };
-const turn_t turn_v90_R_1400 =		{-90	,45500	,1501	,1.4	,0.050	,0.050	,10000	,1		,1 };
+const turn_t turn_v90_L_1400 = 		{ 90	,45500	,1501	,1.4	,0.050	,0.050	,1		,1 };
+const turn_t turn_v90_R_1400 =		{-90	,45500	,1501	,1.4	,0.050	,0.050	,1		,1 };
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-const turn_t turn_90_wide_R_1500 = 	{-78	,18000	,1500	,1.5	,0.0	,0.18	,450	,0		,0 };
+const turn_t turn_90_wide_R_1500 = 	{-78	,18000	,1500	,1.5	,0.0	,0.18	,0		,0 };
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void turnCorner(turn_t p) {
 	double section1 = 0;
@@ -533,43 +536,33 @@ void turnCorner(turn_t p) {
 	float angacc_temp;
 	if (p.mode == 0) { //通常壁切れ
 		if (p.angle >= 0) {
-			while (g_sensor_L < 350)
-				;
 
-			while (g_sensor_L > p.sensor_break)
+			while (g_flag_pillar_edge_L == 0)
 				;
 			g_distance = 0;
-
 			runStraight(5, p.front, p.velocity, p.velocity);
 
 		} else {
-			while (g_sensor_R < 370)
-				;
 
-			while (g_sensor_R > p.sensor_break)
+			while (g_flag_pillar_edge_R == 0)
 				;
 			g_distance = 0;
-
 			runStraight(5, p.front, p.velocity, p.velocity);
 
 		}
 	} else if (p.mode == 1) { //斜め中壁切れ
 		g_flag_turn = 1; //ターンフラグ立てる
 		if (p.angle >= 0) {
-			while (g_sensor_L < 700)
-				;
 
-			while (g_sensor_L > p.sensor_break)
+			while (g_flag_pillar_edge_L == 0)
 				;
 			g_distance = 0;
 
 			runStraight(5, p.front, p.velocity, p.velocity);
 
 		} else {
-			while (g_sensor_R < 700)
-				;
 
-			while (g_sensor_R > p.sensor_break)
+			while (g_flag_pillar_edge_R == 0)
 				;
 			g_distance = 0;
 
