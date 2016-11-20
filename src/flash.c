@@ -161,7 +161,8 @@ void programFCU(uint16_t block, uint16_t byte, uint16_t content) {
 	writeToBlock(block, byte, BYTE_MODE, PROGRAM_S2);
 	writeToBlock(block, byte, WORD_MODE, content);
 	writeToBlock(block, byte, BYTE_MODE, END);
-	while(FLASH.FSTATR0.BIT.FRDY == 0);
+	//while(FLASH.FSTATR0.BIT.FRDY == 0);
+	checkFRDY(50);
 }
 
 void eraseFCU(uint16_t block, uint16_t byte){

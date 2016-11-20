@@ -77,5 +77,8 @@ void soundButton(void);
  カウント音
  ****************************************/
 void soundCount(int16_t mode);
-
+/****************************************
+ 起動通知LED
+ ****************************************/
+void notificateStartUp(void);
 #endif /* APP_HPP_ */

@@ -22,8 +22,8 @@
 //輪距(m)
 #define TREAD 0.065
 //タイヤ直径(m)
-#define DIAMETER_L 0.0218
-#define DIAMETER_R 0.0218
+#define DIAMETER_L 0.0219//0.0218
+#define DIAMETER_R 0.0219//0.0218
 //ギア歯数
 #define PINION 9.0
 #define SPUR 35.0
@@ -41,10 +41,13 @@
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 535//430//400//430//470//525//500
-#define SEN_REFERENCE_R 520//480//550//520//520
-#define SEN_REFERENCE_FL 980//1000//1030//1030
-#define SEN_REFERENCE_FR 410//395//400//410
+#define SEN_REFERENCE_L 510//535//430//400//430//470//525//500
+#define SEN_REFERENCE_R 580//520//480//550//520//520
+#define SEN_REFERENCE_FL 1000//980//1000//1030//1030
+#define SEN_REFERENCE_FR 392//410//395//400//410
+/*==========*/
+#define SEN_DIAGONAL_FL 70
+#define SEN_DIAGONAL_FR 70
 //変化量
 #define SEN_DERIVATIVE_L 5//13
 #define SEN_DERIVATIVE_R 5//13
@@ -54,8 +57,8 @@
 //壁有無判定基準値
 #define SEN_NOWALL_L 170
 #define SEN_NOWALL_R 200
-#define SEN_NOWALL_FL 70//160
-#define SEN_NOWALL_FR 60
+#define SEN_NOWALL_FL 75//160
+#define SEN_NOWALL_FR 65
 //死亡判定
 #define SEN_DEATH 1600
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -68,12 +71,12 @@
 //角速度I制御
 #define ANG_VELO_I 5//1
 //角度P制御
-#define ANG_P 0 //1000
+#define ANG_P 0.01
 //角度I制御
-#define ANG_I 0 //100
+#define ANG_I 0.1//0.02
 
 //壁制御
-#define WALL_P 0.1
+#define WALL_P 0.3
 #define WALL_HIGH_SPEED 0.08
 #define WALL_FRONT_ANG 0.07
 #define WALL_FRONT_DIS 0.1

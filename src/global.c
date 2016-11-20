@@ -98,6 +98,7 @@ volatile int8_t g_flag_circuit = 0;
 volatile int8_t g_flag_run_mode=0; //0:デフォルト,1:探索,2:最短
 volatile int8_t g_flag_pillar_edge_L=0;
 volatile int8_t g_flag_pillar_edge_R=0;
+volatile int8_t g_flag_shotest_goal;
 
 //テスト用
 volatile float g_duty_L;

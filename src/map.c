@@ -343,7 +343,7 @@ void countStepQueue(void) {
  足立法
  ****************************************/
 void searchAdachi(void) {
-	g_flag_run_mode=SEARCH;
+	g_flag_run_mode = SEARCH;
 	runStraight(5, HALF_SECTION, 0.5, 0.5);
 
 	countCoord();
@@ -354,7 +354,9 @@ void searchAdachi(void) {
 		//////////////////////////////////////////////////////////////////////////
 		g_flag_adachi_goal = 0;
 		if (g_current_x == g_target_x && g_current_y == g_target_y) {
+			checkWall();
 			g_flag_adachi_goal = 1;
+			countStepQueue();
 			break;
 		}
 		if (g_step_map[g_current_x][g_current_y] == 255) {
@@ -534,13 +536,13 @@ void searchAdachi(void) {
 		switchSensorLED(OFF);
 
 	}
-	g_flag_run_mode=DEFAULT;
+	g_flag_run_mode = DEFAULT;
 }
 /****************************************
  古川法
  ****************************************/
 void searchFurukawa(void) {
-	g_flag_run_mode=SEARCH;
+	g_flag_run_mode = SEARCH;
 	runStraight(5, HALF_SECTION, 0.5, 0.5);
 	countCoord();
 	checkWall();
@@ -550,7 +552,9 @@ void searchFurukawa(void) {
 		//////////////////////////////////////////////////////////////////////////
 		g_flag_adachi_goal = 0;
 		if (g_current_x == g_target_x && g_current_y == g_target_y) {
+			checkWall();
 			g_flag_adachi_goal = 1;
+			countStepQueue();
 			break;
 		}
 		if (g_step_map[g_current_x][g_current_y] == 255) {
@@ -842,7 +846,7 @@ void searchFurukawa(void) {
 		switchSensorLED(OFF);
 
 	}
-	g_flag_run_mode=SEARCH;
+	g_flag_run_mode = SEARCH;
 }
 
 /****************************************
@@ -1352,7 +1356,7 @@ void makePath3(void) {
 		if (g_path[i] == STRAIGHT) {
 			s_count++;
 		} else if (g_path[i] == L_CURVE) {
-			/*if (i == 1) {
+			/*if (i == 1) {//開幕大回りできないとき用
 			 g_path_3[j] = s_count;
 			 j++;
 			 g_path_3[j] = S_L_CURVE;
@@ -1706,7 +1710,7 @@ void runPath(void) {
 	int i = 0;
 	g_flag_gap = 0;
 	g_flag_diagonal = 0;
-	g_flag_run_mode=RUN;
+	g_flag_run_mode = RUN;
 	while (1) {
 		g_flag_path_run_goal = 0;
 		if (i > g_flag_step_goal_2) {
@@ -1736,7 +1740,7 @@ void runPath(void) {
 		i++;
 		g_current_x = 1;
 	}
-	driveSuction(70,OFF);
+	driveSuction(70, OFF);
 	driveMotor(OFF);
 	switchSensorLED(OFF);
 	if (g_flag_path_run_goal == 1) {
@@ -1744,24 +1748,26 @@ void runPath(void) {
 	} else {
 		soundError();
 	}
-	g_flag_run_mode=DEFAULT;
+	g_flag_run_mode = DEFAULT;
 }
 
 /****************************************
  斜めpath走行
  ****************************************/
-void runPathDiagonal1000(float velo,float acc,float d_velo,float d_acc) {
+void runPathDiagonal1000(float velo, float acc, float d_velo, float d_acc) {
 	int i = 0;
 	g_flag_gap = 0;
 	g_flag_failsafe = 0;
 	g_flag_diagonal = 0;
-	g_flag_run_mode=RUN;
-	if(g_path_3[0]>=31){
-		runStraight(25,INIT_DIS, velo,
-							connectSpeed1000(i));
+	g_flag_run_mode = RUN;
+	if (g_path_3[0] >= 31) {
+		runStraight(25, INIT_DIS, velo, connectSpeed1000(i));
 	}
 	while (1) {
 		g_flag_path_run_goal = 0;
+		if(i==g_flag_step_goal_3){
+			g_flag_shotest_goal=1;
+		}
 		if (i > g_flag_step_goal_3) {
 			g_flag_path_run_goal = 1;
 			break;
@@ -1804,8 +1810,8 @@ void runPathDiagonal1000(float velo,float acc,float d_velo,float d_acc) {
 		} else if (g_path_3[i] == R_V90) {
 			turnCorner(turn_v90_R_1000);
 		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
-			runStraight(d_acc, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), d_velo,
-					connectSpeed1000(i));
+			runStraight(d_acc, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47),
+					d_velo, connectSpeed1000(i));
 		} else {
 			//	driveRGB(RED, ON);
 		}
@@ -1813,6 +1819,7 @@ void runPathDiagonal1000(float velo,float acc,float d_velo,float d_acc) {
 		//	driveRGB(YELLOW, ON);
 		g_current_x = 1;
 	}
+	processShotestGoal();
 	driveSuction(70, OFF);
 	driveMotor(OFF);
 	switchSensorLED(OFF);
@@ -1822,16 +1829,16 @@ void runPathDiagonal1000(float velo,float acc,float d_velo,float d_acc) {
 	} else {
 		soundError();
 	}
-	g_flag_run_mode=DEFAULT;
+	g_flag_run_mode = DEFAULT;
 }
 
 /*-----------------------------------------------------------*/
-void runPathDiagonal1200(float velo,float acc,float d_velo,float d_acc)  {
+void runPathDiagonal1200(float velo, float acc, float d_velo, float d_acc) {
 	int i = 0;
 	g_flag_gap = 0;
 	g_flag_failsafe = 0;
 	g_flag_diagonal = 0;
-	g_flag_run_mode=RUN;
+	g_flag_run_mode = RUN;
 	while (1) {
 		g_flag_path_run_goal = 0;
 		if (i > g_flag_step_goal_3) {
@@ -1876,8 +1883,8 @@ void runPathDiagonal1200(float velo,float acc,float d_velo,float d_acc)  {
 		} else if (g_path_3[i] == R_V90) {
 			turnCorner(turn_v90_R_1200);
 		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
-			runStraight(d_acc, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), d_velo,
-					connectSpeed1000(i));
+			runStraight(d_acc, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47),
+					d_velo, connectSpeed1000(i));
 		} else {
 			//		driveRGB(RED, ON);
 		}
@@ -1885,6 +1892,7 @@ void runPathDiagonal1200(float velo,float acc,float d_velo,float d_acc)  {
 		//	driveRGB(YELLOW, ON);
 		g_current_x = 1;
 	}
+	processShotestGoal();
 	driveMotor(OFF);
 	switchSensorLED(OFF);
 	driveSuction(70, OFF);
@@ -1893,7 +1901,7 @@ void runPathDiagonal1200(float velo,float acc,float d_velo,float d_acc)  {
 	} else {
 		soundError();
 	}
-	g_flag_run_mode=DEFAULT;
+	g_flag_run_mode = DEFAULT;
 }
 
 /*-----------------------------------------------------------*/
@@ -1971,7 +1979,18 @@ float addInitDis(uint16_t count) {
 		return 0;
 	}
 }
-
+/****************************************
+ 最短ゴール処理
+ ****************************************/
+void processShotestGoal(void) {
+	g_accele = -0.5;
+	while ((g_sensor_FL + g_sensor_FR) < (SEN_REFERENCE_FL + SEN_REFERENCE_FR)) {
+		if (g_target_velo < 0.01)
+			break;
+	}
+	g_accele = 0;
+	g_target_velo=0;
+}
 /****************************************
  サーキット
  ****************************************/

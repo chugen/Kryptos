@@ -30,12 +30,18 @@ void intrptCMT0(void) {
 	g_current_velo = returnVelocityL() + returnVelocityR();
 	g_current_angularvelo = returnGyroZVal() - g_gyro_reference;
 
+	/*Log=====================================================*/
 	//getLog(g_sensor_L, g_sensor_R);
-	getLog(g_sensor_L,g_flag_pillar_edge_L);
-	//getLog(g_target_angularvelo, g_current_angularvelo);
+	//getLog(g_sensor_FL,g_sensor_FR);
+	//getLog(g_sensor_L,g_flag_pillar_edge_L);
+
 	//getLog(g_target_velo, g_current_velo);
+	//getLog(g_target_angularvelo, g_current_angularvelo);
+	getLog(g_target_angle, g_current_angle);
+
 	//getLog(g_duty_L, g_duty_R);
-	//getLog(g_target_angle, g_current_angle);
+	/*========================================================*/
+
 
 	setMotorDuty();
 

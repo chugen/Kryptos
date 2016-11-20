@@ -26,11 +26,24 @@ void initAdjustment(void) {
 	driveMotor(ON);
 	switchSensorLED(ON);
 }
+/****************************************
+ 調整用初期化2
+ ****************************************/
+void initAdjustment2(void) {
+	waitSensor();
 
+	driveRGB(GREEN, ON);
+	waitTime(1000);
+	calcGyroZRef();
+
+	initRun();
+	driveMotor(ON);
+	switchSensorLED(OFF);
+}
 /****************************************
  調整用関数1
  ****************************************/
-void selectAdjustment(void) {
+void selectAdjustment1(void) {
 
 	driveRGB(MAGENTA, ON);
 	waitTime(500);
@@ -76,7 +89,7 @@ void selectAdjustment(void) {
 		break;
 	case 4:
 		initAdjustment();
-		runStraight(15, SECTION , 1, 1);
+		runStraight(15, SECTION, 1, 1);
 		turnCorner(turn_45_in_L_1000);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, 1, 0);
@@ -95,7 +108,7 @@ void selectAdjustment(void) {
 		runStraight(15, SECTION * M_SQRT2, 1, 1);
 		turnCorner(turn_45_out_L_1000);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION , 1, 0);
+		runStraight(15, SECTION, 1, 0);
 
 		break;
 	case 7:
@@ -103,12 +116,12 @@ void selectAdjustment(void) {
 		runStraight(15, SECTION * M_SQRT2, 1, 1);
 		turnCorner(turn_45_out_R_1000);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION , 1, 0);
+		runStraight(15, SECTION, 1, 0);
 
 		break;
 	case 8:
 		initAdjustment();
-		runStraight(15, SECTION , 1, 1);
+		runStraight(15, SECTION, 1, 1);
 		turnCorner(turn_135_in_L_1000);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, 1, 0);
@@ -116,7 +129,7 @@ void selectAdjustment(void) {
 		break;
 	case 9:
 		initAdjustment();
-		runStraight(15, SECTION , 1, 1);
+		runStraight(15, SECTION, 1, 1);
 		turnCorner(turn_135_in_R_1000);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, 1, 0);
@@ -127,7 +140,7 @@ void selectAdjustment(void) {
 		runStraight(15, SECTION * M_SQRT2, 1, 1);
 		turnCorner(turn_135_out_L_1000);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION , 1, 0);
+		runStraight(15, SECTION, 1, 0);
 
 		break;
 	case 11:
@@ -135,7 +148,7 @@ void selectAdjustment(void) {
 		runStraight(15, SECTION * M_SQRT2, 1, 1);
 		turnCorner(turn_135_out_R_1000);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION , 1, 0);
+		runStraight(15, SECTION, 1, 0);
 
 		break;
 	case 12:
@@ -152,6 +165,108 @@ void selectAdjustment(void) {
 		turnCorner(turn_v90_R_1000);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, 1, 0);
+
+		break;
+
+	default:
+		break;
+
+	}
+	driveMotor(OFF);
+	driveSuction(70, OFF);
+	waitButton();
+	printLog();
+}
+/****************************************
+ 調整用関数2
+ ****************************************/
+void selectAdjustment2(void) {
+	uint8_t i;
+	driveRGB(YELLOW, ON);
+	waitTime(500);
+
+	switch (selectMode(13)) {
+
+	case 0:
+		initAdjustment2();
+		runStraight(5, HALF_SECTION, 0.5, 0.5);
+
+		for (i = 0; i < 16; i++) {
+			runStraight(5, SECTION, 0.5, 0.5);
+			turnCorner(turn_90_L);
+		}
+		runStraight(5, SECTION, 0.5, 0);
+		break;
+	case 1:
+		initAdjustment2();
+		runStraight(5, HALF_SECTION, 0.5, 0.5);
+
+		for (i = 0; i < 16; i++) {
+			runStraight(5, SECTION, 0.5, 0.5);
+			turnCorner(turn_90_R);
+		}
+		runStraight(5, SECTION, 0.5, 0);
+		break;
+	case 2:
+		initAdjustment2();
+		runStraight(5, SECTION, 0.5, 0.5);
+		turnCorner(turn_90_L);
+		runStraight(5, SECTION, 0.5, 0);
+		break;
+
+	case 3:
+		initAdjustment2();
+		runStraight(5, SECTION, 0.5, 0.5);
+		turnCorner(turn_90_R);
+		runStraight(5, SECTION, 0.5, 0);
+		break;
+	case 4:
+		initAdjustment2();
+		for (i = 0; i < 16; i++) {
+			turnCorner(pivot_90_L);
+			waitTime(200);
+		}
+		break;
+	case 5:
+		initAdjustment2();
+		for (i = 0; i < 16; i++) {
+			turnCorner(pivot_90_R);
+			waitTime(200);
+		}
+		break;
+	case 6:
+		initAdjustment2();
+		for (i = 0; i < 10; i++) {
+			turnCorner(pivot);
+			waitTime(200);
+		}
+		break;
+	case 7:
+		initAdjustment2();
+		runStraight(5, SECTION, 0.5, 0.5);
+		switchSensorLED(ON);
+		runBlindAlley(0.5);
+		runStraight(5, SECTION, 0.5, 0);
+		break;
+	case 8:
+		initAdjustment2();
+		runStraight(5, SECTION * 4, 0.5, 0);
+		break;
+	case 9:
+		initAdjustment2();
+		g_flag_diagonal = 1;
+		runStraight(5, SECTION * 4, 0.5, 0);
+		break;
+	case 10:
+
+		break;
+	case 11:
+
+		break;
+	case 12:
+
+		break;
+	case 13:
 
 		break;
 
