@@ -16,11 +16,11 @@ void runCircuit(uint8_t x, uint8_t y, uint8_t times, float velocity,
 /****************************************
 探索 1
 ****************************************/
-void search1(void) ;
+void runAdachi(void) ;
 /****************************************
 探索 2
 ****************************************/
-void search2(void) ;
+void runAdachiAdachi(void) ;
 
 /****************************************
 探索 古川

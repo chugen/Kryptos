@@ -355,7 +355,8 @@ void printLog(void) {
 void printLogInt(void) {
 	int32_t i;
 	for (i = 0; i < LOG_TIMES; i++) {
-		myprintf("%d	%d	%d\n", i, *(g_log_array_int + i), *(g_log_array2_int + i));
+		myprintf("%d	%d	%d\n", i, *(g_log_array_int + i),
+				*(g_log_array2_int + i));
 	}
 }
 /****************************************
@@ -506,4 +507,30 @@ void soundCount(int16_t mode) {
 		break;
 	}
 }
-
+/****************************************
+ 動作モード起動通知
+ ****************************************/
+void notificateStartUp(void) {
+	driveBuzzer(BZ_A5, 30);
+	waitTime(20);
+	driveBuzzer(BZ_A4, 30);
+	waitTime(20);
+	driveBuzzer(BZ_A3, 30);
+	waitTime(20);
+	driveBuzzer(BZ_A2, 30);
+	driveLED(1);
+	waitTime(50);
+	driveLED(2);
+	waitTime(50);
+	driveLED(4);
+	waitTime(50);
+	driveLED(8);
+	waitTime(50);
+	driveLED(4);
+	waitTime(50);
+	driveLED(2);
+	waitTime(50);
+	driveLED(1);
+	waitTime(50);
+	driveLED(0);
+}

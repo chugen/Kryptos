@@ -30,170 +30,40 @@
 void main(void) {
 	init();
 	checkBatt();
+	notificateStartUp();
 
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
 		selectContest();
-//	driveSuction(100,ON);
-
-//		FLASH.DFLWE0.WORD = 0x1EFF; //プロテクト解除
-//		changeFCUMode(0, 0, P_E);
-//		driveRGB(RED, ON);
-//		notificateClock(0, 0);
-//
-//		eraseFCU(0, 0);
-//		driveRGB(BLUE, ON);
-//		programFCU(0, 0, 0xff33);
-//
-//		driveRGB(GREEN, ON);
-//		changeFCUMode(0, 0, READ);b
-//		myprintf("%d\n", readFCUValue(0, 0));
-//
-//		FLASH.DFLWE0.WORD = 0x1E00; // disable
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-		switchSensorLED(ON);
-
-		selectAdjustment();
-//		waitSensor();
-//		driveRGB(GREEN, ON);
-//		waitTime(100);
-//		calcGyroZRef();
-//		switchSensorLED(ON);
-//		driveMotor(ON);
-//		initRun();
-//		g_flag_diagonal=1;
-//		runStraight(10, SECTION * 5, 1, 0);
-//		driveMotor(OFF);
-//		waitButton();
-//		printLog();
+		selectAdjustment1();
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
-		waitSensor();
-
-		driveRGB(GREEN, ON);
-		waitTime(1000);
-		initRun();
-		driveMotor(ON);
-		//runStraight(5, HALF_SECTION, 0.5, 0.5);
-
-		//while (1) {
-		runStraight(5, SECTION, 0.5, 0.5);
-		turnCorner(turn_90_L);
-		runStraight(5, SECTION, 0.5, 0);
-		//}
-
-		driveMotor(OFF);
-		waitButton();
-		printLog();
-		//}
-
+		selectAdjustment2();
 		break;
 	case 3: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(YELLOW, ON);
-		waitSensor();
 
-		driveRGB(GREEN, ON);
-		waitTime(1000);
-		initRun();
-		driveMotor(ON);
-		//runStraight(5, HALF_SECTION, 0.5, 0.5);
-
-		//while (1) {
-		runStraight(5, SECTION, 0.5, 0.5);
-		turnCorner(turn_90_R);
-		runStraight(5, SECTION, 0.5, 0);
-
-		//}
 		break;
 	case 4: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(CYAN, ON);
-		waitSensor();
 
-		driveRGB(GREEN, ON);
-		waitTime(1000);
-		calcGyroZRef();
-		driveSuction(70, ON);
-		waitTime(1000);
-		initRun();
-		driveMotor(ON);
-		switchSensorLED(ON);
-		runStraight(25, SECTION * 2, 1.8, 1.8);
-
-		turnCorner(turn_90_wide_R_1500);
-		switchSensorLED(OFF);
-		runStraight(25, SECTION * 2, 1.8, 0);
-		driveMotor(OFF);
-		driveSuction(70, OFF);
-		waitButton();
-		printLog();
 		break;
 	case 5: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-
-		waitSensor();
-
-		driveRGB(GREEN, ON);
-		waitTime(1000);
-
-		calcGyroZRef();
-		initRun();
-		driveMotor(ON);
-		switchSensorLED(OFF);
-		//runStraight(5, SECTION * M_SQRT2 * 3, 0.5, 0.5);
-		runStraight(5, SECTION, 0.5, 0.5);
-		switchSensorLED(ON);
-		runBlindAlley(0.5);
-		runStraight(5, SECTION, 0.5, 0);
-		driveMotor(OFF);
-		driveSuction(70, OFF);
-		waitButton();
-		printLog();
 
 		break;
 	case 6: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WHITE, ON);
 
-		waitSensor();
-		waitTime(100);
-		calcGyroZRef();
-		driveRGB(GREEN, ON);
-		waitTime(1000);
-		initRun();
-		driveMotor(ON);
-
-		//while (1) {
-		turnCorner(pivot_90_L);
-		waitTime(200);
-		//}
-		driveMotor(OFF);
-		waitButton();
-		printLog();
 		break;
 	case 7: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
-		waitSensor();
-		switchSensorLED(ON);
 
-		driveRGB(GREEN, ON);
-		waitTime(1000);
-		calcGyroZRef();
-		soundStartRun();
-		driveSuction(70, OFF);
-		waitTime(1000);
-		initRun();
-		driveMotor(ON);
-		runStraight(5, SECTION * 4, 0.5, 0);
-		switchSensorLED(ON);
-		driveMotor(OFF);
-		driveSuction(70, OFF);
-		driveSuction(100, OFF);
-
-		waitButton();
-		printLog();
 		break;
 	case 8: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WATER, ON);
@@ -207,22 +77,6 @@ void main(void) {
 		break;
 	case 9: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LBLUE, ON);
-		//driveSuction(100, ON);
-		waitSensor();
-		waitTime(1000);
-		calcGyroZRef();
-		g_flag_circuit = 1;
-
-		driveSuction(70, ON);
-		driveMotor(ON);
-		waitTime(1000);
-		switchSensorLED(ON);
-		initRun();
-		runStraight(25, SECTION * 7, 4.5, 0);
-		driveSuction(70, OFF);
-		driveMotor(OFF);
-		waitButton();
-		printLog();
 
 		break;
 	case 10: //////////////////////////////////////////////////////////////////////////////////////
@@ -351,4 +205,19 @@ void main(void) {
  }
  soundSensor();
  printLog();
+
+ FLASH.DFLWE0.WORD = 0x1EFF; //プロテクト解除
+ changeFCUMode(1, 1, P_E);
+ driveRGB(RED, ON);
+ notificateClock(1, 1);
+
+ eraseFCU(0, 0);
+ driveRGB(BLUE, ON);
+ programFCU(1, 1, 0x44);
+
+ driveRGB(GREEN, ON);
+ changeFCUMode(1, 1, READ);
+ myprintf("%d\n", readFCUValue(1, 1));
+
+ FLASH.DFLWE0.WORD = 0x1E00; // disable
  */

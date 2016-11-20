@@ -48,9 +48,9 @@ void runCircuit(uint8_t x, uint8_t y, uint8_t times, float velocity,
 	g_flag_circuit = 0;
 }
 /****************************************
- 探索 1
+ 探索 足立
  ****************************************/
-void search1(void) {
+void runAdachi(void) {
 	setCurrentCoord(START_X, START_Y);
 	setTargetCoord(GOAL_X, GOAL_Y);
 	setOrient(NORTH);
@@ -68,9 +68,9 @@ void search1(void) {
 	searchAdachi();
 }
 /****************************************
- 探索 2
+ 探索 足立足立
  ****************************************/
-void search2(void) {
+void runAdachiAdachi(void) {
 	setCurrentCoord(START_X, START_Y);
 	setTargetCoord(GOAL_X, GOAL_Y);
 	setOrient(NORTH);
@@ -99,6 +99,7 @@ void search2(void) {
 	switchSensorLED(ON);
 	driveMotor(ON);
 	initRun();
+
 	searchAdachi();
 
 }
@@ -176,10 +177,10 @@ void selectSearch(void) {
 		runFurukawa();
 		break;
 	case 2:
-		search1();
+		runAdachi();
 		break;
 	case 3:
-		search2();
+		runAdachiAdachi();
 
 		break;
 
@@ -193,7 +194,7 @@ void selectSearch(void) {
  ****************************************/
 void selectRun(void) {
 	waitTime(500);
-	switch (selectMode(5)) {
+	switch (selectMode(6)) {
 	case 0:
 		setTargetCoord(GOAL_X, GOAL_Y);
 
@@ -343,6 +344,9 @@ void selectRun(void) {
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
+		break;
+	case 6:
+
 		break;
 	default:
 		break;
