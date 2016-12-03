@@ -16,6 +16,7 @@
 #include "run.h"
 #include "mathf.h"
 #include "serial.h"
+#include "sensor.h"
 /****************************************
  方位管理
  ****************************************/
@@ -274,7 +275,12 @@ void checkWall(void) {
 	}
 	//comb_breaker();
 }
+/****************************************
+ 壁有無判定
+ ****************************************/
+void getWallData(uint8_t x,uint8_t y,uint8_t select){
 
+}
 /****************************************
  queuemap
  ****************************************/
@@ -398,7 +404,7 @@ void searchAdachi(void) {
 					&& (g_step_map[g_current_x - 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y]) == -1) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -407,7 +413,7 @@ void searchAdachi(void) {
 					&& (g_step_map[g_current_x + 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y]) == -1) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -432,7 +438,7 @@ void searchAdachi(void) {
 					&& g_step_map[g_current_x][g_current_y - 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -441,7 +447,7 @@ void searchAdachi(void) {
 					&& g_step_map[g_current_x][g_current_y + 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -466,7 +472,7 @@ void searchAdachi(void) {
 					&& g_step_map[g_current_x + 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -475,7 +481,7 @@ void searchAdachi(void) {
 					&& g_step_map[g_current_x - 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -501,7 +507,7 @@ void searchAdachi(void) {
 					&& g_step_map[g_current_x][g_current_y + 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -510,7 +516,7 @@ void searchAdachi(void) {
 					&& g_step_map[g_current_x][g_current_y - 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -602,7 +608,7 @@ void searchFurukawa(void) {
 					&& (g_wall_data_temp[g_current_x - 1][g_current_y] & 0xf0)
 							!= 0xf0) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -611,7 +617,7 @@ void searchFurukawa(void) {
 					&& (g_wall_data_temp[g_current_x + 1][g_current_y] & 0xf0)
 							!= 0xf0) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -628,7 +634,7 @@ void searchFurukawa(void) {
 					&& (g_step_map[g_current_x - 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y]) == -1) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -637,7 +643,7 @@ void searchFurukawa(void) {
 					&& (g_step_map[g_current_x + 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y]) == -1) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -663,7 +669,7 @@ void searchFurukawa(void) {
 					&& (g_wall_data_temp[g_current_x][g_current_y + 1] & 0xf0)
 							!= 0xf0) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -672,7 +678,7 @@ void searchFurukawa(void) {
 					&& (g_wall_data_temp[g_current_x][g_current_y - 1] & 0xf0)
 							!= 0xf0) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -689,7 +695,7 @@ void searchFurukawa(void) {
 					&& g_step_map[g_current_x][g_current_y - 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -698,7 +704,7 @@ void searchFurukawa(void) {
 					&& g_step_map[g_current_x][g_current_y + 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -724,7 +730,7 @@ void searchFurukawa(void) {
 					&& (g_wall_data_temp[g_current_x + 1][g_current_y] & 0xf0)
 							!= 0xf0) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -733,7 +739,7 @@ void searchFurukawa(void) {
 					&& (g_wall_data_temp[g_current_x - 1][g_current_y] & 0xf0)
 							!= 0xf0) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -750,7 +756,7 @@ void searchFurukawa(void) {
 					&& g_step_map[g_current_x + 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -759,7 +765,7 @@ void searchFurukawa(void) {
 					&& g_step_map[g_current_x - 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -784,7 +790,7 @@ void searchFurukawa(void) {
 					&& (g_wall_data_temp[g_current_x][g_current_y + 1] & 0xf0)
 							!= 0xf0) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -793,7 +799,7 @@ void searchFurukawa(void) {
 					&& (g_wall_data_temp[g_current_x][g_current_y - 1] & 0xf0)
 							!= 0xf0) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -810,7 +816,7 @@ void searchFurukawa(void) {
 					&& g_step_map[g_current_x][g_current_y + 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_L);
+				turnCorner(&t_90_L_05);
 
 				checkOrient(90);
 				countCoord();
@@ -819,7 +825,7 @@ void searchFurukawa(void) {
 					&& g_step_map[g_current_x][g_current_y - 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
-				turnCorner(turn_90_R);
+				turnCorner(&t_90_R_05);
 
 				checkOrient(-90);
 				countCoord();
@@ -1723,17 +1729,17 @@ void runPath(void) {
 			runStraight(20, HALF_SECTION * g_path_2[i] + addInitDis(i), 4,
 					connectSpeedEnd(i));
 		} else if (g_path_2[i] == S_L_CURVE) {
-			turnCorner(turn_90_L);
+			turnCorner(&t_90_L_05);
 		} else if (g_path_2[i] == S_BIG_L_CURVE) {
-			turnCorner(turn_90_wide_L_1000);
+			turnCorner(&t_w90_L_10);
 		} else if (g_path_2[i] == S_U_L_CURVE) {
-			turnCorner(turn_180_L_1000);
+			turnCorner(&t_180_L_10);
 		} else if (g_path_2[i] == S_R_CURVE) {
-			turnCorner(turn_90_R);
+			turnCorner(&t_90_R_05);
 		} else if (g_path_2[i] == S_BIG_R_CURVE) {
-			turnCorner(turn_90_wide_R_1000);
+			turnCorner(&t_w90_R_10);
 		} else if (g_path_2[i] == S_U_R_CURVE) {
-			turnCorner(turn_180_R_1000);
+			turnCorner(&t_180_R_10);
 		} else {
 			//full_color(0, 255, 0);
 		}
@@ -1754,19 +1760,35 @@ void runPath(void) {
 /****************************************
  斜めpath走行
  ****************************************/
-void runPathDiagonal1000(float velo, float acc, float d_velo, float d_acc) {
+void runPathDiagonal(uint8_t t_velo,float velo, float acc, float d_velo, float d_acc) {
 	int i = 0;
+	float velocity;
 	g_flag_gap = 0;
 	g_flag_failsafe = 0;
 	g_flag_diagonal = 0;
 	g_flag_run_mode = RUN;
+
+	switch (t_velo) {
+	case T10:
+		velocity=1.0;
+		break;
+	case T12:
+		velocity=1.2;
+		break;
+	case T14:
+		velocity=1.4;
+		break;
+	case T16:
+		velocity=1.6;
+		break;
+	}
 	if (g_path_3[0] >= 31) {
-		runStraight(25, INIT_DIS, velo, connectSpeed1000(i));
+		runStraight(25, INIT_DIS, velo, velocity);
 	}
 	while (1) {
 		g_flag_path_run_goal = 0;
 		if(i==g_flag_step_goal_3){
-			g_flag_shotest_goal=1;
+			g_flag_shortest_goal=1;
 		}
 		if (i > g_flag_step_goal_3) {
 			g_flag_path_run_goal = 1;
@@ -1776,42 +1798,42 @@ void runPathDiagonal1000(float velo, float acc, float d_velo, float d_acc) {
 			break;
 		if (g_path_3[i] > 0 && g_path_3[i] <= 30) {
 			runStraight(acc, HALF_SECTION * g_path_3[i] + addInitDis(i), velo,
-					connectSpeed1000(i));
+					velocity);
 		} else if (g_path_3[i] == S_L_CURVE) {
-			turnCorner(turn_90_L);
+			turnCorner(&t_90_L_05);
 		} else if (g_path_3[i] == S_BIG_L_CURVE) {
-			turnCorner(turn_90_wide_L_1000);
+			turnCorner(t_para[t_velo][0]);
 		} else if (g_path_3[i] == S_U_L_CURVE) {
-			turnCorner(turn_180_L_1000);
+			turnCorner(t_para[t_velo][2]);
 		} else if (g_path_3[i] == S_R_CURVE) {
-			turnCorner(turn_90_R);
+			turnCorner(&t_90_R_05);
 		} else if (g_path_3[i] == S_BIG_R_CURVE) {
-			turnCorner(turn_90_wide_R_1000);
+			turnCorner(t_para[t_velo][1]);
 		} else if (g_path_3[i] == S_U_R_CURVE) {
-			turnCorner(turn_180_R_1000);
+			turnCorner(t_para[t_velo][3]);
 		} else if (g_path_3[i] == L_45_I) {
-			turnCorner(turn_45_in_L_1000);
+			turnCorner(t_para[t_velo][4]);
 		} else if (g_path_3[i] == R_45_I) {
-			turnCorner(turn_45_in_R_1000);
+			turnCorner(t_para[t_velo][5]);
 		} else if (g_path_3[i] == L_45_O) {
-			turnCorner(turn_45_out_L_1000);
+			turnCorner(t_para[t_velo][6]);
 		} else if (g_path_3[i] == R_45_O) {
-			turnCorner(turn_45_out_R_1000);
+			turnCorner(t_para[t_velo][7]);
 		} else if (g_path_3[i] == L_135_I) {
-			turnCorner(turn_135_in_L_1000);
+			turnCorner(t_para[t_velo][8]);
 		} else if (g_path_3[i] == R_135_I) {
-			turnCorner(turn_135_in_R_1000);
+			turnCorner(t_para[t_velo][9]);
 		} else if (g_path_3[i] == L_135_O) {
-			turnCorner(turn_135_out_L_1000);
+			turnCorner(t_para[t_velo][10]);
 		} else if (g_path_3[i] == R_135_O) {
-			turnCorner(turn_135_out_R_1000);
+			turnCorner(t_para[t_velo][11]);
 		} else if (g_path_3[i] == L_V90) {
-			turnCorner(turn_v90_L_1000);
+			turnCorner(t_para[t_velo][12]);
 		} else if (g_path_3[i] == R_V90) {
-			turnCorner(turn_v90_R_1000);
+			turnCorner(t_para[t_velo][13]);
 		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
 			runStraight(d_acc, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47),
-					d_velo, connectSpeed1000(i));
+					d_velo, velocity);
 		} else {
 			//	driveRGB(RED, ON);
 		}
@@ -1833,78 +1855,6 @@ void runPathDiagonal1000(float velo, float acc, float d_velo, float d_acc) {
 }
 
 /*-----------------------------------------------------------*/
-void runPathDiagonal1200(float velo, float acc, float d_velo, float d_acc) {
-	int i = 0;
-	g_flag_gap = 0;
-	g_flag_failsafe = 0;
-	g_flag_diagonal = 0;
-	g_flag_run_mode = RUN;
-	while (1) {
-		g_flag_path_run_goal = 0;
-		if (i > g_flag_step_goal_3) {
-			g_flag_path_run_goal = 1;
-			break;
-		}
-		if ((g_sensor_FL + g_sensor_FR >= SEN_DEATH) || (g_flag_failsafe == 1))
-			break;
-		if (g_path_3[i] > 0 && g_path_3[i] <= 30) {
-			runStraight(acc, HALF_SECTION * g_path_3[i] + addInitDis(i), velo,
-					connectSpeed1200(i));
-		} else if (g_path_3[i] == S_L_CURVE) {
-			turnCorner(turn_90_L);
-		} else if (g_path_3[i] == S_BIG_L_CURVE) {
-			turnCorner(turn_90_wide_L_1200);
-		} else if (g_path_3[i] == S_U_L_CURVE) {
-			turnCorner(turn_180_L_1200);
-		} else if (g_path_3[i] == S_R_CURVE) {
-			turnCorner(turn_90_R);
-		} else if (g_path_3[i] == S_BIG_R_CURVE) {
-			turnCorner(turn_90_wide_R_1200);
-		} else if (g_path_3[i] == S_U_R_CURVE) {
-			turnCorner(turn_180_R_1200);
-		} else if (g_path_3[i] == L_45_I) {
-			turnCorner(turn_45_in_L_1200);
-		} else if (g_path_3[i] == R_45_I) {
-			turnCorner(turn_45_in_R_1200);
-		} else if (g_path_3[i] == L_45_O) {
-			turnCorner(turn_45_out_L_1200);
-		} else if (g_path_3[i] == R_45_O) {
-			turnCorner(turn_45_out_R_1200);
-		} else if (g_path_3[i] == L_135_I) {
-			turnCorner(turn_135_in_L_1200);
-		} else if (g_path_3[i] == R_135_I) {
-			turnCorner(turn_135_in_R_1200);
-		} else if (g_path_3[i] == L_135_O) {
-			turnCorner(turn_135_out_L_1200);
-		} else if (g_path_3[i] == R_135_O) {
-			turnCorner(turn_135_out_R_1200);
-		} else if (g_path_3[i] == L_V90) {
-			turnCorner(turn_v90_L_1200);
-		} else if (g_path_3[i] == R_V90) {
-			turnCorner(turn_v90_R_1200);
-		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
-			runStraight(d_acc, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47),
-					d_velo, connectSpeed1000(i));
-		} else {
-			//		driveRGB(RED, ON);
-		}
-		i++;
-		//	driveRGB(YELLOW, ON);
-		g_current_x = 1;
-	}
-	processShotestGoal();
-	driveMotor(OFF);
-	switchSensorLED(OFF);
-	driveSuction(70, OFF);
-	if (g_flag_path_run_goal == 1) {
-		soundGoal();
-	} else {
-		soundError();
-	}
-	g_flag_run_mode = DEFAULT;
-}
-
-/*-----------------------------------------------------------*/
 /****************************************
  スピードコネクト
  ****************************************/
@@ -1913,13 +1863,13 @@ float connectSpeedEnd(int esc) {
 	if ((g_path_2[esc] & 0x80) == 0x80) {
 		return 0;
 	} else if (g_path_2[esc + 1] == S_L_CURVE || g_path_2[esc + 1] == S_R_CURVE) {
-		return turn_90_L.velocity;
+		return t_90_L_05.velocity;
 	} else if (g_path_2[esc + 1] == S_BIG_L_CURVE
 			|| g_path_2[esc + 1] == S_BIG_R_CURVE) {
-		return turn_90_wide_L_1000.velocity;
+		return t_w90_L_10.velocity;
 	} else if (g_path_2[esc + 1] == S_U_L_CURVE
 			|| g_path_2[esc + 1] == S_U_R_CURVE) {
-		return turn_180_L_1000.velocity;
+		return t_180_L_10.velocity;
 	} else {
 		return 1;
 	}
@@ -1929,19 +1879,19 @@ float connectSpeed1000(int esc) {
 	if (esc == g_flag_step_goal_3) {
 		return 0;
 	} else if (g_path_3[esc + 1] == S_L_CURVE || g_path_3[esc + 1] == S_L_CURVE) {
-		return turn_90_L.velocity;
+		return t_90_L_05.velocity;
 	} else if (g_path_3[esc + 1] == S_BIG_L_CURVE
 			|| g_path_3[esc + 1] == S_BIG_R_CURVE) {
-		return turn_90_wide_L_1000.velocity;
+		return t_w90_L_10.velocity;
 	} else if (g_path_3[esc + 1] == S_U_L_CURVE
 			|| g_path_3[esc + 1] == S_U_R_CURVE) {
-		return turn_180_L_1000.velocity;
+		return t_180_L_10.velocity;
 	} else if (g_path_3[esc + 1] == L_45_I || g_path_3[esc + 1] == R_45_I) {
-		return turn_45_in_L_1000.velocity;
+		return t_i45_L_10.velocity;
 	} else if (g_path_3[esc + 1] == L_135_I || g_path_3[esc + 1] == R_135_I) {
-		return turn_135_in_L_1000.velocity;
+		return t_i135_L_10.velocity;
 	} else if (g_path_3[esc + 1] == L_V90 || g_path_3[esc + 1] == R_V90) {
-		return turn_v90_L_1000.velocity;
+		return t_v90_L_10.velocity;
 	} else {
 		return 1;
 	}
@@ -1951,19 +1901,19 @@ float connectSpeed1200(int esc) {
 	if (esc == g_flag_step_goal_3) {
 		return 0;
 	} else if (g_path_3[esc + 1] == S_L_CURVE || g_path_3[esc + 1] == S_L_CURVE) {
-		return turn_90_L.velocity;
+		return t_90_L_05.velocity;
 	} else if (g_path_3[esc + 1] == S_BIG_L_CURVE
 			|| g_path_3[esc + 1] == S_BIG_R_CURVE) {
-		return turn_90_wide_L_1200.velocity;
+		return t_w90_L_12.velocity;
 	} else if (g_path_3[esc + 1] == S_U_L_CURVE
 			|| g_path_3[esc + 1] == S_U_R_CURVE) {
-		return turn_180_L_1200.velocity;
+		return t_180_L_12.velocity;
 	} else if (g_path_3[esc + 1] == L_45_I || g_path_3[esc + 1] == R_45_I) {
-		return turn_45_in_L_1200.velocity;
+		return t_i45_L_12.velocity;
 	} else if (g_path_3[esc + 1] == L_135_I || g_path_3[esc + 1] == R_135_I) {
-		return turn_135_in_L_1200.velocity;
+		return t_i135_L_12.velocity;
 	} else if (g_path_3[esc + 1] == L_V90 || g_path_3[esc + 1] == R_V90) {
-		return turn_v90_L_1200.velocity;
+		return t_v90_L_12.velocity;
 	} else {
 		return 1;
 	}

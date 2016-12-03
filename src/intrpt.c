@@ -37,9 +37,13 @@ void intrptCMT0(void) {
 
 	//getLog(g_target_velo, g_current_velo);
 	//getLog(g_target_angularvelo, g_current_angularvelo);
-	getLog(g_target_angle, g_current_angle);
+	//getLog(g_target_angle, g_current_angle);
 
 	//getLog(g_duty_L, g_duty_R);
+
+	getLog(g_target_angularvelo, g_current_angularvelo);
+
+	//getLogInt(commSPI(GYRO_ZOUT_H, 0x0f, READ),commSPI(GYRO_ZOUT_L, 0x0f, READ));
 	/*========================================================*/
 
 

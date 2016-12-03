@@ -10,6 +10,7 @@
 #include "common.h"
 #include "global.h"
 #include <mathf.h>
+#include "app.h"
 
 /****************************************
  SPI送受信
@@ -100,35 +101,32 @@ int8_t returnCountDirR(void) {
 float returnGyroZVal(void) {
 	int16_t temp = 0;
 	float value;
-	static int16_t currentL;
-	static int16_t pastL;
-	static int16_t currentH;
+	volatile uint8_t i;
+	static uint8_t currentL;
+	static uint8_t currentH;
 
-	pastL = currentL;
-	currentL = (int16_t) commSPI(GYRO_ZOUT_L, 0x0f, READ);
-	if (fabsf(pastL-currentL) > 240 || fabsf(currentL) > 240) {
-		currentL = 0x00;
-	}
 
-	currentH = (int16_t) commSPI(GYRO_ZOUT_H, 0x0f, READ);
+	currentL = commSPI(GYRO_ZOUT_L, 0x00, READ);
 
-	if (currentH == 129) {
-		currentH = 0x00;
-	}
+	for(i=0;i<10;i++);
+
+	currentH = commSPI(GYRO_ZOUT_H, 0x00, READ);
+
+
 	temp |= currentL;
 	temp |= (currentH << 8);
 
-	if (temp <= -250 && temp >= -256) {
-		temp = 0;
+	if(fabsf(temp)>250&&fabsf(temp)<262){
+		temp=0;
 	}
 
 	value = (float) (temp * 2000.0 / INT16_MAX);
 
-	if (value < 0) {
-		value *= 90.0 / 90.67;
-	} else {
-		value *= 90.0 / 87.9;
-	}
+//	if (value < 0) {
+//		value *= 90.0 / 90.67;
+//	} else {
+//		value *= 90.0 / 87.9;
+//	}
 
 	return value;
 }

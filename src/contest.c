@@ -12,13 +12,14 @@
 #include "serial.h"
 #include "app.h"
 #include "map.h"
+#include "sensor.h"
 
 /****************************************
  サーキット関数
  ****************************************/
 
 void runCircuit(uint8_t x, uint8_t y, uint8_t times, float velocity,
-		float accelaration, float turn_velo) {
+		float accelaration, float t_velo) {
 	int i;
 	g_flag_circuit = 1;
 	waitSensor();
@@ -29,16 +30,16 @@ void runCircuit(uint8_t x, uint8_t y, uint8_t times, float velocity,
 	initRun();
 	driveSuction(70, ON);
 	waitTime(1000);
-	runStraight(accelaration, INIT_DIS + SECTION, velocity, turn_velo);
+	runStraight(accelaration, INIT_DIS + SECTION, velocity, t_velo);
 	for (i = 0; i < times; i++) {
-		runStraight(accelaration, SECTION * (y - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
-		runStraight(accelaration, SECTION * (x - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
-		runStraight(accelaration, SECTION * (y - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
-		runStraight(accelaration, SECTION * (x - 3), velocity, turn_velo);
-		turnCorner(turn_90_wide_R_1000);
+		runStraight(accelaration, SECTION * (y - 3), velocity, t_velo);
+		turnCorner(&t_w90_R_10);
+		runStraight(accelaration, SECTION * (x - 3), velocity, t_velo);
+		turnCorner(&t_w90_R_10);
+		runStraight(accelaration, SECTION * (y - 3), velocity, t_velo);
+		turnCorner(&t_w90_R_10);
+		runStraight(accelaration, SECTION * (x - 3), velocity, t_velo);
+		turnCorner(&t_w90_R_10);
 	}
 	runStraight(accelaration, SECTION * 2, velocity, 0);
 	driveSuction(70, OFF);
@@ -90,7 +91,7 @@ void runAdachiAdachi(void) {
 
 	driveMotor(ON);
 	switchSensorLED(ON);
-	turnCorner(pivot);
+	turnCorner(&pivot);
 	checkOrient(180);
 
 	setTargetCoord(START_X, START_Y);
@@ -148,7 +149,7 @@ void runFurukawaAdachi(void) {
 
 	driveMotor(ON);
 	switchSensorLED(ON);
-	turnCorner(pivot);
+	turnCorner(&pivot);
 	checkOrient(180);
 	setTargetCoord(START_X, START_Y);
 
@@ -159,7 +160,7 @@ void runFurukawaAdachi(void) {
 	initRun();
 
 	searchAdachi();
-	turnCorner(pivot);
+	turnCorner(&pivot);
 	driveMotor(OFF);
 	waitTime(500);
 
@@ -215,7 +216,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal1000(2, 10, 2, 10);
+		runPathDiagonal(T14,2, 10, 2, 10);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -240,7 +241,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal1000(3, 15, 3, 10);
+		runPathDiagonal(T14,3, 15, 3, 10);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -265,7 +266,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal1000(4, 15, 3, 15);
+		runPathDiagonal(T14,4, 15, 3, 15);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -290,7 +291,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal1000(4, 20, 3, 20);
+		runPathDiagonal(T14,4, 20, 3, 20);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -315,7 +316,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal1000(4, 20, 4, 20);
+		runPathDiagonal(T14,4, 20, 4, 20);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -340,7 +341,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal1000(4.5, 20, 4.5, 20);
+		runPathDiagonal(T14,4, 30, 4, 20);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);

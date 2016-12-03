@@ -321,6 +321,10 @@ void initSPI(void) {
 
 	RSPI1.SPPCR.BYTE = 0x00; 	//RSPI端子制御レジスタ
 
+	RSPI1.SPCKD.BIT.SCKDL = 0x00;
+	RSPI1.SPND.BIT.SPNDL = 0x00;
+	RSPI1.SSLND.BIT.SLNDL = 0x00;
+
 	RSPI1.SPCMD0.BIT.CPHA = 1;	//奇数エッジ:データ変化,偶数エッジ：データサンプル
 	RSPI1.SPCMD0.BIT.CPOL = 1;	//アイドル時：RSPCKがHigh
 	RSPI1.SPCMD0.BIT.BRDV = 1;	//ビットレート分周設定 0:分周しない 1:2分周　2:4分周　3:8分周
@@ -341,7 +345,7 @@ void initSPI(void) {
 
 void initFlash(void) {
 
-	 trancefarFirmwareToRam();
+	trancefarFirmwareToRam();
 
 }
 

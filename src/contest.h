@@ -12,7 +12,7 @@
  サーキット関数
  ****************************************/
 void runCircuit(uint8_t x, uint8_t y, uint8_t times, float velocity,
-		float accelaration, float turn_velo);
+		float accelaration, float t_velo);
 /****************************************
 探索 1
 ****************************************/

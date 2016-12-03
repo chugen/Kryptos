@@ -27,7 +27,7 @@ void setCurrentCoord(uint16_t x,uint16_t y);
 /****************************************
 ゴール座標セット
  ****************************************/
-void setGoalCoord(uint16_t x,uint16_t y);
+void setTargetCoord(uint16_t x,uint16_t y);
 /****************************************
  map表示
  ****************************************/
@@ -113,8 +113,7 @@ void runPath(void) ;
 /****************************************
  斜めpath走行1
  ****************************************/
-void runPathDiagonal1000(float velo,float acc,float d_velo,float d_acc) ;
-void runPathDiagonal1200(float velo,float acc,float d_velo,float d_acc) ;
+void runPathDiagonal(uint8_t t_velo,float velo,float acc,float d_velo,float d_acc) ;
 
 /****************************************
  スピードコネクト

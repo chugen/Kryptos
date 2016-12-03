@@ -101,7 +101,7 @@ extern volatile int8_t g_flag_circuit;
 extern volatile int8_t g_flag_run_mode;
 extern volatile int8_t g_flag_pillar_edge_L;
 extern volatile int8_t g_flag_pillar_edge_R;
-extern volatile int8_t g_flag_shotest_goal;
+extern volatile int8_t g_flag_shortest_goal;
 //テスト用
 
 extern volatile float g_duty_L;
