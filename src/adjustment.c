@@ -11,6 +11,9 @@
 #include "run.h"
 #include "global.h"
 #include "common.h"
+#include "parameter.h"
+#include "sensor.h"
+
 /****************************************
  調整用初期化
  ****************************************/
@@ -43,128 +46,142 @@ void initAdjustment2(void) {
 /****************************************
  調整用関数1
  ****************************************/
-void selectAdjustment1(void) {
-
+void selectAdjustment1(uint8_t velo) {
+	int16_t mode;
+	float velocity;
 	driveRGB(MAGENTA, ON);
 	waitTime(500);
-
-	switch (selectMode(13)) {
-
+	mode = selectMode(13);
+	switch (velo) {
+	case T10:
+		velocity=1.0;
+		break;
+	case T12:
+		velocity=1.2;
+		break;
+	case T14:
+		velocity=1.4;
+		break;
+	case T16:
+		velocity=1.6;
+		break;
+	}
+	switch (mode) {
 	case 0:
 		initAdjustment();
-		runStraight(15, SECTION, 1, 1);
+		runStraight(15, SECTION, velocity,velocity);
 
-		turnCorner(turn_90_wide_L_1000);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION, 1, 0);
+		runStraight(15, SECTION, velocity,0);
 
 		break;
 	case 1:
 		initAdjustment();
-		runStraight(15, SECTION, 1, 1);
+		runStraight(15, SECTION, velocity,velocity);
 
-		turnCorner(turn_90_wide_R_1000);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION, 1, 0);
+		runStraight(15, SECTION, velocity,0);
 
 		break;
 	case 2:
 		initAdjustment();
-		runStraight(15, SECTION, 1, 1);
+		runStraight(15, SECTION, velocity,velocity);
 
-		turnCorner(turn_180_L_1000);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION, 1, 0);
+		runStraight(15, SECTION, velocity,0);
 
 		break;
 
 	case 3:
 		initAdjustment();
-		runStraight(15, SECTION, 1, 1);
+		runStraight(15, SECTION, velocity,velocity);
 
-		turnCorner(turn_180_R_1000);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION, 1, 0);
+		runStraight(15, SECTION, velocity,0);
 
 		break;
 	case 4:
 		initAdjustment();
-		runStraight(15, SECTION, 1, 1);
-		turnCorner(turn_45_in_L_1000);
+		runStraight(15, SECTION, velocity,velocity);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION * M_SQRT2, 1, 0);
+		runStraight(15, SECTION * M_SQRT2, velocity,0);
 
 		break;
 	case 5:
 		initAdjustment();
-		runStraight(15, SECTION, 1, 1);
-		turnCorner(turn_45_in_R_1000);
+		runStraight(15, SECTION, velocity,velocity);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION * M_SQRT2, 1, 0);
+		runStraight(15, SECTION * M_SQRT2, velocity,0);
 
 		break;
 	case 6:
 		initAdjustment();
-		runStraight(15, SECTION * M_SQRT2, 1, 1);
-		turnCorner(turn_45_out_L_1000);
+		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION, 1, 0);
+		runStraight(15, SECTION, velocity,0);
 
 		break;
 	case 7:
 		initAdjustment();
-		runStraight(15, SECTION * M_SQRT2, 1, 1);
-		turnCorner(turn_45_out_R_1000);
+		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION, 1, 0);
+		runStraight(15, SECTION, velocity,0);
 
 		break;
 	case 8:
 		initAdjustment();
-		runStraight(15, SECTION, 1, 1);
-		turnCorner(turn_135_in_L_1000);
+		runStraight(15, SECTION, velocity,velocity);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION * M_SQRT2, 1, 0);
+		runStraight(15, SECTION * M_SQRT2, velocity,0);
 
 		break;
 	case 9:
 		initAdjustment();
-		runStraight(15, SECTION, 1, 1);
-		turnCorner(turn_135_in_R_1000);
+		runStraight(15, SECTION, velocity,velocity);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION * M_SQRT2, 1, 0);
+		runStraight(15, SECTION * M_SQRT2, velocity,0);
 
 		break;
 	case 10:
 		initAdjustment();
-		runStraight(15, SECTION * M_SQRT2, 1, 1);
-		turnCorner(turn_135_out_L_1000);
+		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION, 1, 0);
+		runStraight(15, SECTION, velocity,0);
 
 		break;
 	case 11:
 		initAdjustment();
-		runStraight(15, SECTION * M_SQRT2, 1, 1);
-		turnCorner(turn_135_out_R_1000);
+		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION, 1, 0);
+		runStraight(15, SECTION, velocity,0);
 
 		break;
 	case 12:
 		initAdjustment();
-		runStraight(15, SECTION * M_SQRT2, 1, 1);
-		turnCorner(turn_v90_L_1000);
+		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION * M_SQRT2, 1, 0);
+		runStraight(15, SECTION * M_SQRT2, velocity,0);
 
 		break;
 	case 13:
 		initAdjustment();
-		runStraight(15, SECTION * M_SQRT2, 1, 1);
-		turnCorner(turn_v90_R_1000);
+		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
+		turnCorner(t_para[velo][mode]);
 		switchSensorLED(OFF);
-		runStraight(15, SECTION * M_SQRT2, 1, 0);
+		runStraight(15, SECTION * M_SQRT2, velocity,0);
 
 		break;
 
@@ -182,10 +199,13 @@ void selectAdjustment1(void) {
  ****************************************/
 void selectAdjustment2(void) {
 	uint8_t i;
+	uint8_t mode;
 	driveRGB(YELLOW, ON);
 	waitTime(500);
 
-	switch (selectMode(13)) {
+	mode = selectMode(13);
+
+	switch (mode) {
 
 	case 0:
 		initAdjustment2();
@@ -193,7 +213,7 @@ void selectAdjustment2(void) {
 
 		for (i = 0; i < 16; i++) {
 			runStraight(5, SECTION, 0.5, 0.5);
-			turnCorner(turn_90_L);
+			turnCorner(&t_90_L_05);
 		}
 		runStraight(5, SECTION, 0.5, 0);
 		break;
@@ -203,41 +223,41 @@ void selectAdjustment2(void) {
 
 		for (i = 0; i < 16; i++) {
 			runStraight(5, SECTION, 0.5, 0.5);
-			turnCorner(turn_90_R);
+			turnCorner(&t_90_R_05);
 		}
 		runStraight(5, SECTION, 0.5, 0);
 		break;
 	case 2:
 		initAdjustment2();
 		runStraight(5, SECTION, 0.5, 0.5);
-		turnCorner(turn_90_L);
+		turnCorner(&t_90_L_05);
 		runStraight(5, SECTION, 0.5, 0);
 		break;
 
 	case 3:
 		initAdjustment2();
 		runStraight(5, SECTION, 0.5, 0.5);
-		turnCorner(turn_90_R);
+		turnCorner(&t_90_R_05);
 		runStraight(5, SECTION, 0.5, 0);
 		break;
 	case 4:
 		initAdjustment2();
 		for (i = 0; i < 16; i++) {
-			turnCorner(pivot_90_L);
+			turnCorner(&pivot_90_L);
 			waitTime(200);
 		}
 		break;
 	case 5:
 		initAdjustment2();
 		for (i = 0; i < 16; i++) {
-			turnCorner(pivot_90_R);
+			turnCorner(&pivot_90_R);
 			waitTime(200);
 		}
 		break;
 	case 6:
 		initAdjustment2();
 		for (i = 0; i < 10; i++) {
-			turnCorner(pivot);
+			turnCorner(&pivot);
 			waitTime(200);
 		}
 		break;

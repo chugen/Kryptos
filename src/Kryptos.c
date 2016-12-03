@@ -28,6 +28,7 @@
 #include "flash.h"
 
 void main(void) {
+	uint8_t i, j;
 	init();
 	checkBatt();
 	notificateStartUp();
@@ -39,7 +40,7 @@ void main(void) {
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-		selectAdjustment1();
+		selectAdjustment1(T14);
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
@@ -47,19 +48,31 @@ void main(void) {
 		break;
 	case 3: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(YELLOW, ON);
-
+		driveSuction(100, ON);
 		break;
 	case 4: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(CYAN, ON);
-
+		waitSensor();
+		calcGyroZRef();
+		g_log_count = 0;
+		g_current_angle = 0;
+		waitTime(1500);
+		driveRGB(MAGENTA, ON);
+		printLog();
 		break;
 	case 5: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-
+		waitSensor();
+		calcGyroZRef();
+		g_log_count = 0;
+		g_current_angle = 0;
+		while (1) {
+			myprintf("%8.5f %8.5f\n", g_current_angle, g_current_angularvelo);
+		}
 		break;
 	case 6: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WHITE, ON);
-
+		selectAdjustment1(T16);
 		break;
 	case 7: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
@@ -77,6 +90,11 @@ void main(void) {
 		break;
 	case 9: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LBLUE, ON);
+		for (j = 0; j < 4; j++) {
+			for (i = 0; i < 14; i++) {
+				myprintf("%f\n", t_para[j][i]->velocity);
+			}
+		}
 
 		break;
 	case 10: //////////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +140,7 @@ void main(void) {
 
  runStraight(5, SECTION, 1.3, 1);
 
- turnCorner(turn_180_R_1000);
+ turnCorner(t_180_R_10);
 
  runStraight(5, SECTION, 1.3, 0);
  switchSensorLED(ON);

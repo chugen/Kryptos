@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include "common.h"
 #include "flash.h"
+#include "app.h"
 
 /****************************************
  FPUモード変更

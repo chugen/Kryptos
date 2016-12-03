@@ -68,7 +68,7 @@
 								<option id="com.renesas.cdt.rxc.Release.Compiler.option.isa.832594081" name="命令セット・アーキテクチャ" superClass="com.renesas.cdt.rxc.Release.Compiler.option.isa" value="com.renesas.cdt.rxc.Release.Compiler.option.isa.rxv1" valueType="enumerated"/>
 								<option id="com.renesas.cdt.rxc.Release.Compiler.option.floatIns.2139045292" name="浮動小数点演算命令を使用する" superClass="com.renesas.cdt.rxc.Release.Compiler.option.floatIns" value="com.renesas.cdt.rxc.Release.Compiler.option.floatIns.enable" valueType="enumerated"/>
 								<option id="com.renesas.cdt.rxc.Release.Compiler.option.optimizeLevel.1645149945" name="最適化レベル" superClass="com.renesas.cdt.rxc.Release.Compiler.option.optimizeLevel" value="com.renesas.cdt.rxc.Release.Compiler.option.optimizeLevel.0" valueType="enumerated"/>
-								<option id="com.renesas.cdt.renesas.Compiler.option.C.934821533" name="C :" superClass="com.renesas.cdt.renesas.Compiler.option.C" value="C(C89)" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.Compiler.option.C.934821533" name="C :" superClass="com.renesas.cdt.renesas.Compiler.option.C" value="C99" valueType="enumerated"/>
 								<inputType id="%Base.Compiler.Shc.C.Input.Id.71077908" name="C 入力" superClass="%Base.Compiler.Shc.C.Input.Id"/>
 								<inputType id="%Base.Compiler.Shc.C.Input1.Id.734098598" name="C++ 入力" superClass="%Base.Compiler.Shc.C.Input1.Id"/>
 							</tool>
@@ -117,7 +117,7 @@
 								<option id="com.renesas.cdt.rxc.Release.StandardLibrary.option.cpu.1165065132" name="CPU" superClass="com.renesas.cdt.rxc.Release.StandardLibrary.option.cpu" value="com.renesas.cdt.rxc.Release.StandardLibrary.option.cpu.rx600" valueType="enumerated"/>
 								<option id="com.renesas.cdt.rxc.Release.StandardLibrary.option.endian.80156456" name="データ・エンディアン" superClass="com.renesas.cdt.rxc.Release.StandardLibrary.option.endian" value="com.renesas.cdt.rxc.Release.StandardLibrary.option.endian.little" valueType="enumerated"/>
 								<option id="com.renesas.cdt.rxc.Release.StandardLibrary.option.address.1388723447" name="アドレス" superClass="com.renesas.cdt.rxc.Release.StandardLibrary.option.address" value="00000000" valueType="string"/>
-								<option id="com.renesas.cdt.renesas.StandardLibrary.option.libConfiguration.319292815" name="ライブラリー構成" superClass="com.renesas.cdt.renesas.StandardLibrary.option.libConfiguration" value="com.renesas.cdt.renesas.StandardLibrary.option.libConfiguration.c89" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.libConfiguration.319292815" name="ライブラリー構成" superClass="com.renesas.cdt.renesas.StandardLibrary.option.libConfiguration" value="com.renesas.cdt.renesas.StandardLibrary.option.libConfiguration.c99" valueType="enumerated"/>
 								<option id="com.renesas.cdt.renesas.StandardLibrary.option.mathc89.1859999390" name="math.h (C89/C99): 数値計算用ライブラリー" superClass="com.renesas.cdt.renesas.StandardLibrary.option.mathc89" value="false" valueType="boolean"/>
 								<option id="com.renesas.cdt.renesas.StandardLibrary.option.mathfc89.491337593" name="mathf.h (C89/C99): 数値計算用ライブラリー ( float 型関数 )" superClass="com.renesas.cdt.renesas.StandardLibrary.option.mathfc89" value="true" valueType="boolean"/>
 								<option id="com.renesas.cdt.renesas.StandardLibrary.option.stdargc89.1485665547" name="stdarg.h (C89/C99): 可変個の実引数アクセス用ライブラリー" superClass="com.renesas.cdt.renesas.StandardLibrary.option.stdargc89" value="true" valueType="boolean"/>
@@ -152,5 +152,9 @@
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/Kryptos"/>
+		</configuration>
+	</storageModule>
 </cproject>

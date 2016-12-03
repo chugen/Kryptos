@@ -41,8 +41,8 @@
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 510//535//430//400//430//470//525//500
-#define SEN_REFERENCE_R 580//520//480//550//520//520
+#define SEN_REFERENCE_L 470//510//535//430//400//430//470//525//500
+#define SEN_REFERENCE_R 517//580//520//480//550//520//520
 #define SEN_REFERENCE_FL 1000//980//1000//1030//1030
 #define SEN_REFERENCE_FR 392//410//395//400//410
 /*==========*/
@@ -81,7 +81,96 @@
 #define WALL_FRONT_ANG 0.07
 #define WALL_FRONT_DIS 0.1
 
+/****************************************
+ ターンパラメータ
+ ****************************************/
+/*others~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn_t pivot;
+extern turn_t pivot_90_L;
+extern turn_t pivot_90_R;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn_t t_90_L_05 ;
+extern turn_t t_90_R_05 ;
+/*1000~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn_t t_w90_L_10 ;
+extern turn_t t_w90_R_10 ;
+extern turn_t t_180_L_10 ;
+extern turn_t t_180_R_10 ;
+extern turn_t t_i45_L_10 ;
+extern turn_t t_i45_R_10 ;
+extern turn_t t_o45_L_10;
+extern turn_t t_o45_R_10 ;
+extern turn_t t_i135_L_10 ;
+extern turn_t t_i135_R_10 ;
+extern turn_t t_o135_L_10 ;
+extern turn_t t_o135_R_10 ;
+extern turn_t t_v90_L_10;
+extern turn_t t_v90_R_10 ;
+/*1200~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn_t t_w90_L_12 ;
+extern turn_t t_w90_R_12 ;
+extern turn_t t_180_L_12 ;
+extern turn_t t_180_R_12 ;
+extern turn_t t_i45_L_12 ;
+extern turn_t t_i45_R_12 ;
+extern turn_t t_o45_L_12;
+extern turn_t t_o45_R_12 ;
+extern turn_t t_i135_L_12 ;
+extern turn_t t_i135_R_12 ;
+extern turn_t t_o135_L_12 ;
+extern turn_t t_o135_R_12 ;
+extern turn_t t_v90_L_12;
+extern turn_t t_v90_R_12 ;
+/*1400~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn_t t_w90_L_14 ;
+extern turn_t t_w90_R_14 ;
+extern turn_t t_180_L_14 ;
+extern turn_t t_180_R_14 ;
+extern turn_t t_i45_L_14 ;
+extern turn_t t_i45_R_14 ;
+extern turn_t t_o45_L_14;
+extern turn_t t_o45_R_14 ;
+extern turn_t t_i135_L_14 ;
+extern turn_t t_i135_R_14 ;
+extern turn_t t_o135_L_14 ;
+extern turn_t t_o135_R_14 ;
+extern turn_t t_v90_L_14;
+extern turn_t t_v90_R_14 ;
+/*1600~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn_t t_w90_L_16 ;
+extern turn_t t_w90_R_16 ;
+extern turn_t t_180_L_16 ;
+extern turn_t t_180_R_16 ;
+extern turn_t t_i45_L_16 ;
+extern turn_t t_i45_R_16 ;
+extern turn_t t_o45_L_16;
+extern turn_t t_o45_R_16 ;
+extern turn_t t_i135_L_16 ;
+extern turn_t t_i135_R_16 ;
+extern turn_t t_o135_L_16 ;
+extern turn_t t_o135_R_16 ;
+extern turn_t t_v90_L_16;
+extern turn_t t_v90_R_16 ;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn_t t_w90_R_1500;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/****************************************
+ ターン種類保存配列
+ ****************************************/
+ extern turn_t * t10[];
+ extern turn_t * t12[];
+ extern turn_t * t14[];
+ extern turn_t * t16[];
+/****************************************
+ ターン速度保存配列
+ ****************************************/
+extern turn_t ** t_para[];
 
-
+enum TURN {
+	 T10,
+	 T12,
+	 T14,
+	 T16
+};
 #endif /* PARAMETER_H_ */
 

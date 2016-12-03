@@ -14,6 +14,7 @@
 #include "intrpt.h"
 #include "serial.h"
 #include "parameter.h"
+#include "sensor.h"
 
 /****************************************
  Wait関数
@@ -421,16 +422,31 @@ void soundStartSearch(void) {
 	driveBuzzer(BZ_B5, 50);
 }
 void soundStartRun(void) {
-	driveBuzzer(BZ_A2, 600);
-	waitTime(150);
+//	driveBuzzer(BZ_A2, 600);
+//	waitTime(150);
+//
+//	driveBuzzer(BZ_A2, 600);
+//	waitTime(150);
+//
+//	driveBuzzer(BZ_A2, 600);
+//	waitTime(150);
+//
+//	driveBuzzer(BZ_A3, 750);
+	driveBuzzer(BZ_C0, 80);
+	driveBuzzer(BZ_C1, 80);
+	driveBuzzer(BZ_C2, 80);
+	driveBuzzer(BZ_C3, 80);
+	driveBuzzer(BZ_C4, 80);
+	driveBuzzer(BZ_C5, 80);
+	driveBuzzer(BZ_C6, 80);
+	driveBuzzer(BZ_C0, 80);
+	driveBuzzer(BZ_C1, 80);
+	driveBuzzer(BZ_C2, 80);
+	driveBuzzer(BZ_C3, 80);
+	driveBuzzer(BZ_C4, 80);
+	driveBuzzer(BZ_C5, 80);
+	driveBuzzer(BZ_C6, 80);
 
-	driveBuzzer(BZ_A2, 600);
-	waitTime(150);
-
-	driveBuzzer(BZ_A2, 600);
-	waitTime(150);
-
-	driveBuzzer(BZ_A3, 750);
 }
 /****************************************
  通知音
