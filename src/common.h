@@ -22,7 +22,7 @@
 #define FORWARD 0
 #define BACKWARD 1
 
-#define LOG_TIMES 1500
+#define LOG_TIMES 4000
 
 #define SECTION 0.18
 #define HALF_SECTION 0.09

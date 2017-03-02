@@ -40,7 +40,7 @@ _SBYTE  *sbrk(size_t size);
 //const size_t _sbrk_size=        /* Specifies the minimum unit of    */
                     /* the defined heap area        */
 
-extern _SBYTE *_s1ptr;
+//extern _SBYTE *_s1ptr;
 
 union HEAP_TYPE {
     _SDWORD  dummy ;        /* Dummy for 4-byte boundary            */

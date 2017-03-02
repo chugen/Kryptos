@@ -155,25 +155,24 @@ float ctrlIntVelocity(float ki) {
  角速度P制御
  ****************************************/
 float ctrlPropAngularVelocity(float kp) {
-	g_angularvelo_error = g_target_angularvelo - g_current_angularvelo;
+	g_omega_error = g_target_omega - g_current_omega;
 
-	return convDegreeToRadian(g_angularvelo_error) * TREAD / 2.0 * kp;
+	return convDegreeToRadian(g_omega_error) * TREAD / 2.0 * kp;
 }
 /****************************************
  角速度I制御
  ****************************************/
 float ctrlIntAngularVelocity(float ki) {
-	g_angularvelo_error_integral += g_angularvelo_error;
+	g_omega_error_integral += g_omega_error;
 	if (((g_sensor_L > SEN_THRESHOLD_L) || (g_sensor_R > SEN_THRESHOLD_R))
 			&& g_flag_turn == 0) {
-		g_angularvelo_error_integral = 0;
+		g_omega_error_integral = 0;
 		return 0;
 	} else if (g_flag_blindalley == 1) {
-		g_angularvelo_error_integral = 0;
+		g_omega_error_integral = 0;
 		return 0;
 	} else {
-		return convDegreeToRadian(g_angularvelo_error_integral) * TREAD / 2.0
-				* ki;
+		return convDegreeToRadian(g_omega_error_integral) * TREAD / 2.0 * ki;
 	}
 }
 /****************************************
@@ -278,7 +277,7 @@ float ctrlWallFrontAng(float kp) {
 	float temp = 0;
 	if ((g_flag_blindalley == 1) && (g_sensor_FL > SEN_NOWALL_FL)
 			&& (g_sensor_FR > SEN_NOWALL_FR)) {
-		g_angularvelo_error_integral = 0;
+		g_omega_error_integral = 0;
 		temp = -kp
 				* (( SEN_REFERENCE_FL - g_sensor_FL)
 						- ( SEN_REFERENCE_FR - g_sensor_FR));
@@ -386,8 +385,8 @@ void initRun(void) {
 	g_velo_error = 0;
 	g_velo_error_integral = 0;
 
-	g_angularvelo_error = 0;
-	g_angularvelo_error_integral = 0;
+	g_omega_error = 0;
+	g_omega_error_integral = 0;
 
 	g_angle_error = 0;
 	g_angle_error_integral = 0;
@@ -469,7 +468,7 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 }
 
 /****************************************
- スラローム
+ スラローム　非連続
  ****************************************/
 
 void turnCorner(turn_t *p) {
@@ -485,11 +484,7 @@ void turnCorner(turn_t *p) {
 			while (g_flag_failsafe != 1) {
 				if (g_flag_pillar_edge_L == 1)
 					break;
-//				if (g_flag_shortest_goal == 1) {
-//					runStraight(5, 0.1, p->velocity, p->velocity);
-//					driveRGB(YELLOW, ON);
-//					break;
-//				}
+
 			}
 			g_distance = 0;
 			runStraight(5, p->front, p->velocity, p->velocity);
@@ -499,11 +494,7 @@ void turnCorner(turn_t *p) {
 			while (g_flag_failsafe != 1) {
 				if (g_flag_pillar_edge_R == 1)
 					break;
-//				if (g_flag_shortest_goal == 1) {
-//					runStraight(5, 0.1, p->velocity, p->velocity);
-//					driveRGB(YELLOW, ON);
-//					break;
-//				}
+
 			}
 			g_distance = 0;
 			runStraight(5, p->front, p->velocity, p->velocity);
@@ -516,11 +507,7 @@ void turnCorner(turn_t *p) {
 			while (g_flag_failsafe != 1) {
 				if (g_flag_pillar_edge_L == 1)
 					break;
-//				if (g_flag_shortest_goal == 1) {
-//					runStraight(5, 0.1, p->velocity, p->velocity);
-//					driveRGB(MAGENTA, ON);
-//					break;
-//				}
+
 			}
 			g_distance = 0;
 
@@ -531,11 +518,6 @@ void turnCorner(turn_t *p) {
 			while (g_flag_failsafe != 1) {
 				if (g_flag_pillar_edge_R == 1)
 					break;
-//				if (g_flag_shortest_goal == 1) {
-//					runStraight(5, 0.1, p->velocity, p->velocity);
-//					driveRGB(MAGENTA, ON);
-//					break;
-//				}
 			}
 			g_distance = 0;
 
@@ -560,7 +542,7 @@ void turnCorner(turn_t *p) {
 		angacc_temp = p->angular_accele;
 	}
 
-	g_angularaccele = angacc_temp;
+	g_alpha = angacc_temp;
 
 	section1 = (p->max_angular_velo * p->max_angular_velo)
 			/ (2 * p->angular_accele);
@@ -581,9 +563,9 @@ void turnCorner(turn_t *p) {
 
 			section2 = 0;
 
-			section1 = (-g_current_angularvelo * g_current_angularvelo)
+			section1 = (-g_current_omega * g_current_omega)
 					/ (4 * p->angular_accele) + fabsf(p->angle) / 2;
-			section3 = (g_current_angularvelo * g_current_angularvelo)
+			section3 = (g_current_omega * g_current_omega)
 					/ (4 * p->angular_accele) + fabsf(p->angle) / 2;
 		}
 
@@ -600,12 +582,12 @@ void turnCorner(turn_t *p) {
 
 //section2////////////////////////////////////////////////////////////////////
 
-	g_angularaccele = 0;
+	g_alpha = 0;
 
 	if (p->angle <= 0) {
-		g_target_angularvelo = -p->max_angular_velo;
+		g_target_omega = -p->max_angular_velo;
 	} else {
-		g_target_angularvelo = p->max_angular_velo;
+		g_target_omega = p->max_angular_velo;
 	}
 	while (g_flag_failsafe != 1) {
 		if (fabsf(g_target_angle) >= section2)
@@ -614,7 +596,7 @@ void turnCorner(turn_t *p) {
 
 //section3////////////////////////////////////////////////////////////////////
 
-	g_angularaccele = angacc_temp * -1;
+	g_alpha = angacc_temp * -1;
 
 	while (g_flag_failsafe != 1) {
 		if (fabsf(g_target_angle) >= section3) {
@@ -622,15 +604,15 @@ void turnCorner(turn_t *p) {
 		}
 
 		if (left_right == 1) {
-			if (g_target_angularvelo < 0)
+			if (g_target_omega < 0)
 				break;
 		} else if (left_right == -1) {
-			if (g_target_angularvelo > 0)
+			if (g_target_omega > 0)
 				break;
 		}
 	}
-	g_angularaccele = 0;
-	g_target_angularvelo = 0;
+	g_alpha = 0;
+	g_target_omega = 0;
 
 	g_target_angle = 0;
 	g_distance = 0;
@@ -644,9 +626,36 @@ void turnCorner(turn_t *p) {
 //	g_angularvelo_error_integral = 0;
 
 	g_flag_turn = 0; //ターンフラグおろす
-	if (g_flag_shortest_goal == 1) {
+	if ((g_flag_shortest_goal == 1) || (g_flag_run_mode == SEARCH)) {
 		runStraight(5, p->rear, p->velocity, p->velocity);
 	}
 
 }
 
+/****************************************
+ スラローム　連続
+ ****************************************/
+void turnCornerContinuous(float degree, float omega) {
+	g_flag_turn_continuous = 1;
+	g_alpha = M_PI * powf(omega, 2) / 2 / degree;
+	g_target_angle_const = degree;
+	g_target_omega_max = omega;
+	g_log_count = 0;
+	g_count_time_angle = 0;
+	g_target_omega = 0;
+	g_current_angle = 0;
+	g_alpha_variable = 0;
+	while (fabsf(g_target_omega) <= 0.01) {
+
+	}
+	while (fabsf(g_target_omega) > 0.001) {
+
+	}
+	g_alpha_variable = 0;
+	g_distance = 0;
+	g_alpha = 0;
+	g_target_angle = 0;
+	g_current_angle = 0;
+
+	g_flag_turn_continuous = 0;
+}

@@ -85,5 +85,8 @@ void runBlindAlley(float velo);
  ****************************************/
 
 void turnCorner(turn_t *p);
-
+/****************************************
+ スラローム　連続
+ ****************************************/
+void turnCornerContinuous(float degree, float omega);
 #endif /* RUN_H_ */

@@ -65,6 +65,9 @@ void selectAdjustment1(uint8_t velo) {
 	case T16:
 		velocity=1.6;
 		break;
+	case T18:
+		velocity=1.8;
+		break;
 	}
 	switch (mode) {
 	case 0:

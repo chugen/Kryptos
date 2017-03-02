@@ -37,6 +37,7 @@ void main(void) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
 		selectContest();
+
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
@@ -67,7 +68,7 @@ void main(void) {
 		g_log_count = 0;
 		g_current_angle = 0;
 		while (1) {
-			myprintf("%8.5f %8.5f\n", g_current_angle, g_current_angularvelo);
+			myprintf("%8.5f %8.5f\n", g_current_angle, g_current_omega);
 		}
 		break;
 	case 6: //////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +77,22 @@ void main(void) {
 		break;
 	case 7: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
-
+		waitSensor();
+		driveRGB(GREEN, ON);
+		waitTime(1000);
+		calcGyroZRef();
+		//driveSuction(70, ON);
+		waitTime(1000);
+		initRun();
+		driveMotor(ON);
+		switchSensorLED(ON);
+		runStraight(5, SECTION, 0.7, 0.7);
+		turnCornerContinuous(90, 1000);
+		runStraight(5, SECTION, 0.7, 0);
+		driveMotor(OFF);
+		driveSuction(70, OFF);
+		waitButton();
+		printLog();
 		break;
 	case 8: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WATER, ON);
