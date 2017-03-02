@@ -278,7 +278,7 @@ void checkWall(void) {
 /****************************************
  壁有無判定
  ****************************************/
-void getWallData(uint8_t x,uint8_t y,uint8_t select){
+void getWallData(uint8_t x, uint8_t y, uint8_t select) {
 
 }
 /****************************************
@@ -1760,7 +1760,8 @@ void runPath(void) {
 /****************************************
  斜めpath走行
  ****************************************/
-void runPathDiagonal(uint8_t t_velo,float velo, float acc, float d_velo, float d_acc) {
+void runPathDiagonal(uint8_t t_velo, float velo, float acc, float d_velo,
+		float d_acc) {
 	int i = 0;
 	float velocity;
 	g_flag_gap = 0;
@@ -1770,16 +1771,19 @@ void runPathDiagonal(uint8_t t_velo,float velo, float acc, float d_velo, float d
 
 	switch (t_velo) {
 	case T10:
-		velocity=1.0;
+		velocity = 1.0;
 		break;
 	case T12:
-		velocity=1.2;
+		velocity = 1.2;
 		break;
 	case T14:
-		velocity=1.4;
+		velocity = 1.4;
 		break;
 	case T16:
-		velocity=1.6;
+		velocity = 1.6;
+		break;
+	case T18:
+		velocity = 1.8;
 		break;
 	}
 	if (g_path_3[0] >= 31) {
@@ -1787,8 +1791,8 @@ void runPathDiagonal(uint8_t t_velo,float velo, float acc, float d_velo, float d
 	}
 	while (1) {
 		g_flag_path_run_goal = 0;
-		if(i==g_flag_step_goal_3){
-			g_flag_shortest_goal=1;
+		if (i == g_flag_step_goal_3) {
+			g_flag_shortest_goal = 1;
 		}
 		if (i > g_flag_step_goal_3) {
 			g_flag_path_run_goal = 1;
@@ -1802,43 +1806,42 @@ void runPathDiagonal(uint8_t t_velo,float velo, float acc, float d_velo, float d
 		} else if (g_path_3[i] == S_L_CURVE) {
 			turnCorner(&t_90_L_05);
 		} else if (g_path_3[i] == S_BIG_L_CURVE) {
-			turnCorner(t_para[t_velo][0]);
+			turnCorner(t_para[t_velo][W90L]);
 		} else if (g_path_3[i] == S_U_L_CURVE) {
-			turnCorner(t_para[t_velo][2]);
+			turnCorner(t_para[t_velo][T180L]);
 		} else if (g_path_3[i] == S_R_CURVE) {
 			turnCorner(&t_90_R_05);
 		} else if (g_path_3[i] == S_BIG_R_CURVE) {
-			turnCorner(t_para[t_velo][1]);
+			turnCorner(t_para[t_velo][W90R]);
 		} else if (g_path_3[i] == S_U_R_CURVE) {
-			turnCorner(t_para[t_velo][3]);
+			turnCorner(t_para[t_velo][T180R]);
 		} else if (g_path_3[i] == L_45_I) {
-			turnCorner(t_para[t_velo][4]);
+			turnCorner(t_para[t_velo][I45L]);
 		} else if (g_path_3[i] == R_45_I) {
-			turnCorner(t_para[t_velo][5]);
+			turnCorner(t_para[t_velo][I45R]);
 		} else if (g_path_3[i] == L_45_O) {
-			turnCorner(t_para[t_velo][6]);
+			turnCorner(t_para[t_velo][O45L]);
 		} else if (g_path_3[i] == R_45_O) {
-			turnCorner(t_para[t_velo][7]);
+			turnCorner(t_para[t_velo][O45R]);
 		} else if (g_path_3[i] == L_135_I) {
-			turnCorner(t_para[t_velo][8]);
+			turnCorner(t_para[t_velo][I135L]);
 		} else if (g_path_3[i] == R_135_I) {
-			turnCorner(t_para[t_velo][9]);
+			turnCorner(t_para[t_velo][I135R]);
 		} else if (g_path_3[i] == L_135_O) {
-			turnCorner(t_para[t_velo][10]);
+			turnCorner(t_para[t_velo][O135L]);
 		} else if (g_path_3[i] == R_135_O) {
-			turnCorner(t_para[t_velo][11]);
+			turnCorner(t_para[t_velo][O135R]);
 		} else if (g_path_3[i] == L_V90) {
-			turnCorner(t_para[t_velo][12]);
+			turnCorner(t_para[t_velo][V90L]);
 		} else if (g_path_3[i] == R_V90) {
-			turnCorner(t_para[t_velo][13]);
+			turnCorner(t_para[t_velo][V90R]);
 		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
 			runStraight(d_acc, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47),
 					d_velo, velocity);
 		} else {
-			//	driveRGB(RED, ON);
 		}
 		i++;
-		//	driveRGB(YELLOW, ON);
+
 		g_current_x = 1;
 	}
 	processShotestGoal();
@@ -1939,7 +1942,7 @@ void processShotestGoal(void) {
 			break;
 	}
 	g_accele = 0;
-	g_target_velo=0;
+	g_target_velo = 0;
 }
 /****************************************
  サーキット

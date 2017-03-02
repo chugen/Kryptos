@@ -26,22 +26,21 @@ extern volatile float g_velo_error;
 extern volatile float g_velo_error_integral;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //目標角速度
-extern volatile float g_target_angularvelo;
-
+extern volatile float g_target_omega;
+extern volatile float g_target_omega_max;
 //現在角速度
-extern volatile float g_current_angularvelo;
-
+extern volatile float g_current_omega;
 //現在偏差
-extern volatile float g_angularvelo_error;
-
+extern volatile float g_omega_error;
 //偏差積分
-extern volatile float g_angularvelo_error_integral;
-
+extern volatile float g_omega_error_integral;
 //Gyro　リファレンス
 extern volatile float g_gyro_reference;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //目標角度
 extern volatile float g_target_angle;
+extern volatile float g_target_angle_const;
+extern volatile float g_count_time_angle;
 //現在角度
 extern volatile float g_current_angle;
 //現在偏差
@@ -54,9 +53,9 @@ extern volatile float g_angle_error_integral;
 extern volatile float g_distance;
 //加速度
 extern volatile float g_accele;
-
-//各加速度
-extern volatile float g_angularaccele;
+//角加速度
+extern volatile float g_alpha;
+extern volatile float g_alpha_variable;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //センサ
 extern volatile int32_t g_sensor_FL;
@@ -102,6 +101,7 @@ extern volatile int8_t g_flag_run_mode;
 extern volatile int8_t g_flag_pillar_edge_L;
 extern volatile int8_t g_flag_pillar_edge_R;
 extern volatile int8_t g_flag_shortest_goal;
+extern volatile int8_t g_flag_turn_continuous;
 //テスト用
 
 extern volatile float g_duty_L;

@@ -26,34 +26,36 @@ volatile float g_velo_error;
 volatile float g_velo_error_integral;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //目標角速度
-volatile float g_target_angularvelo = 0;
+volatile float g_target_omega = 0;
+volatile float g_target_omega_max = 0;
 //現在角速度
-volatile float g_current_angularvelo;
+volatile float g_current_omega;
 
 //現在偏差
-volatile float g_angularvelo_error;
+volatile float g_omega_error;
 //偏差積分
-volatile float g_angularvelo_error_integral;
+volatile float g_omega_error_integral;
 //Gyro　リファレンス
 volatile float g_gyro_reference;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //目標角度
 volatile float g_target_angle;
+volatile float g_target_angle_const;
+volatile float g_count_time_angle;
 //現在角度
 volatile float g_current_angle;
 //現在偏差
 volatile float g_angle_error;
 //偏差積分
 volatile float g_angle_error_integral;
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //距離
 volatile float g_distance;
 //加速度
 volatile float g_accele;
-
 //角加速度
-volatile float g_angularaccele;
+volatile float g_alpha;
+volatile float g_alpha_variable;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //センサ
 volatile int32_t g_sensor_FL;
@@ -99,6 +101,7 @@ volatile int8_t g_flag_run_mode=0; //0:デフォルト,1:探索,2:最短
 volatile int8_t g_flag_pillar_edge_L=0;
 volatile int8_t g_flag_pillar_edge_R=0;
 volatile int8_t g_flag_shortest_goal;
+volatile int8_t g_flag_turn_continuous=0;
 
 //テスト用
 volatile float g_duty_L;

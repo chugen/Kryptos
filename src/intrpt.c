@@ -20,6 +20,7 @@
  ****************************************/
 void intrptCMT0(void) {
 	g_wait_count++;
+
 	calcAcc();
 	calcDistance();
 	calcAngularAcc();
@@ -28,24 +29,20 @@ void intrptCMT0(void) {
 	getModeVelocity();
 
 	g_current_velo = returnVelocityL() + returnVelocityR();
-	g_current_angularvelo = returnGyroZVal() - g_gyro_reference;
+	g_current_omega = returnGyroZVal() - g_gyro_reference;
 
 	/*Log=====================================================*/
 	//getLog(g_sensor_L, g_sensor_R);
 	//getLog(g_sensor_FL,g_sensor_FR);
 	//getLog(g_sensor_L,g_flag_pillar_edge_L);
-
 	//getLog(g_target_velo, g_current_velo);
 	//getLog(g_target_angularvelo, g_current_angularvelo);
 	//getLog(g_target_angle, g_current_angle);
-
 	//getLog(g_duty_L, g_duty_R);
-
-	getLog(g_target_angularvelo, g_current_angularvelo);
-
+	getLog(g_target_omega, g_current_omega);
+	//getLog(g_target_angle_c, g_target_angularvelo_c);
 	//getLogInt(commSPI(GYRO_ZOUT_H, 0x0f, READ),commSPI(GYRO_ZOUT_L, 0x0f, READ));
 	/*========================================================*/
-
 
 	setMotorDuty();
 
@@ -130,15 +127,27 @@ void calcDistance(void) {
  角加速　割り込み
  ****************************************/
 void calcAngularAcc(void) {
-	g_target_angularvelo += g_angularaccele * 0.001;
+	if (g_flag_turn_continuous == 1) {
+		g_count_time_angle++;
+		g_alpha_variable = g_alpha
+				* sinf(
+				convDegreeToRadian(180 * g_target_omega_max
+						/ g_target_angle_const * g_count_time_angle* 0.001));
+		g_target_omega += g_alpha_variable * 0.001;
+	} else {
+		g_target_omega += g_alpha * 0.001;
+	}
+
 }
 /****************************************
  角度加算　割り込み
  ****************************************/
 void calcAngle(void) {
-	g_target_angle += g_target_angularvelo * 0.001;
-	g_current_angle += g_current_angularvelo * 0.001;
+	g_target_angle += g_target_omega * 0.001;
+
+	g_current_angle += g_current_omega * 0.001;
 }
+
 /****************************************
  センサー値取得　割り込み
  ****************************************/
@@ -203,8 +212,10 @@ uint8_t checkPillarEdgeL() {
 	}
 	sensor_L_before[0] = g_sensor_L;
 
-	sensor_L_pillar = ((sensor_L_before[0] + sensor_L_before[1] + sensor_L_before[2])
-					- (sensor_L_before[5] + sensor_L_before[6] + sensor_L_before[7]))/3;
+	sensor_L_pillar = ((sensor_L_before[0] + sensor_L_before[1]
+			+ sensor_L_before[2])
+			- (sensor_L_before[5] + sensor_L_before[6] + sensor_L_before[7]))
+			/ 3;
 
 	if (sensor_L_pillar < -100) {
 		g_flag_pillar_edge_L = 1;
@@ -216,32 +227,34 @@ uint8_t checkPillarEdgeL() {
 }
 uint8_t checkPillarEdgeR() {
 	int16_t i;
-		static float sensor_R_before[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+	static float sensor_R_before[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-		static float sensor_R_pillar = 0;
+	static float sensor_R_pillar = 0;
 
-		for (i = 6; i >= 0; i--) {
-			sensor_R_before[i + 1] = sensor_R_before[i];
-		}
-		sensor_R_before[0] = g_sensor_R;
+	for (i = 6; i >= 0; i--) {
+		sensor_R_before[i + 1] = sensor_R_before[i];
+	}
+	sensor_R_before[0] = g_sensor_R;
 
-		sensor_R_pillar = ((sensor_R_before[0] + sensor_R_before[1] + sensor_R_before[2])
-						- (sensor_R_before[5] + sensor_R_before[6] + sensor_R_before[7]))/3;
+	sensor_R_pillar = ((sensor_R_before[0] + sensor_R_before[1]
+			+ sensor_R_before[2])
+			- (sensor_R_before[5] + sensor_R_before[6] + sensor_R_before[7]))
+			/ 3;
 
-		if (sensor_R_pillar < -100) {
-			g_flag_pillar_edge_R = 1;
-		} else {
-			g_flag_pillar_edge_R = 0;
-		}
+	if (sensor_R_pillar < -100) {
+		g_flag_pillar_edge_R = 1;
+	} else {
+		g_flag_pillar_edge_R = 0;
+	}
 
-		return 0;
+	return 0;
 }
 /****************************************
  フェイルセーフ　割り込み
  ****************************************/
 void checkFailsafe(float velo, float angularvelo, float sensor) {
 	if (fabsf(g_target_velo-g_current_velo) > velo
-			|| (fabsf(g_target_angularvelo-g_current_angularvelo) > angularvelo)
+			|| (fabsf(g_target_omega-g_current_omega) > angularvelo)
 			|| ((g_sensor_FL + g_sensor_FR >= sensor)
 					&& (g_flag_run_mode == RUN))) {
 		g_flag_failsafe = 1;
