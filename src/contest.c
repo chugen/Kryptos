@@ -33,13 +33,13 @@ void runCircuit(uint8_t x, uint8_t y, uint8_t times, float velocity,
 	runStraight(accelaration, INIT_DIS + SECTION, velocity, t_velo);
 	for (i = 0; i < times; i++) {
 		runStraight(accelaration, SECTION * (y - 3), velocity, t_velo);
-		turnCorner(&t_w90_R_10);
+		turnCorner(&t_w90_R_14);
 		runStraight(accelaration, SECTION * (x - 3), velocity, t_velo);
-		turnCorner(&t_w90_R_10);
+		turnCorner(&t_w90_R_14);
 		runStraight(accelaration, SECTION * (y - 3), velocity, t_velo);
-		turnCorner(&t_w90_R_10);
+		turnCorner(&t_w90_R_14);
 		runStraight(accelaration, SECTION * (x - 3), velocity, t_velo);
-		turnCorner(&t_w90_R_10);
+		turnCorner(&t_w90_R_14);
 	}
 	runStraight(accelaration, SECTION * 2, velocity, 0);
 	driveSuction(70, OFF);
@@ -63,7 +63,9 @@ void runAdachi(void) {
 	driveMotor(ON);
 	waitTime(1000);
 	soundStartSearch();
+	driveRGB(ORANGE, ON);
 	calcGyroZRef();
+
 	initRun();
 
 	searchAdachi();
@@ -172,17 +174,16 @@ void selectSearch(void) {
 	waitTime(500);
 	switch (selectMode(4)) {
 	case 0:
-		runFurukawaAdachi();
+		runAdachi();
 		break;
 	case 1:
 		runFurukawa();
 		break;
 	case 2:
-		runAdachi();
+		runAdachiAdachi();
 		break;
 	case 3:
-		runAdachiAdachi();
-
+		runFurukawaAdachi();
 		break;
 
 	default:
@@ -386,7 +387,7 @@ void selectContest(void) {
 			break;
 
 		case 3:
-			//runCircuit(16, 16, 2, 4, 20, 1);
+			//runCircuit(8, 16, 2, 4, 20, 1);
 			setTargetCoord(GOAL_X, GOAL_Y);
 
 			countStepShortest();
@@ -397,13 +398,12 @@ void selectContest(void) {
 			makePath3();
 
 			printMap();
-			printSearch();
 			printPath3();
 			break;
 		case 4:
-			//runCircuit(16, 16, 2, 4.5, 25, 1);
+			//runCircuit(8, 16, 2, 4.5, 25, 1);
 			waitButton();
-			printLog();
+			printLog4();
 			break;
 		default:
 			break;

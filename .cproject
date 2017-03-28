@@ -26,7 +26,8 @@
 									<listOptionValue builtIn="false" value="__RX"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.renesas.cdt.renesas.Compiler.option.compilerDefinedSymbols.373376739" name="Compiler Defined Symbols" superClass="com.renesas.cdt.renesas.Compiler.option.compilerDefinedSymbols" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="__STDC_VERSION__=199409L"/>
+									<listOptionValue builtIn="false" value="__STDC_VERSION__=199901L"/>
+									<listOptionValue builtIn="false" value="__STDC_HOSTED__=1"/>
 									<listOptionValue builtIn="false" value="__RXV1=1"/>
 									<listOptionValue builtIn="false" value="__LIT=1"/>
 									<listOptionValue builtIn="false" value="__DBL4=1"/>
@@ -69,6 +70,7 @@
 								<option id="com.renesas.cdt.rxc.Release.Compiler.option.floatIns.2139045292" name="浮動小数点演算命令を使用する" superClass="com.renesas.cdt.rxc.Release.Compiler.option.floatIns" value="com.renesas.cdt.rxc.Release.Compiler.option.floatIns.enable" valueType="enumerated"/>
 								<option id="com.renesas.cdt.rxc.Release.Compiler.option.optimizeLevel.1645149945" name="最適化レベル" superClass="com.renesas.cdt.rxc.Release.Compiler.option.optimizeLevel" value="com.renesas.cdt.rxc.Release.Compiler.option.optimizeLevel.0" valueType="enumerated"/>
 								<option id="com.renesas.cdt.renesas.Compiler.option.C.934821533" name="C :" superClass="com.renesas.cdt.renesas.Compiler.option.C" value="C99" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.Compiler.option.inputCharcterCode.2070796441" name="文字コードを入力する" superClass="com.renesas.cdt.renesas.Compiler.option.inputCharcterCode" value="com.renesas.cdt.renesas.Compiler.option.inputCharcterCode.SJIS" valueType="enumerated"/>
 								<inputType id="%Base.Compiler.Shc.C.Input.Id.71077908" name="C 入力" superClass="%Base.Compiler.Shc.C.Input.Id"/>
 								<inputType id="%Base.Compiler.Shc.C.Input1.Id.734098598" name="C++ 入力" superClass="%Base.Compiler.Shc.C.Input1.Id"/>
 							</tool>
@@ -124,7 +126,9 @@
 								<option id="com.renesas.cdt.rxc.Release.StandardLibrary.option.isa.460358688" name="命令セット・アーキテクチャ" superClass="com.renesas.cdt.rxc.Release.StandardLibrary.option.isa" value="com.renesas.cdt.rxc.Release.StandardLibrary.option.isa.rxv1" valueType="enumerated"/>
 								<option id="com.renesas.cdt.rxc.Release.StandardLibrary.option.floatIns.1793599389" name="浮動小数点演算命令を使用する" superClass="com.renesas.cdt.rxc.Release.StandardLibrary.option.floatIns" value="com.renesas.cdt.rxc.Release.StandardLibrary.option.floatIns.enable" valueType="enumerated"/>
 								<option id="com.renesas.cdt.renesas.StandardLibrary.option.mode.1325696778" name="モード" superClass="com.renesas.cdt.renesas.StandardLibrary.option.mode" value="com.renesas.cdt.renesas.StandardLibrary.option.mode.buildOnlyWhenOptionsChanged" valueType="enumerated"/>
-								<option id="com.renesas.cdt.renesas.StandardLibrary.option.userSpecifiedLibrary.945601497" name="ユーザー指定のライブラリー・ファイル" superClass="com.renesas.cdt.renesas.StandardLibrary.option.userSpecifiedLibrary" value="C:\WORKSP~2\Kryptos\Release\Kryptos.lib" valueType="string"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.userSpecifiedLibrary.945601497" name="ユーザー指定のライブラリー・ファイル" superClass="com.renesas.cdt.renesas.StandardLibrary.option.userSpecifiedLibrary" value="C:/WorkSpace_e2/Kryptos/Release\Kryptos.lib" valueType="string"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.wcharC99.1343398326" name="wchar.h (C99): ワイド文字入出力ライブラリー" superClass="com.renesas.cdt.renesas.StandardLibrary.option.wcharC99" value="false" valueType="boolean"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.rxcnewCPP.430726469" name="new (EC++): メモリ操作用ライブラリー" superClass="com.renesas.cdt.renesas.StandardLibrary.option.rxcnewCPP" value="false" valueType="boolean"/>
 							</tool>
 							<tool command="rlink" id="com.renesas.cdt.rxc.release.win32.tool.convertor.Id.1109094453" name="Converter" superClass="com.renesas.cdt.rxc.release.win32.tool.convertor.Id">
 								<option id="com.renesas.cdt.renesas.Convertor.option.typeOfOutputFile.311237205" name="出力ファイル・タイプ" superClass="com.renesas.cdt.renesas.Convertor.option.typeOfOutputFile" value="Stype via absolute" valueType="enumerated"/>

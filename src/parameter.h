@@ -21,6 +21,8 @@
 #define MASS 0.105
 //輪距(m)
 #define TREAD 0.065
+//慣性モーメント(kg・m^2)
+#define INERTIA 0.00030//0.00043//0.00011571875
 //タイヤ直径(m)
 #define DIAMETER_L 0.0219//0.0218
 #define DIAMETER_R 0.0219//0.0218
@@ -37,6 +39,15 @@
 #define INIT_DIS 0.054
 //袋小路脱出距離
 #define BLIND_ALLEY 0.024
+/*モータ特性-------------------*/
+//端子間抵抗(Ω)
+#define MOTOR_RESISTANCE 1.07
+//逆起電圧定数(V/rpm)
+#define MOTOR_BACK_EMF 0.000207
+//トルク定数(Nm/A)
+#define MOTOR_TORQUE 0.00198
+//定数(Nm/rpm)
+#define MOTOR_CONST_TORQUE 0.00000094
 /****************************************
  制御パラメータ
  ****************************************/
@@ -66,21 +77,28 @@
 #define VELO_P 220
 //速度I制御
 #define VELO_I 10
+
 //角速度P制御
-#define ANG_VELO_P 200//160
+#define ANG_VELO_P 300//0//200//300//200
 //角速度I制御
-#define ANG_VELO_I 5//1
+#define ANG_VELO_I 13//0//6//10//6
+//角速度D制御
+#define ANG_VELO_D 70//0//5//50//5
+
 //角度P制御
-#define ANG_P 1//0.01
+#define ANG_P 0//1//0.01
 //角度I制御
-#define ANG_I 10//0.7//0.02
+#define ANG_I 0//10//0.7//0.02
 
 //壁制御
 #define WALL_P 0.7//0.3
 #define WALL_HIGH_SPEED 0.08
 #define WALL_FRONT_ANG 0.07
 #define WALL_FRONT_DIS 0.1
-
+/*Interrupt*/
+#define INTRPT_PERIOD 0.0005
+#define INTRPT_MS 0.001/INTRPT_PERIOD
+#define INTRPT_FREQENCY 2000
 /****************************************
  ターンパラメータ
  ****************************************/
@@ -88,6 +106,8 @@
 extern turn_t pivot;
 extern turn_t pivot_90_L;
 extern turn_t pivot_90_R;
+
+extern turn_t t_test;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 extern turn_t t_90_L_05;
 extern turn_t t_90_R_05;

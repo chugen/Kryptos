@@ -92,48 +92,78 @@ void printMap(void) {
 	int i_y;
 
 	waitTime(500);
-	myprintf("\x1b[31m\x1b[1m");
+	myprintf("\x1b[2");
+	myprintf("\x1b[31m");
 
 	for (i_y = 15; i_y >= 0; i_y--) {
-		myprintf("+");
+		if (i_y != 15) {
+			myprintf("  ├");
+		} else {
+			myprintf("  ┌");
+		}
 		for (i_x = 0; i_x < 16; i_x++) {
 			if (((g_wall_data[i_x][i_y] & 1) == 1)) {
-				myprintf("---+");
+				myprintf("───");
 			} else {
-				myprintf("   +");
+				myprintf("   ");
+			}
+			if (i_y != 15) {
+				if (i_x != 15) {
+					myprintf("┼");
+					//myprintf("+");
+				} else {
+					myprintf("┤");
+				}
+			} else {
+				if (i_x != 15) {
+
+					myprintf("┬");
+				} else {
+
+					myprintf("┐");
+				}
 			}
 		}
 		myprintf("\n\r");
-		myprintf("|");
+		myprintf("%2d│", i_y);
 		for (i_x = 0; i_x < 16; i_x++) {
+
+			myprintf("\x1b[0m");
+			if ((g_wall_data[i_x][i_y] & 0xf0) == 0xf0) {
+				myprintf("\x1b[33m\x1b[49m\x1b[7m");
+			}
+			myprintf("%3d", g_step_map[i_x][i_y]);
+			myprintf("\x1b[0m");
+			myprintf("\x1b[31m");
 			if (((g_wall_data[i_x][i_y] & 0x08) == 0x08) || i_x == 15) {
-				myprintf("\x1b[39m\x1b[0m");
-				if ((g_wall_data[i_x][i_y] & 0xf0) == 0xf0) {
-					myprintf("\x1b[44m");
-				}
-				myprintf("%3d", g_step_map[i_x][i_y]);
-				myprintf("\x1b[40m");
-				myprintf("\x1b[31m\x1b[1m");
-				myprintf("|");
+				myprintf("│");
 			} else {
-				myprintf("\x1b[39m\x1b[0m");
-				if ((g_wall_data[i_x][i_y] & 0xf0) == 0xf0) {
-					myprintf("\x1b[44m");
-				}
-				myprintf("%3d", g_step_map[i_x][i_y]);
-				myprintf("\x1b[40m");
-				myprintf("\x1b[31m\x1b[1m");
 				myprintf(" ");
 			}
 		}
 		myprintf("\n\r");
 	}
-
-	myprintf("+");
+	myprintf("  └");
 	for (i_x = 0; i_x < 16; i_x++) {
-		myprintf("---+");
+		myprintf("───");
+		if (i_x != 15) {
+			myprintf("┴");
+		} else {
+			myprintf("┘");
+		}
+	}
+
+	myprintf("\n\r");
+	myprintf(" ");
+	for (i_x = 0; i_x < 16; i_x++) {
+		if(i_x==10){
+			myprintf(" ");
+		}
+		myprintf("%4d", i_x);
+
 	}
 	myprintf("\n\r");
+	myprintf("\x1b[0m");
 
 }
 
@@ -278,8 +308,9 @@ void checkWall(void) {
 /****************************************
  壁有無判定
  ****************************************/
-void getWallData(uint8_t x, uint8_t y, uint8_t select) {
+uint8_t getWallData(uint8_t x, uint8_t y, uint8_t select) {
 
+	return (g_wall_data[x][y]) & select == 1;
 }
 /****************************************
  queuemap
@@ -350,6 +381,7 @@ void countStepQueue(void) {
  ****************************************/
 void searchAdachi(void) {
 	g_flag_run_mode = SEARCH;
+	g_log_count = 0;
 	runStraight(5, HALF_SECTION, 0.5, 0.5);
 
 	countCoord();
@@ -388,7 +420,7 @@ void searchAdachi(void) {
 		checkWall();
 		g_flag_gap = 1;
 		g_distance = 0;
-		g_current_velo = 500;
+		g_current_velo = 0.5;
 		countStepQueue();
 
 		if (g_orient == 0x01) {
@@ -549,6 +581,7 @@ void searchAdachi(void) {
  ****************************************/
 void searchFurukawa(void) {
 	g_flag_run_mode = SEARCH;
+	g_log_count = 0;
 	runStraight(5, HALF_SECTION, 0.5, 0.5);
 	countCoord();
 	checkWall();
@@ -593,7 +626,7 @@ void searchFurukawa(void) {
 		checkWall();
 		g_flag_gap = 1;
 		g_distance = 0;
-		g_current_velo = 500;
+		g_current_velo = 0.5;
 		countStepQueue();
 		if (g_orient == 0x01) {
 			if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
@@ -1060,48 +1093,6 @@ void countStepShortest(void) {
 	}
 }
 
-/****************************************
- 探索表示
- ****************************************/
-void printSearch(void) {
-	int i_x;
-	int i_y;
-
-	waitTime(500);
-	myprintf("\x1b[31m\x1b[1m");
-
-	for (i_y = 15; i_y >= 0; i_y--) {
-		myprintf("+");
-		for (i_x = 0; i_x < 16; i_x++) {
-			if (((g_wall_data[i_x][i_y] & 1) == 1)) {
-				myprintf("---+");
-			} else {
-				myprintf("   +");
-			}
-		}
-		myprintf("\n\r");
-		myprintf("|");
-		for (i_x = 0; i_x < 16; i_x++) {
-			if (((g_wall_data[i_x][i_y] & 0x08) == 0x08) || i_x == 15) {
-				myprintf("\x1b[39m\x1b[0m");
-				myprintf("%3d", ((g_wall_data[i_x][i_y] & 0xf0) == 0xf0));
-				myprintf("\x1b[31m\x1b[1m");
-				myprintf("|");
-			} else {
-				myprintf("\x1b[39m\x1b[0m");
-				myprintf("%3d ", ((g_wall_data[i_x][i_y] & 0xf0) == 0xf0));
-				myprintf("\x1b[31m\x1b[1m");
-			}
-		}
-		myprintf("\n\r");
-	}
-
-	myprintf("+");
-	for (i_x = 0; i_x < 16; i_x++) {
-		myprintf("---+");
-	}
-	myprintf("\n\r");
-}
 /****************************************
  path生成(小回り)
  ****************************************/
@@ -1619,6 +1610,7 @@ void printPath2(void) {
  ****************************************/
 void printPath3(void) {
 	int i = 0;
+	myprintf("\x1b[39m\x1b[49m\x1b[0m");
 	myprintf("PATH3\n\r");
 	myprintf("/////START/////\n\r");
 	while (1) {

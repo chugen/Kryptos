@@ -14,10 +14,10 @@
 void waitTime(int16_t wait_ms);
 void waitTimeMicro(uint16_t wait_us);
 /****************************************
- バッテリーチェック/補正
+ バッテリーチェック
  ****************************************/
-float checkBatt(void);
-float correctVoltage(void);
+float checkLowVoltage(void);
+
 /****************************************
 センサー待ち
  ****************************************/
@@ -52,6 +52,7 @@ float convDegreeToRadian(float degree);
  ログ書き出し関数
  ****************************************/
 void printLog(void);
+void printLog4(void);
 void printLogInt(void);
 
 /****************************************
