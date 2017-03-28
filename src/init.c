@@ -57,7 +57,7 @@ void initIO(void) {
 }
 
 void initClock(void) {
-	unsigned short i;
+//	unsigned short i;
 
 	SYSTEM.PRCR.WORD = 0xA503;	//プロテクト解除
 
@@ -74,9 +74,9 @@ void initClock(void) {
 	SYSTEM.PLLCR2.BIT.PLLEN = 0; //PLL動作
 	SYSTEM.MOSCCR.BYTE = 0x00; //ﾒｲﾝｸﾛｯｸ発振
 
-	for (i = 0; i < 0x168; i++) {
-		;
-	} //発振安定待ち
+//	for (i = 0; i < 0x168; i++) {
+//		;
+//	} //発振安定待ち
 
 	SYSTEM.SCKCR.LONG = 0x21C31211; //ICLK=100MHz,PCLK=50MHz,FCLK=50MHz
 	SYSTEM.SCKCR3.BIT.CKSEL = 0x04; //PLL回路選択
@@ -109,18 +109,21 @@ void initCMT(void) {
 	CMT0.CMCR.BIT.CMIE = 0x00;	//コンペアマッチ割り込み禁止
 	CMT0.CMCR.BIT.CKS = 0x00;	// PCLK/8=50MHz/8=6.25MHz=6250000Hz
 	CMT0.CMCR.BIT.CMIE = 0x01;	//コンペアマッチ割り込み許可
-	CMT0.CMCOR = 6250 - 1;		//割り込み周期設定 1ms
+	//CMT0.CMCOR = 6250 - 1;		//割り込み周期設定 1ms
+	CMT0.CMCOR = 3125 - 1;		//割り込み周期設定 0.5ms
 
 	//IR(CMT0, CMI0)= 0x00;
-	IPR( CMT0, CMI0 )= 0x0F;	//割り込み優先度設定:15
+	IPR( CMT0, CMI0 )= 0x0e;	//割り込み優先度設定:15
 	IEN( CMT0, CMI0 )= 0x01;	//割り込み許可
 
 	CMT1.CMCR.BIT.CMIE = 0x00;	//コンペアマッチ割り込み禁止
 	CMT1.CMCR.BIT.CKS = 0x00;	// PCLK/8=50MHz/8=6.25MHz=6250000Hz
 	CMT1.CMCR.BIT.CMIE = 0x01;	//コンペアマッチ割り込み許可
-	CMT1.CMCOR = 6250 - 1;		//割り込み周期設定 1ms
+	//CMT1.CMCOR = 6250 - 1;		//割り込み周期設定 1ms
+	CMT1.CMCOR = 3125 - 1;		//割り込み周期設定 0.5ms
 
-	IPR( CMT1, CMI1 )= 0x0E;	//割り込み優先度設定:14
+
+	IPR( CMT1, CMI1 )= 0x0f;	//割り込み優先度設定:14
 	IEN( CMT1, CMI1 )= 0x01;	//割り込み許可
 
 	CMT.CMSTR0.BIT.STR0 = 0x01;
@@ -267,7 +270,7 @@ void initSCI(void) {
 	SCI1.SMR.BIT.CM = 0;	//調歩同期式モード
 
 	SCI1.SCMR.BYTE = 0xF2;
-	SCI1.BRR = (unsigned char) (50000000 / 32 / 38400) - 1;
+	SCI1.BRR = (unsigned char) (50000000 * 2 / 64 / 115200) - 1;
 
 	for (dmy = 0; dmy < 10000; dmy++) {
 
@@ -281,7 +284,7 @@ void initSCI(void) {
 void initADC(void) {
 	S12AD.ADCSR.BIT.ADST = 0x00;	//AD変換ストップ
 	S12AD.ADCSR.BIT.TRGE = 0x00;	//トリガによるAD変換開始禁止
-	S12AD.ADCSR.BIT.CKS = 0x02; 	//PCLK/2=25MHz
+	S12AD.ADCSR.BIT.CKS = 0x03; 	//PCLK=50MHz
 	S12AD.ADCSR.BIT.ADCS = 0x00; 	//シングルスキャンモード
 	//S12AD.ADANS0.WORD = 0x5E;		//0000|0000|0101|1110
 	S12AD.ADSSTR01.WORD = 20; 		//サンプリング時間20ステート

@@ -12,7 +12,6 @@
 
 void put1byte(char c){
 	while ( SCI1.SSR.BIT.TDRE == 0 ) ;
-	//SCI1.SSR.BIT.TDRE = 0;
 	SCI1.TDR = c;
 }
 

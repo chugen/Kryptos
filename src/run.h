@@ -55,6 +55,10 @@ float ctrlPropAngularVelocity(float kp);
  ****************************************/
 float ctrlIntAngularVelocity(float ki);
 /****************************************
+ 角速度D制御
+ ****************************************/
+float ctrlDeriAngularVelocity(float kd);
+/****************************************
  角度P制御
  ****************************************/
 float ctrlPropAngle(float kp);
@@ -68,6 +72,11 @@ float ctrlIntAngle(float ki);
 float ctrlWall(float kp);
 float ctrlWallFrontAng(float kp);
 float ctrlWallFrontDis(float kp);
+/****************************************
+フィードフォワード制御
+ ****************************************/
+float ctrlFeedForwardL(float accele,float alpha);
+float ctrlFeedForwardR(float accele,float alpha);
 /****************************************
  走行初期化
  ****************************************/

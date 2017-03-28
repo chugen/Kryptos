@@ -28,20 +28,39 @@
 #include "flash.h"
 
 void main(void) {
-	uint8_t i, j;
+	//uint8_t i, j;
+	float sp=0.9;
 	init();
-	checkBatt();
+	checkLowVoltage();
 	notificateStartUp();
 
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
+		g_flag_FF = 1;
 		selectContest();
-
+		//printMap();
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-		selectAdjustment1(T14);
+		//selectAdjustment1(T14);
+		driveRGB(GREEN, ON);
+		waitSensor();
+		waitTime(1000);
+		calcGyroZRef();
+
+		initRun();
+		driveMotor(ON);
+		switchSensorLED(OFF);
+
+		runStraight(5, SECTION, sp, sp);
+		turnCorner(&t_test);
+		runStraight(5, SECTION, sp, 0);
+
+		waitTime(300);
+		driveMotor(OFF);
+		waitButton();
+		printLog4();
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
@@ -81,14 +100,18 @@ void main(void) {
 		driveRGB(GREEN, ON);
 		waitTime(1000);
 		calcGyroZRef();
-		//driveSuction(70, ON);
+		driveSuction(100, ON);
 		waitTime(1000);
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runStraight(5, SECTION, 0.7, 0.7);
-		turnCornerContinuous(90, 1000);
-		runStraight(5, SECTION, 0.7, 0);
+		runStraight(13, SECTION, 2.2, 2.2);
+		g_log_count = 0;
+		g_flag_FF =1;
+		turnCornerContinuous(90, 1400);
+		runStraight(13, SECTION, 2.2, 0);
+		driveRGB(BLUE, ON);
+		waitTime(300);
 		driveMotor(OFF);
 		driveSuction(70, OFF);
 		waitButton();
@@ -106,12 +129,10 @@ void main(void) {
 		break;
 	case 9: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LBLUE, ON);
-		for (j = 0; j < 4; j++) {
-			for (i = 0; i < 14; i++) {
-				myprintf("%f\n", t_para[j][i]->velocity);
-			}
-		}
-
+		waitSensor();
+		calcGyroZRef();
+		g_flag_control = 1;
+		driveMotor(ON);
 		break;
 	case 10: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LRED, ON);

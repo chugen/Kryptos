@@ -53,9 +53,11 @@ int32_t returnEncoderDiffL(void) {
 	TPU4.TCNT = 0;
 
 	if (diff <= INT16_MAX) {
-		return -diff * returnCountDirL();
+		g_encoder_diff_L = -diff * returnCountDirL();
+		return g_encoder_diff_L;
 	} else {
-		return -(UINT16_MAX - diff) * returnCountDirL();
+		g_encoder_diff_L = -(UINT16_MAX - diff) * returnCountDirL();
+		return g_encoder_diff_L;
 	}
 }
 
@@ -67,9 +69,11 @@ int32_t returnEncoderDiffR(void) {
 	MTU1.TCNT = 0;
 
 	if (diff <= INT16_MAX) {
-		return diff * returnCountDirR();
+		g_encoder_diff_R = diff * returnCountDirR();
+		return g_encoder_diff_R;
 	} else {
-		return (UINT16_MAX - diff) * returnCountDirR();
+		g_encoder_diff_R = (UINT16_MAX - diff) * returnCountDirR();
+		return g_encoder_diff_R;
 	}
 }
 
@@ -105,19 +109,18 @@ float returnGyroZVal(void) {
 	static uint8_t currentL;
 	static uint8_t currentH;
 
-
 	currentL = commSPI(GYRO_ZOUT_L, 0x00, READ);
 
-	for(i=0;i<10;i++);
+	for (i = 0; i < 10; i++)
+		;
 
 	currentH = commSPI(GYRO_ZOUT_H, 0x00, READ);
-
 
 	temp |= currentL;
 	temp |= (currentH << 8);
 
-	if(fabsf(temp)>250&&fabsf(temp)<262){
-		temp=0;
+	if (fabsf(temp) > 250 && fabsf(temp) < 262) {
+		temp = 0;
 	}
 
 	value = (float) (temp * 2000.0 / INT16_MAX);
@@ -139,7 +142,7 @@ int8_t calcGyroZRef(void) {
 	g_gyro_reference = 0;
 	for (i = 0; i < 1000; i++) {
 
-		temp += returnGyroZVal();
+		temp += g_current_omega_tmp;
 		waitTime(1);
 	}
 	g_gyro_reference = temp / 1000.0;

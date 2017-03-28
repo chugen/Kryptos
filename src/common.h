@@ -22,7 +22,7 @@
 #define FORWARD 0
 #define BACKWARD 1
 
-#define LOG_TIMES 4000
+#define LOG_TIMES 2500
 
 #define SECTION 0.18
 #define HALF_SECTION 0.09
@@ -33,6 +33,7 @@
 /*math*/
 #define M_PI 3.141592653589793
 #define M_SQRT2 1.41421356237
+
 /****************************************
  map関連
  ****************************************/

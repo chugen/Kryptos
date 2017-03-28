@@ -14,6 +14,7 @@
 #include "vect.h"
 #include "iodefine.h"
 
+
 #pragma section IntPRG
 
 // Exception(Supervisor Instruction)
@@ -59,14 +60,14 @@ void Excep_ICU_SWINT(void) {
 
 // CMTU0_CMT0
 #pragma interrupt (Excep_CMT0_CMI0(enable,vect=28))
-
+void intrptCMT0();
 void Excep_CMT0_CMI0(void) {
 	intrptCMT0();
 }
 
 // CMTU1_CMT1
 #pragma interrupt (Excep_CMT1_CMI1(enable,vect=29))
-
+void intrptCMT1();
 void Excep_CMT1_CMI1(void) {
 	intrptCMT1();
 }

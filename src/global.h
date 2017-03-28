@@ -30,10 +30,13 @@ extern volatile float g_target_omega;
 extern volatile float g_target_omega_max;
 //現在角速度
 extern volatile float g_current_omega;
+extern volatile float g_current_omega_tmp;
 //現在偏差
 extern volatile float g_omega_error;
 //偏差積分
 extern volatile float g_omega_error_integral;
+//偏差微分
+extern volatile float g_omega_error_derivative;
 //Gyro　リファレンス
 extern volatile float g_gyro_reference;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -53,9 +56,12 @@ extern volatile float g_angle_error_integral;
 extern volatile float g_distance;
 //加速度
 extern volatile float g_accele;
-//角加速度
-extern volatile float g_alpha;
-extern volatile float g_alpha_variable;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//現在角加速度
+extern volatile float g_current_alpha;
+//最高角加速度
+extern volatile float g_alpha_max;
+extern volatile float g_turn_peaktime;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //センサ
 extern volatile int32_t g_sensor_FL;
@@ -65,6 +71,17 @@ extern volatile int32_t g_sensor_R;
 
 extern volatile int32_t g_sensor_L_derivative;
 extern volatile int32_t g_sensor_R_derivative;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//バッテリー電圧
+extern volatile float g_battery_voltage;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//エンコーダ差分
+extern volatile float g_encoder_diff_L;
+extern volatile float g_encoder_diff_R;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//トルク
+extern volatile float g_torque_L;
+extern volatile float g_torque_R;
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //map
@@ -102,6 +119,7 @@ extern volatile int8_t g_flag_pillar_edge_L;
 extern volatile int8_t g_flag_pillar_edge_R;
 extern volatile int8_t g_flag_shortest_goal;
 extern volatile int8_t g_flag_turn_continuous;
+extern volatile int8_t g_flag_FF;
 //テスト用
 
 extern volatile float g_duty_L;
@@ -110,6 +128,8 @@ extern volatile int16_t g_wait_count;
 extern volatile int16_t g_log_count;
 extern volatile float g_log_array[];
 extern volatile float g_log_array2[];
+extern volatile float g_log_array3[];
+extern volatile float g_log_array4[];
 extern volatile int16_t g_log_array_int[];
 extern volatile int16_t g_log_array2_int[];
 extern volatile int8_t g_flag_control;

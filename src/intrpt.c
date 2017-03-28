@@ -28,24 +28,29 @@ void intrptCMT0(void) {
 
 	getModeVelocity();
 
+	g_current_omega_tmp = returnGyroZVal();
 	g_current_velo = returnVelocityL() + returnVelocityR();
-	g_current_omega = returnGyroZVal() - g_gyro_reference;
+	g_current_omega = g_current_omega_tmp - g_gyro_reference;
 
 	/*Log=====================================================*/
 	//getLog(g_sensor_L, g_sensor_R);
 	//getLog(g_sensor_FL,g_sensor_FR);
 	//getLog(g_sensor_L,g_flag_pillar_edge_L);
+	//getLog(g_sensor_R,g_flag_pillar_edge_R);
 	//getLog(g_target_velo, g_current_velo);
-	//getLog(g_target_angularvelo, g_current_angularvelo);
+	//getLog(g_current_velo, g_accele);
+	getLog(g_target_omega, g_current_omega);
+	//getLog(fabsf(g_encoder_diff_L) * INTRPT_FREQENCY / (ENC_RESO * 4) * 60,fabsf(g_encoder_diff_R) * INTRPT_FREQENCY / (ENC_RESO * 4) * 60);
+	//getLog(ctrlFeedForwardL(g_accele,g_current_alpha),ctrlFeedForwardR(g_accele,g_current_alpha));
 	//getLog(g_target_angle, g_current_angle);
 	//getLog(g_duty_L, g_duty_R);
-	getLog(g_target_omega, g_current_omega);
-	//getLog(g_target_angle_c, g_target_angularvelo_c);
 	//getLogInt(commSPI(GYRO_ZOUT_H, 0x0f, READ),commSPI(GYRO_ZOUT_L, 0x0f, READ));
+	//getLog(g_sensor_R, g_target_omega);
+	//getLog4(g_torque_L,g_torque_R,g_target_omega,g_current_omega);
 	/*========================================================*/
 
+	getBatteryVoltage();
 	setMotorDuty();
-
 	checkFailsafe(2, 1500, 2600);
 
 }
@@ -72,6 +77,20 @@ void getLog(float log1, float log2) {
 		g_log_count = LOG_TIMES;
 	}
 }
+
+void getLog4(float log1, float log2, float log3, float log4) {
+
+	if (g_log_count < LOG_TIMES) {
+		g_log_array[g_log_count] = log1;
+		g_log_array2[g_log_count] = log2;
+		g_log_array3[g_log_count] = log3;
+		g_log_array4[g_log_count] = log4;
+		g_log_count++;
+	} else {
+		g_log_count = LOG_TIMES;
+	}
+}
+
 void getLogInt(int16_t log1, int16_t log2) {
 
 	if (g_log_count < LOG_TIMES) {
@@ -99,29 +118,34 @@ void setMotorDuty(void) {
 				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
 						- ctrlPropAngularVelocity(ANG_VELO_P)
 						- ctrlIntAngularVelocity(ANG_VELO_I)
+						- ctrlDeriAngularVelocity(ANG_VELO_D)
 						- ctrlPropAngle(ANG_P) - ctrlIntAngle(ANG_I)
 						- ctrlWall(WALL_P) - ctrlWallFrontAng(WALL_FRONT_ANG)
-						+ ctrlWallFrontDis(WALL_FRONT_DIS));
+						+ ctrlWallFrontDis(WALL_FRONT_DIS)
+						+ ctrlFeedForwardL(g_accele, g_current_alpha));
+
 		setMotorDutyR(
 				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
 						+ ctrlPropAngularVelocity(ANG_VELO_P)
 						+ ctrlIntAngularVelocity(ANG_VELO_I)
+						+ ctrlDeriAngularVelocity(ANG_VELO_D)
 						+ ctrlPropAngle(ANG_P) + ctrlIntAngle(ANG_I)
 						+ ctrlWall(WALL_P) + ctrlWallFrontAng(WALL_FRONT_ANG)
-						+ ctrlWallFrontDis(WALL_FRONT_DIS));
+						+ ctrlWallFrontDis(WALL_FRONT_DIS)
+						+ ctrlFeedForwardR(g_accele, g_current_alpha));
 	}
 }
 /****************************************
  加速　割り込み
  ****************************************/
 void calcAcc(void) {
-	g_target_velo += g_accele * 0.001;
+	g_target_velo += g_accele * INTRPT_PERIOD;
 }
 /****************************************
  距離加算　割り込み
  ****************************************/
 void calcDistance(void) {
-	g_distance += g_target_velo * 0.001;
+	g_distance += g_target_velo * INTRPT_PERIOD;
 }
 /****************************************
  角加速　割り込み
@@ -129,13 +153,25 @@ void calcDistance(void) {
 void calcAngularAcc(void) {
 	if (g_flag_turn_continuous == 1) {
 		g_count_time_angle++;
-		g_alpha_variable = g_alpha
-				* sinf(
-				convDegreeToRadian(180 * g_target_omega_max
-						/ g_target_angle_const * g_count_time_angle* 0.001));
-		g_target_omega += g_alpha_variable * 0.001;
+		if (1
+				- powf(
+						(g_count_time_angle * INTRPT_PERIOD - g_turn_peaktime)
+								/ g_turn_peaktime, 2) > 0) {
+			g_current_alpha = -2 * g_alpha_max
+					* (g_count_time_angle * INTRPT_PERIOD - g_turn_peaktime)
+					/ g_turn_peaktime
+					* sqrtf(
+							1
+									- powf(
+											(g_count_time_angle * INTRPT_PERIOD
+													- g_turn_peaktime)
+													/ g_turn_peaktime, 2));
+		} else {
+			g_current_alpha = 0;
+		}
+		g_target_omega += g_current_alpha * INTRPT_PERIOD;
 	} else {
-		g_target_omega += g_alpha * 0.001;
+		g_target_omega += g_current_alpha * INTRPT_PERIOD;
 	}
 
 }
@@ -143,16 +179,33 @@ void calcAngularAcc(void) {
  角度加算　割り込み
  ****************************************/
 void calcAngle(void) {
-	g_target_angle += g_target_omega * 0.001;
+	g_target_angle += g_target_omega * INTRPT_PERIOD;
 
-	g_current_angle += g_current_omega * 0.001;
+	g_current_angle += g_current_omega * INTRPT_PERIOD;
 }
 
+/****************************************
+ バッテリー電圧取得
+ ****************************************/
+float getBatteryVoltage(void) {
+	float battery, tmp;
+	S12AD.ADCSR.BIT.ADST = 0x00; 	//AD変換停止
+	S12AD.ADANS0.WORD = 0x40;
+	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
+	while (S12AD.ADCSR.BIT.ADST == 1)
+		;
+	tmp = S12AD.ADDR6;
+	battery = (float) (tmp / 4096.0 * 3.3 * 3.0) + 0.06;
+
+	g_battery_voltage = battery;
+
+	return battery;
+}
 /****************************************
  センサー値取得　割り込み
  ****************************************/
 void getSensorVal(void) {
-	int32_t i;
+	int32_t i, wait_clock = 500;
 	uint16_t sensor_FL_on;
 	uint16_t sensor_FR_on;
 	uint16_t sensor_L_on;
@@ -165,18 +218,18 @@ void getSensorVal(void) {
 	static uint16_t sensor_L_before;
 	static uint16_t sensor_R_before;
 
-	battery_correct = correctVoltage();
+	battery_correct = MAX_VOLTAGE / g_battery_voltage;
 
 	sensor_L_before = g_sensor_L;
 	sensor_R_before = g_sensor_R;
 	driveSensorLED(FR_L);
-	for (i = 0; i < 1000; i++) {
+	for (i = 0; i < wait_clock; i++) {
 	}
 
 	sensor_L_on = returnSenVal(SEN_L);
 	sensor_FR_on = returnSenVal(SEN_FR);
 	driveSensorLED(OFF);
-	for (i = 0; i < 1000; i++) {
+	for (i = 0; i < wait_clock; i++) {
 	}
 	sensor_FR_off = returnSenVal(SEN_FR);
 	sensor_FL_off = returnSenVal(SEN_FL);
@@ -184,7 +237,7 @@ void getSensorVal(void) {
 	sensor_L_off = returnSenVal(SEN_L);
 
 	driveSensorLED(FL_R);
-	for (i = 0; i < 1000; i++) {
+	for (i = 0; i < wait_clock; i++) {
 	}
 	sensor_FL_on = returnSenVal(SEN_FL);
 	sensor_R_on = returnSenVal(SEN_R);

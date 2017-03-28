@@ -30,11 +30,13 @@ volatile float g_target_omega = 0;
 volatile float g_target_omega_max = 0;
 //現在角速度
 volatile float g_current_omega;
-
+volatile float g_current_omega_tmp;
 //現在偏差
 volatile float g_omega_error;
 //偏差積分
 volatile float g_omega_error_integral;
+//偏差微分
+volatile float g_omega_error_derivative;
 //Gyro　リファレンス
 volatile float g_gyro_reference;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -54,8 +56,10 @@ volatile float g_distance;
 //加速度
 volatile float g_accele;
 //角加速度
-volatile float g_alpha;
-volatile float g_alpha_variable;
+volatile float g_current_alpha;//現在角加速度
+volatile float g_alpha_max;//最高角加速度
+volatile float g_turn_peaktime;//最高角速度到達時間
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //センサ
 volatile int32_t g_sensor_FL;
@@ -65,6 +69,16 @@ volatile int32_t g_sensor_R;
 
 volatile int32_t g_sensor_L_derivative;
 volatile int32_t g_sensor_R_derivative;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//バッテリー電圧
+volatile float g_battery_voltage;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//エンコーダ差分
+volatile float g_encoder_diff_L;
+volatile float g_encoder_diff_R;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+volatile float g_torque_L;
+volatile float g_torque_R;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //map
 volatile uint8_t g_orient = 1;
@@ -102,6 +116,7 @@ volatile int8_t g_flag_pillar_edge_L=0;
 volatile int8_t g_flag_pillar_edge_R=0;
 volatile int8_t g_flag_shortest_goal;
 volatile int8_t g_flag_turn_continuous=0;
+volatile int8_t g_flag_FF=0;
 
 //テスト用
 volatile float g_duty_L;
@@ -111,8 +126,12 @@ volatile int16_t g_wait_count = 0; //waitTime関数用カウンタ
 volatile int16_t g_log_count = 0;
 volatile float g_log_array[LOG_TIMES];
 volatile float g_log_array2[LOG_TIMES];
-volatile int16_t g_log_array_int[LOG_TIMES];
-volatile int16_t g_log_array2_int[LOG_TIMES];
+volatile float g_log_array3[LOG_TIMES];
+volatile float g_log_array4[LOG_TIMES];
+//volatile int16_t g_log_array_int[LOG_TIMES];
+//volatile int16_t g_log_array2_int[LOG_TIMES];
+volatile int16_t g_log_array_int[1];
+volatile int16_t g_log_array2_int[1];
 
 volatile uint16_t g_path_test[256];
 volatile uint16_t g_path_test_slant[256];

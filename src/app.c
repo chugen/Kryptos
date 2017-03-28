@@ -22,7 +22,7 @@
 void waitTime(int16_t wait_ms) {
 	g_wait_count = 0;
 	while (1) {
-		if (g_wait_count > wait_ms)
+		if (g_wait_count > (float) wait_ms * 0.001 / INTRPT_PERIOD)
 			break;
 	}
 }
@@ -34,9 +34,9 @@ void waitTimeMicro(uint16_t wait_us) {
 	}
 }
 /****************************************
- バッテリーチェック/補正
+ バッテリーチェック
  ****************************************/
-float checkBatt(void) {
+float checkLowVoltage(void) {
 
 	int16_t tmp;
 	float battery;
@@ -60,20 +60,6 @@ float checkBatt(void) {
 	return battery;
 }
 
-float correctVoltage(void) {
-	float temp, battery, tmp;
-	S12AD.ADCSR.BIT.ADST = 0x00; 	//AD変換停止
-	S12AD.ADANS0.WORD = 0x40;
-	S12AD.ADCSR.BIT.ADST = 0x01; 	//AD変換スタート
-	while (S12AD.ADCSR.BIT.ADST == 1)
-		;
-	tmp = S12AD.ADDR6;
-	battery = (float) (tmp / 4096.0 * 3.3 * 3.0) + 0.06;
-
-	temp = MAX_VOLTAGE / battery;
-
-	return temp;
-}
 /****************************************
  センサー待ち
  ****************************************/
@@ -309,7 +295,7 @@ int16_t selectMode(int16_t max_mode) {
 
 	while (pushButton()) {
 		driveLED(mode);
-		if (g_mode_velo < -0.3) {
+		if (g_mode_velo < -0.25) {
 
 			mode--;
 			if (mode < 0) {
@@ -320,7 +306,7 @@ int16_t selectMode(int16_t max_mode) {
 			}
 			driveLED(mode);
 			soundCount(mode);
-		} else if (g_mode_velo > 0.3) {
+		} else if (g_mode_velo > 0.25) {
 
 			mode++;
 			if (mode < 0) {
@@ -351,6 +337,13 @@ void printLog(void) {
 	int32_t i;
 	for (i = 0; i < LOG_TIMES; i++) {
 		myprintf("%d	%f	%f\n", i, *(g_log_array + i), *(g_log_array2 + i));
+	}
+}
+void printLog4(void) {
+	int32_t i;
+	for (i = 0; i < LOG_TIMES; i++) {
+		myprintf("%d	%f	%f	%f	%f\n", i, *(g_log_array + i), *(g_log_array2 + i),
+				*(g_log_array3 + i), *(g_log_array4 + i));
 	}
 }
 void printLogInt(void) {

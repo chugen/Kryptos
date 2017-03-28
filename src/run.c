@@ -70,7 +70,7 @@ int16_t setMotorDutyL(float duty) {
 
 	g_duty_L = duty;
 
-	voltage_temp = correctVoltage();
+	voltage_temp = MAX_VOLTAGE / g_battery_voltage;
 	MTU0.TGRC = (int16_t) (250 * duty / 100 * voltage_temp);	//MOTOR_L
 	return (int16_t) (250 * duty / 100 * voltage_temp);
 }
@@ -88,7 +88,7 @@ int16_t setMotorDutyR(float duty) {
 
 	g_duty_R = duty;
 
-	voltage_temp = correctVoltage();
+	voltage_temp = MAX_VOLTAGE / g_battery_voltage;
 	MTU0.TGRA = (int16_t) (250 * duty / 100 * voltage_temp);	//MOTOR_R
 	return (int16_t) (250 * duty / 100 * voltage_temp);
 }
@@ -123,13 +123,13 @@ int8_t setMotorDirR(int8_t cw_ccw) {
  速度返す
  ****************************************/
 float returnVelocityL(void) {
-	return returnEncoderDiffL() * DIAMETER_L * 1000 * M_PI / (ENC_RESO * 4)
-			/ GEAR_RATIO;
+	return returnEncoderDiffL() * DIAMETER_L * INTRPT_FREQENCY * M_PI
+			/ (ENC_RESO * 4) / GEAR_RATIO;
 }
 
 float returnVelocityR(void) {
-	return returnEncoderDiffR() * DIAMETER_R * 1000 * M_PI / (ENC_RESO * 4)
-			/ GEAR_RATIO;
+	return returnEncoderDiffR() * DIAMETER_R * INTRPT_FREQENCY * M_PI
+			/ (ENC_RESO * 4) / GEAR_RATIO;
 }
 
 /****************************************
@@ -174,6 +174,15 @@ float ctrlIntAngularVelocity(float ki) {
 	} else {
 		return convDegreeToRadian(g_omega_error_integral) * TREAD / 2.0 * ki;
 	}
+}
+/****************************************
+ 角速度D制御
+ ****************************************/
+float ctrlDeriAngularVelocity(float kd) {
+	static float omega_error_before = 0;
+	g_omega_error_derivative = g_omega_error - omega_error_before;
+	omega_error_before = g_omega_error;
+	return convDegreeToRadian(g_omega_error_derivative) * TREAD / 2.0 * kd;
 }
 /****************************************
  角度P制御
@@ -301,7 +310,82 @@ float ctrlWallFrontDis(float kp) {
 	}
 	return temp;
 }
+/****************************************
+ フィードフォワード制御
+ ****************************************/
+float ctrlFeedForwardL(float accele, float alpha) {
+	float accele_torque, alpha_torque, const_torque, torque, rpm;
 
+	rpm = fabsf(g_encoder_diff_L) * INTRPT_FREQENCY / (ENC_RESO * 4) * 60;
+//加速トルク
+	accele_torque = (MASS * accele / 2) * DIAMETER_L / 2 / GEAR_RATIO;
+//角加速トルク
+	alpha_torque = (INERTIA * convDegreeToRadian(alpha) / TREAD) * DIAMETER_L
+			/ 2 / GEAR_RATIO;
+//等速時トルク
+	if (g_accele == 0 && g_current_alpha == 0 && g_target_omega != 0) {
+		const_torque = 0.000572 * g_target_velo + 0.000304;
+		if (g_target_omega > 0) {
+			const_torque += (0.00001492 * g_target_omega - 0.001341)*0.6;
+		} else {
+			const_torque += (0.000002314 * g_target_omega + 0.0002122)*0.45;
+		}
+
+	} else {
+		const_torque = 0;
+	}
+
+//トルク合計
+	torque = accele_torque - alpha_torque + const_torque;
+//実際のトルク
+	g_torque_L =
+			MOTOR_TORQUE
+					* (g_battery_voltage * g_duty_L / 100 - MOTOR_BACK_EMF * rpm)/MOTOR_RESISTANCE;
+	if (g_flag_FF == 1) {
+		return 100
+				* (MOTOR_RESISTANCE * torque / MOTOR_TORQUE
+						+ MOTOR_BACK_EMF * rpm) / g_battery_voltage;
+	} else {
+		return 0;
+	}
+}
+
+float ctrlFeedForwardR(float accele, float alpha) {
+	float accele_torque, alpha_torque, const_torque, torque, rpm;
+
+	rpm = fabsf(g_encoder_diff_R) * INTRPT_FREQENCY / (ENC_RESO * 4) * 60;
+//加速トルク
+	accele_torque = (MASS * accele / 2) * DIAMETER_R / 2 / GEAR_RATIO;
+//角加速トルク
+	alpha_torque = (INERTIA * convDegreeToRadian(alpha) / TREAD) * DIAMETER_R
+			/ 2 / GEAR_RATIO;
+//等速時トルク
+	if (g_accele == 0 && g_current_alpha == 0 && g_target_omega != 0) {
+		const_torque = 0.000572 * g_target_velo + 0.000304;
+		if (g_target_omega > 0) {
+			const_torque += (0.000002314 * g_target_omega + 0.0002122)*0.6;
+		} else {
+			const_torque += (0.00001492 * g_target_omega - 0.001341)*0.45;
+		}
+
+	} else {
+		const_torque = 0;
+	}
+
+//トルク合計
+	torque = accele_torque + alpha_torque + const_torque;
+//実際のトルク
+	g_torque_R =
+			MOTOR_TORQUE
+					* (g_battery_voltage * g_duty_R / 100 - MOTOR_BACK_EMF * rpm)/MOTOR_RESISTANCE;
+	if (g_flag_FF == 1) {
+		return 100
+				* (MOTOR_RESISTANCE * torque / MOTOR_TORQUE
+						+ MOTOR_BACK_EMF * rpm) / g_battery_voltage;
+	} else {
+		return 0;
+	}
+}
 /****************************************
  袋小路
  ****************************************/
@@ -470,14 +554,13 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 /****************************************
  スラローム　非連続
  ****************************************/
-
 void turnCorner(turn_t *p) {
 	double section1 = 0;
 	double section2 = 0;
 	double section3 = 0;
 	int8_t left_right = 0;
-
 	float angacc_temp;
+
 	if (p->mode == 0) { //通常壁切れ
 		if (p->angle >= 0) {
 
@@ -542,7 +625,7 @@ void turnCorner(turn_t *p) {
 		angacc_temp = p->angular_accele;
 	}
 
-	g_alpha = angacc_temp;
+	g_current_alpha = angacc_temp;
 
 	section1 = (p->max_angular_velo * p->max_angular_velo)
 			/ (2 * p->angular_accele);
@@ -582,7 +665,7 @@ void turnCorner(turn_t *p) {
 
 //section2////////////////////////////////////////////////////////////////////
 
-	g_alpha = 0;
+	g_current_alpha = 0;
 
 	if (p->angle <= 0) {
 		g_target_omega = -p->max_angular_velo;
@@ -596,7 +679,7 @@ void turnCorner(turn_t *p) {
 
 //section3////////////////////////////////////////////////////////////////////
 
-	g_alpha = angacc_temp * -1;
+	g_current_alpha = angacc_temp * -1;
 
 	while (g_flag_failsafe != 1) {
 		if (fabsf(g_target_angle) >= section3) {
@@ -611,7 +694,7 @@ void turnCorner(turn_t *p) {
 				break;
 		}
 	}
-	g_alpha = 0;
+	g_current_alpha = 0;
 	g_target_omega = 0;
 
 	g_target_angle = 0;
@@ -636,26 +719,37 @@ void turnCorner(turn_t *p) {
  スラローム　連続
  ****************************************/
 void turnCornerContinuous(float degree, float omega) {
-	g_flag_turn_continuous = 1;
-	g_alpha = M_PI * powf(omega, 2) / 2 / degree;
+
 	g_target_angle_const = degree;
 	g_target_omega_max = omega;
-	g_log_count = 0;
+	g_alpha_max = 9.0 * M_PI / 16 * powf(omega, 2) / degree;
+	g_turn_peaktime = 3 * g_target_omega_max / g_alpha_max / 2;
+
+	g_flag_turn_continuous = 1;
+
 	g_count_time_angle = 0;
 	g_target_omega = 0;
 	g_current_angle = 0;
-	g_alpha_variable = 0;
-	while (fabsf(g_target_omega) <= 0.01) {
+	g_current_alpha = 0;
+	g_flag_turn = 1; //ターンフラグ立てる
 
+	while (g_count_time_angle * INTRPT_PERIOD < g_turn_peaktime * 2) {
+		if (g_target_omega > 2000) {
+			g_target_omega = 0;
+			break;
+		}
 	}
-	while (fabsf(g_target_omega) > 0.001) {
 
-	}
-	g_alpha_variable = 0;
 	g_distance = 0;
-	g_alpha = 0;
+	g_current_alpha = 0;
+	g_alpha_max = 0;
+	g_target_omega = 0;
+
+	g_accele = 0;
+
 	g_target_angle = 0;
 	g_current_angle = 0;
 
 	g_flag_turn_continuous = 0;
+	g_flag_turn = 0; //ターンフラグ立てる
 }

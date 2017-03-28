@@ -7208,7 +7208,7 @@ struct st_rspi {
 			unsigned char MODF :1;
 			unsigned char IDLNF :1;
 			unsigned char OVRF :1;
-		/*編集前
+		/*変更前
 		 unsigned char :4;
 		 unsigned char PERF:1;
 		 unsigned char MODF:1;
