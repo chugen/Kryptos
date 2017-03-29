@@ -1,2 +1,11 @@
 /Release/
 /makefile.init
+
+*.cproject
+/.settings/
+.info
+.project
+.Releaselinker
+*.launch
+Kryptos Release
+/custom.bat
