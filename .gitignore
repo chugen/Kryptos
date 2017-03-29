@@ -1,12 +1,10 @@
 /Release/
 /makefile.init
-
-*.cproject
-/.settings/
+/parameters.c
+/Kryptos Release.launch
+/custom.bat
+/.settigs/
+.cproject
 .info
 .project
-.Releaselinker
-*.launch
-Kryptos Release
-*.bat
-/parameters.c
+.Releselinker
