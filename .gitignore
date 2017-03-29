@@ -9,3 +9,4 @@
 *.launch
 Kryptos Release
 /custom.bat
+/parameters.c

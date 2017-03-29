@@ -84,7 +84,7 @@ volatile float g_torque_R;
 volatile uint8_t g_orient = 1;
 volatile uint8_t g_current_x = 0;
 volatile uint8_t g_current_y = 0;
-volatile uint8_t g_wall_data_temp[16][16];
+volatile uint8_t g_wall_data_tmp[16][16];
 volatile uint8_t g_wall_data[16][16];
 
 volatile int16_t g_target_x = 1;

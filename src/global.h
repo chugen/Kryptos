@@ -88,7 +88,7 @@ extern volatile float g_torque_R;
 extern volatile uint8_t g_orient;
 extern volatile uint8_t g_current_x;
 extern volatile uint8_t g_current_y;
-extern volatile uint8_t g_wall_data_temp[16][16];
+extern volatile uint8_t g_wall_data_tmp[16][16];
 extern volatile uint8_t g_wall_data[16][16];
 extern volatile int16_t g_target_x;
 extern volatile int16_t g_target_y;

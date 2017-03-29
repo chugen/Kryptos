@@ -559,7 +559,7 @@ void turnCorner(turn_t *p) {
 	double section2 = 0;
 	double section3 = 0;
 	int8_t left_right = 0;
-	float angacc_temp;
+	float angacc_tmp;
 
 	if (p->mode == 0) { //通常壁切れ
 		if (p->angle >= 0) {
@@ -619,13 +619,13 @@ void turnCorner(turn_t *p) {
 
 	if ((p->angle) <= 0) {
 		left_right = -1;
-		angacc_temp = -p->angular_accele;
+		angacc_tmp = -p->angular_accele;
 	} else {
 		left_right = 1;
-		angacc_temp = p->angular_accele;
+		angacc_tmp = p->angular_accele;
 	}
 
-	g_current_alpha = angacc_temp;
+	g_current_alpha = angacc_tmp;
 
 	section1 = (p->max_angular_velo * p->max_angular_velo)
 			/ (2 * p->angular_accele);
@@ -679,7 +679,7 @@ void turnCorner(turn_t *p) {
 
 //section3////////////////////////////////////////////////////////////////////
 
-	g_current_alpha = angacc_temp * -1;
+	g_current_alpha = angacc_tmp * -1;
 
 	while (g_flag_failsafe != 1) {
 		if (fabsf(g_target_angle) >= section3) {

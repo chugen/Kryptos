@@ -67,7 +67,7 @@ void countCoord(void) {
 		g_current_x += -1;
 		g_current_y += 0;
 	}
-	g_wall_data_temp[g_current_x][g_current_y] |= 0xf0;
+	g_wall_data_tmp[g_current_x][g_current_y] |= 0xf0;
 }
 /****************************************
  現在座標セット
@@ -173,17 +173,17 @@ void printMap(void) {
 void setInitWall(void) {
 	int i;
 	for (i = 0; i < 16; i++) {
-		g_wall_data_temp[0][i] |= 0x02;
-		g_wall_data_temp[15][i] |= 0x08;
-		g_wall_data_temp[i][0] |= 0x04;
-		g_wall_data_temp[i][15] |= 0x01;
-		g_wall_data_temp[0][i] |= 0x20;
-		g_wall_data_temp[15][i] |= 0x80;
-		g_wall_data_temp[i][0] |= 0x40;
-		g_wall_data_temp[i][15] |= 0x10;
+		g_wall_data_tmp[0][i] |= 0x02;
+		g_wall_data_tmp[15][i] |= 0x08;
+		g_wall_data_tmp[i][0] |= 0x04;
+		g_wall_data_tmp[i][15] |= 0x01;
+		g_wall_data_tmp[0][i] |= 0x20;
+		g_wall_data_tmp[15][i] |= 0x80;
+		g_wall_data_tmp[i][0] |= 0x40;
+		g_wall_data_tmp[i][15] |= 0x10;
 	}
-	g_wall_data_temp[0][0] |= 0x08;
-	g_wall_data_temp[0][0] |= 0xf0;
+	g_wall_data_tmp[0][0] |= 0x08;
+	g_wall_data_tmp[0][0] |= 0xf0;
 
 	for (i = 0; i < 16; i++) {
 		g_wall_data[0][i] |= 0x02;
@@ -205,22 +205,22 @@ void matchWall(void) {
 	int i_x, i_y;
 	for (i_x = 0; i_x < 16; i_x++) {
 		for (i_y = 0; i_y < 15; i_y++) {
-			if ((g_wall_data_temp[i_x][i_y + 1] & 0x04) == 0x04) { //南壁があれば下のマスの北壁もある
-				g_wall_data_temp[i_x][i_y] |= 0x01;
+			if ((g_wall_data_tmp[i_x][i_y + 1] & 0x04) == 0x04) { //南壁があれば下のマスの北壁もある
+				g_wall_data_tmp[i_x][i_y] |= 0x01;
 			}
-			if ((g_wall_data_temp[i_x][i_y + 1] & 0x40) == 0x40) { //南壁が既知であれば下のマスの北壁も既知である
-				g_wall_data_temp[i_x][i_y] |= 0x10;
+			if ((g_wall_data_tmp[i_x][i_y + 1] & 0x40) == 0x40) { //南壁が既知であれば下のマスの北壁も既知である
+				g_wall_data_tmp[i_x][i_y] |= 0x10;
 			}
 		}
 	}
 	for (i_x = 0; i_x < 15; i_x++) {
 		for (i_y = 0; i_y < 16; i_y++) {
-			if ((g_wall_data_temp[i_x + 1][i_y] & 0x02) == 0x02) { //西壁があれば左隣のマスの東壁もある
-				g_wall_data_temp[i_x][i_y] |= 0x08;
+			if ((g_wall_data_tmp[i_x + 1][i_y] & 0x02) == 0x02) { //西壁があれば左隣のマスの東壁もある
+				g_wall_data_tmp[i_x][i_y] |= 0x08;
 
 			}
-			if ((g_wall_data_temp[i_x + 1][i_y] & 0x20) == 0x20) { //西壁が既知であれば左隣のマスの東壁も既知である
-				g_wall_data_temp[i_x][i_y] |= 0x80;
+			if ((g_wall_data_tmp[i_x + 1][i_y] & 0x20) == 0x20) { //西壁が既知であれば左隣のマスの東壁も既知である
+				g_wall_data_tmp[i_x][i_y] |= 0x80;
 
 			}
 		}
@@ -228,24 +228,24 @@ void matchWall(void) {
 
 	for (i_x = 0; i_x < 16; i_x++) {
 		for (i_y = 1; i_y < 16; i_y++) {
-			if ((g_wall_data_temp[i_x][i_y - 1] & 0x01) == 0x01) { //北壁があれば上のマスの南壁もある
-				g_wall_data_temp[i_x][i_y] |= 0x04;
+			if ((g_wall_data_tmp[i_x][i_y - 1] & 0x01) == 0x01) { //北壁があれば上のマスの南壁もある
+				g_wall_data_tmp[i_x][i_y] |= 0x04;
 
 			}
-			if ((g_wall_data_temp[i_x][i_y - 1] & 0x10) == 0x10) { //北壁が既知であれば上のマスの南壁も既知である
-				g_wall_data_temp[i_x][i_y] |= 0x40;
+			if ((g_wall_data_tmp[i_x][i_y - 1] & 0x10) == 0x10) { //北壁が既知であれば上のマスの南壁も既知である
+				g_wall_data_tmp[i_x][i_y] |= 0x40;
 
 			}
 		}
 	}
 	for (i_x = 1; i_x < 16; i_x++) {
 		for (i_y = 0; i_y < 16; i_y++) {
-			if ((g_wall_data_temp[i_x - 1][i_y] & 0x08) == 0x08) { //東壁が既知であれば右隣のマスの西壁もある
-				g_wall_data_temp[i_x][i_y] |= 0x02;
+			if ((g_wall_data_tmp[i_x - 1][i_y] & 0x08) == 0x08) { //東壁が既知であれば右隣のマスの西壁もある
+				g_wall_data_tmp[i_x][i_y] |= 0x02;
 
 			}
-			if ((g_wall_data_temp[i_x - 1][i_y] & 0x80) == 0x80) { //東壁が既知であれば右隣のマスの西壁も既知である
-				g_wall_data_temp[i_x][i_y] |= 0x20;
+			if ((g_wall_data_tmp[i_x - 1][i_y] & 0x80) == 0x80) { //東壁が既知であれば右隣のマスの西壁も既知である
+				g_wall_data_tmp[i_x][i_y] |= 0x20;
 
 			}
 		}
@@ -258,7 +258,7 @@ void matchWallGoal(void) {
 	int i_x, i_y;
 	for (i_x = 0; i_x < 16; i_x++) {
 		for (i_y = 0; i_y < 16; i_y++) {
-			g_wall_data[i_x][i_y] = g_wall_data_temp[i_x][i_y];
+			g_wall_data[i_x][i_y] = g_wall_data_tmp[i_x][i_y];
 		}
 	}
 }
@@ -268,39 +268,39 @@ void matchWallGoal(void) {
  ****************************************/
 void checkWall(void) {
 
-	g_wall_data_temp[g_current_x][g_current_y] |= 0xf0;
+	g_wall_data_tmp[g_current_x][g_current_y] |= 0xf0;
 
 	if (g_sensor_L > SEN_NOWALL_L) {
 		if (g_orient == 0x01) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x02;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x02;
 		} else if (g_orient == 0x02) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x04;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x04;
 		} else if (g_orient == 0x04) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x08;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x08;
 		} else if (g_orient == 0x08) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x01;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x01;
 		}
 	}
 	if (g_sensor_R > SEN_NOWALL_R) {
 		if (g_orient == 0x01) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x08;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x08;
 		} else if (g_orient == 0x02) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x01;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x01;
 		} else if (g_orient == 0x04) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x02;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x02;
 		} else if (g_orient == 0x08) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x04;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x04;
 		}
 	}
 	if (g_sensor_FL + g_sensor_FR > SEN_NOWALL_FL + SEN_NOWALL_FR) {
 		if (g_orient == 0x01) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x01;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x01;
 		} else if (g_orient == 0x02) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x02;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x02;
 		} else if (g_orient == 0x04) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x04;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x04;
 		} else if (g_orient == 0x08) {
-			g_wall_data_temp[g_current_x][g_current_y] |= 0x08;
+			g_wall_data_tmp[g_current_x][g_current_y] |= 0x08;
 		}
 	}
 	//comb_breaker();
@@ -309,7 +309,6 @@ void checkWall(void) {
  壁有無判定
  ****************************************/
 uint8_t getWallData(uint8_t x, uint8_t y, uint8_t select) {
-
 	return (g_wall_data[x][y]) & select == 1;
 }
 /****************************************
@@ -338,7 +337,7 @@ void countStepQueue(void) {
 		x = queue[head] & 0x0f;
 		head++;
 		if (y < 16) {
-			if ((g_wall_data_temp[x][y] & 0x01) == 0) {
+			if ((g_wall_data_tmp[x][y] & 0x01) == 0) {
 				if (g_step_map[x][y + 1] == 255) {
 					g_step_map[x][y + 1] = g_step_map[x][y] + 1;
 					queue[tail] = (x + (y + 1) * 16);
@@ -347,7 +346,7 @@ void countStepQueue(void) {
 			}
 		}
 		if (x > 0) {
-			if ((g_wall_data_temp[x][y] & 0x02) == 0) {
+			if ((g_wall_data_tmp[x][y] & 0x02) == 0) {
 				if (g_step_map[x - 1][y] == 255) {
 					g_step_map[x - 1][y] = g_step_map[x][y] + 1;
 					queue[tail] = (x - 1 + y * 16);
@@ -356,7 +355,7 @@ void countStepQueue(void) {
 			}
 		}
 		if (y > 0) {
-			if ((g_wall_data_temp[x][y] & 0x04) == 0) {
+			if ((g_wall_data_tmp[x][y] & 0x04) == 0) {
 				if (g_step_map[x][y - 1] == 255) {
 					g_step_map[x][y - 1] = g_step_map[x][y] + 1;
 					queue[tail] = (x + (y - 1) * 16);
@@ -365,7 +364,7 @@ void countStepQueue(void) {
 			}
 		}
 		if (x < 16) {
-			if ((g_wall_data_temp[x][y] & 0x08) == 0) {
+			if ((g_wall_data_tmp[x][y] & 0x08) == 0) {
 				if (g_step_map[x + 1][y] == 255) {
 					g_step_map[x + 1][y] = g_step_map[x][y] + 1;
 					queue[tail] = (x + 1 + y * 16);
@@ -424,7 +423,7 @@ void searchAdachi(void) {
 		countStepQueue();
 
 		if (g_orient == 0x01) {
-			if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
+			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
 					&& g_step_map[g_current_x][g_current_y + 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -432,7 +431,7 @@ void searchAdachi(void) {
 
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
 					&& (g_step_map[g_current_x - 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y]) == -1) {
 
@@ -441,7 +440,7 @@ void searchAdachi(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
 					&& (g_step_map[g_current_x + 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y]) == -1) {
 
@@ -458,7 +457,7 @@ void searchAdachi(void) {
 				countCoord();
 			}
 		} else if (g_orient == 0x02) {
-			if ((g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0
+			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
 					&& g_step_map[g_current_x - 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -466,7 +465,7 @@ void searchAdachi(void) {
 
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
 					&& g_step_map[g_current_x][g_current_y - 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -475,7 +474,7 @@ void searchAdachi(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
 					&& g_step_map[g_current_x][g_current_y + 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -492,7 +491,7 @@ void searchAdachi(void) {
 
 			}
 		} else if (g_orient == 0x04) {
-			if ((g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0
+			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
 					&& g_step_map[g_current_x][g_current_y - 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -500,7 +499,7 @@ void searchAdachi(void) {
 
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
 					&& g_step_map[g_current_x + 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -509,7 +508,7 @@ void searchAdachi(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
 					&& g_step_map[g_current_x - 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -527,7 +526,7 @@ void searchAdachi(void) {
 
 			}
 		} else if (g_orient == 0x08) {
-			if ((g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0
+			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
 					&& g_step_map[g_current_x + 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -535,7 +534,7 @@ void searchAdachi(void) {
 
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
 					&& g_step_map[g_current_x][g_current_y + 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -544,7 +543,7 @@ void searchAdachi(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
 					&& g_step_map[g_current_x][g_current_y - 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -629,16 +628,16 @@ void searchFurukawa(void) {
 		g_current_velo = 0.5;
 		countStepQueue();
 		if (g_orient == 0x01) {
-			if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
-					&& (g_wall_data_temp[g_current_x][g_current_y + 1] & 0xf0)
+			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
+					&& (g_wall_data_tmp[g_current_x][g_current_y + 1] & 0xf0)
 							!= 0xf0) {
 
 				runStraight(5, SECTION, 0.5, 0.5);
 
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0
-					&& (g_wall_data_temp[g_current_x - 1][g_current_y] & 0xf0)
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y] & 0xf0)
 							!= 0xf0) {
 
 				turnCorner(&t_90_L_05);
@@ -646,8 +645,8 @@ void searchFurukawa(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0
-					&& (g_wall_data_temp[g_current_x + 1][g_current_y] & 0xf0)
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y] & 0xf0)
 							!= 0xf0) {
 
 				turnCorner(&t_90_R_05);
@@ -655,7 +654,7 @@ void searchFurukawa(void) {
 				checkOrient(-90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
 					&& g_step_map[g_current_x][g_current_y + 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -663,7 +662,7 @@ void searchFurukawa(void) {
 
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
 					&& (g_step_map[g_current_x - 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y]) == -1) {
 
@@ -672,7 +671,7 @@ void searchFurukawa(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
 					&& (g_step_map[g_current_x + 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y]) == -1) {
 
@@ -690,16 +689,16 @@ void searchFurukawa(void) {
 
 			}
 		} else if (g_orient == 0x02) {
-			if ((g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0
-					&& (g_wall_data_temp[g_current_x - 1][g_current_y] & 0xf0)
+			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y] & 0xf0)
 							!= 0xf0) {
 
 				runStraight(5, SECTION, 0.5, 0.5);
 
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0
-					&& (g_wall_data_temp[g_current_x][g_current_y + 1] & 0xf0)
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
+					&& (g_wall_data_tmp[g_current_x][g_current_y + 1] & 0xf0)
 							!= 0xf0) {
 
 				turnCorner(&t_90_L_05);
@@ -707,8 +706,8 @@ void searchFurukawa(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
-					&& (g_wall_data_temp[g_current_x][g_current_y - 1] & 0xf0)
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
+					&& (g_wall_data_tmp[g_current_x][g_current_y - 1] & 0xf0)
 							!= 0xf0) {
 
 				turnCorner(&t_90_R_05);
@@ -716,7 +715,7 @@ void searchFurukawa(void) {
 				checkOrient(-90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
 					&& g_step_map[g_current_x - 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -724,7 +723,7 @@ void searchFurukawa(void) {
 
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
 					&& g_step_map[g_current_x][g_current_y - 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -733,7 +732,7 @@ void searchFurukawa(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
 					&& g_step_map[g_current_x][g_current_y + 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -751,16 +750,16 @@ void searchFurukawa(void) {
 
 			}
 		} else if (g_orient == 0x04) {
-			if ((g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0
-					&& (g_wall_data_temp[g_current_x][g_current_y - 1] & 0xf0)
+			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
+					&& (g_wall_data_tmp[g_current_x][g_current_y - 1] & 0xf0)
 							!= 0xf0) {
 
 				runStraight(5, SECTION, 0.5, 0.5);
 
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0
-					&& (g_wall_data_temp[g_current_x + 1][g_current_y] & 0xf0)
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y] & 0xf0)
 							!= 0xf0) {
 
 				turnCorner(&t_90_L_05);
@@ -768,8 +767,8 @@ void searchFurukawa(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0
-					&& (g_wall_data_temp[g_current_x - 1][g_current_y] & 0xf0)
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y] & 0xf0)
 							!= 0xf0) {
 
 				turnCorner(&t_90_R_05);
@@ -777,7 +776,7 @@ void searchFurukawa(void) {
 				checkOrient(-90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
 					&& g_step_map[g_current_x][g_current_y - 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -785,7 +784,7 @@ void searchFurukawa(void) {
 
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
 					&& g_step_map[g_current_x + 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -794,7 +793,7 @@ void searchFurukawa(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
 					&& g_step_map[g_current_x - 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -812,15 +811,15 @@ void searchFurukawa(void) {
 
 			}
 		} else if (g_orient == 0x08) {
-			if ((g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0
-					&& (g_wall_data_temp[g_current_x + 1][g_current_y] & 0xf0)
+			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y] & 0xf0)
 							!= 0xf0) {
 
 				runStraight(5, SECTION, 0.5, 0.5);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
-					&& (g_wall_data_temp[g_current_x][g_current_y + 1] & 0xf0)
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
+					&& (g_wall_data_tmp[g_current_x][g_current_y + 1] & 0xf0)
 							!= 0xf0) {
 
 				turnCorner(&t_90_L_05);
@@ -828,8 +827,8 @@ void searchFurukawa(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0
-					&& (g_wall_data_temp[g_current_x][g_current_y - 1] & 0xf0)
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
+					&& (g_wall_data_tmp[g_current_x][g_current_y - 1] & 0xf0)
 							!= 0xf0) {
 
 				turnCorner(&t_90_R_05);
@@ -837,7 +836,7 @@ void searchFurukawa(void) {
 				checkOrient(-90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
 					&& g_step_map[g_current_x + 1][g_current_y]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -845,7 +844,7 @@ void searchFurukawa(void) {
 
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
 					&& g_step_map[g_current_x][g_current_y + 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -854,7 +853,7 @@ void searchFurukawa(void) {
 				checkOrient(90);
 				countCoord();
 
-			} else if ((g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0
+			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
 					&& g_step_map[g_current_x][g_current_y - 1]
 							- g_step_map[g_current_x][g_current_y] == -1) {
 
@@ -893,127 +892,127 @@ void searchFurukawa(void) {
  ****************************************/
 void breakComb(void) {		//fixme 櫛潰し 範囲外参照
 	if (g_orient == 0x01) {
-		if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
-				&& (g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0) {
-			if ((g_wall_data_temp[g_current_x + 1][g_current_y + 1] & 0x02) == 0
-					&& (g_wall_data_temp[g_current_x + 1][g_current_y + 1]
+		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
+				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0) {
+			if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x02) == 0
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
 							& 0x20) == 0x20) {
-				g_wall_data_temp[g_current_x + 1][g_current_y + 1] |= 0x04;
-				g_wall_data_temp[g_current_x + 1][g_current_y + 1] |= 0x40;
-			} else if ((g_wall_data_temp[g_current_x + 1][g_current_y + 1]
+				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x04;
+				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x40;
+			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
 					& 0x04) == 0
-					&& (g_wall_data_temp[g_current_x + 1][g_current_y + 1]
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
 							& 0x40) == 0x40) {
-				g_wall_data_temp[g_current_x + 1][g_current_y + 1] |= 0x02;
-				g_wall_data_temp[g_current_x + 1][g_current_y + 1] |= 0x20;
+				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x02;
+				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x20;
 			}
 		}
-		if ((g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0
-				&& (g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0) {
-			if ((g_wall_data_temp[g_current_x - 1][g_current_y + 1] & 0x08) == 0
-					&& (g_wall_data_temp[g_current_x - 1][g_current_y + 1]
+		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
+				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0) {
+			if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x08) == 0
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
 							& 0x80) == 0x80) {
-				g_wall_data_temp[g_current_x - 1][g_current_y + 1] |= 0x04;
-				g_wall_data_temp[g_current_x - 1][g_current_y + 1] |= 0x40;
-			} else if ((g_wall_data_temp[g_current_x - 1][g_current_y + 1]
+				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x04;
+				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x40;
+			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
 					& 0x04) == 0
-					&& (g_wall_data_temp[g_current_x - 1][g_current_y + 1]
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
 							& 0x40) == 0x40) {
-				g_wall_data_temp[g_current_x - 1][g_current_y + 1] |= 0x08;
-				g_wall_data_temp[g_current_x - 1][g_current_y + 1] |= 0x80;
+				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x08;
+				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x80;
 			}
 		}
 	} else if (g_orient == 0x02) {
-		if ((g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0
-				&& (g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0) {
-			if ((g_wall_data_temp[g_current_x - 1][g_current_y + 1] & 0x04) == 0
-					&& (g_wall_data_temp[g_current_x - 1][g_current_y + 1]
+		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
+				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0) {
+			if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x04) == 0
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
 							& 0x40) == 0x40) {
-				g_wall_data_temp[g_current_x - 1][g_current_y + 1] |= 0x08;
-				g_wall_data_temp[g_current_x - 1][g_current_y + 1] |= 0x80;
-			} else if ((g_wall_data_temp[g_current_x - 1][g_current_y + 1]
+				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x08;
+				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x80;
+			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
 					& 0x08) == 0
-					&& (g_wall_data_temp[g_current_x - 1][g_current_y + 1]
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
 							& 0x80) == 0x80) {
-				g_wall_data_temp[g_current_x - 1][g_current_y + 1] |= 0x04;
-				g_wall_data_temp[g_current_x - 1][g_current_y + 1] |= 0x40;
+				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x04;
+				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x40;
 			}
 		}
-		if ((g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0
-				&& (g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0) {
-			if ((g_wall_data_temp[g_current_x - 1][g_current_y - 1] & 0x08) == 0
-					&& (g_wall_data_temp[g_current_x - 1][g_current_y - 1]
+		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
+				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0) {
+			if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x08) == 0
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
 							& 0x80) == 0x80) {
-				g_wall_data_temp[g_current_x - 1][g_current_y - 1] |= 0x01;
-				g_wall_data_temp[g_current_x - 1][g_current_y - 1] |= 0x10;
-			} else if ((g_wall_data_temp[g_current_x - 1][g_current_y - 1]
+				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x01;
+				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x10;
+			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
 					& 0x08) == 0
-					&& (g_wall_data_temp[g_current_x - 1][g_current_y - 1]
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
 							& 0x80) == 0x80) {
-				g_wall_data_temp[g_current_x - 1][g_current_y - 1] |= 0x01;
-				g_wall_data_temp[g_current_x - 1][g_current_y - 1] |= 0x10;
+				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x01;
+				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x10;
 			}
 		}
 	} else if (g_orient == 0x04) {
-		if ((g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0
-				&& (g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0) {
-			if ((g_wall_data_temp[g_current_x + 1][g_current_y - 1] & 0x01) == 0
-					&& (g_wall_data_temp[g_current_x + 1][g_current_y - 1]
+		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
+				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0) {
+			if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x01) == 0
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
 							& 0x10) == 0x10) {
-				g_wall_data_temp[g_current_x + 1][g_current_y - 1] |= 0x02;
-				g_wall_data_temp[g_current_x + 1][g_current_y - 1] |= 0x20;
-			} else if ((g_wall_data_temp[g_current_x + 1][g_current_y - 1]
+				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x02;
+				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x20;
+			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
 					& 0x02) == 0
-					&& (g_wall_data_temp[g_current_x + 1][g_current_y - 1]
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
 							& 0x20) == 0x20) {
-				g_wall_data_temp[g_current_x + 1][g_current_y - 1] |= 0x01;
-				g_wall_data_temp[g_current_x + 1][g_current_y - 1] |= 0x10;
+				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x01;
+				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x10;
 			}
 		}
-		if ((g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0
-				&& (g_wall_data_temp[g_current_x][g_current_y] & 0x02) == 0) {
-			if ((g_wall_data_temp[g_current_x - 1][g_current_y - 1] & 0x01) == 0
-					&& (g_wall_data_temp[g_current_x - 1][g_current_y - 1]
+		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
+				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0) {
+			if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x01) == 0
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
 							& 0x10) == 0x10) {
-				g_wall_data_temp[g_current_x - 1][g_current_y - 1] |= 0x08;
-				g_wall_data_temp[g_current_x - 1][g_current_y - 1] |= 0x80;
-			} else if ((g_wall_data_temp[g_current_x - 1][g_current_y - 1]
+				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x08;
+				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x80;
+			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
 					& 0x08) == 0
-					&& (g_wall_data_temp[g_current_x - 1][g_current_y - 1]
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
 							& 0x80) == 0x80) {
-				g_wall_data_temp[g_current_x - 1][g_current_y - 1] |= 0x01;
-				g_wall_data_temp[g_current_x - 1][g_current_y - 1] |= 0x10;
+				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x01;
+				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x10;
 			}
 		}
 	} else if (g_orient == 0x08) {
-		if ((g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0
-				&& (g_wall_data_temp[g_current_x][g_current_y] & 0x01) == 0) {
-			if ((g_wall_data_temp[g_current_x + 1][g_current_y + 1] & 0x02) == 0
-					&& (g_wall_data_temp[g_current_x + 1][g_current_y + 1]
+		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
+				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0) {
+			if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x02) == 0
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
 							& 0x20) == 0x20) {
-				g_wall_data_temp[g_current_x + 1][g_current_y + 1] |= 0x04;
-				g_wall_data_temp[g_current_x + 1][g_current_y + 1] |= 0x40;
-			} else if ((g_wall_data_temp[g_current_x + 1][g_current_y + 1]
+				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x04;
+				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x40;
+			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
 					& 0x04) == 0
-					&& (g_wall_data_temp[g_current_x + 1][g_current_y + 1]
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
 							& 0x40) == 0x40) {
-				g_wall_data_temp[g_current_x + 1][g_current_y + 1] |= 0x02;
-				g_wall_data_temp[g_current_x + 1][g_current_y + 1] |= 0x20;
+				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x02;
+				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x20;
 			}
 		}
-		if ((g_wall_data_temp[g_current_x][g_current_y] & 0x08) == 0
-				&& (g_wall_data_temp[g_current_x][g_current_y] & 0x04) == 0) {
-			if ((g_wall_data_temp[g_current_x + 1][g_current_y - 1] & 0x02) == 0
-					&& (g_wall_data_temp[g_current_x + 1][g_current_y - 1]
+		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
+				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0) {
+			if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x02) == 0
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
 							& 0x20) == 0x20) {
-				g_wall_data_temp[g_current_x + 1][g_current_y - 1] |= 0x01;
-				g_wall_data_temp[g_current_x + 1][g_current_y - 1] |= 0x10;
-			} else if ((g_wall_data_temp[g_current_x + 1][g_current_y - 1]
+				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x01;
+				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x10;
+			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
 					& 0x01) == 0
-					&& (g_wall_data_temp[g_current_x + 1][g_current_y - 1]
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
 							& 0x10) == 0x10) {
-				g_wall_data_temp[g_current_x + 1][g_current_y - 1] |= 0x02;
-				g_wall_data_temp[g_current_x + 1][g_current_y - 1] |= 0x20;
+				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x02;
+				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x20;
 			}
 		}
 	}
