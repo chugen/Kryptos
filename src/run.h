@@ -48,16 +48,20 @@ float ctrlIntVelocity(float ki);
 /****************************************
  角速度P制御
  ****************************************/
-float ctrlPropAngularVelocity(float kp);
+float ctrlPropOmega(float kp);
 
 /****************************************
  角速度I制御
  ****************************************/
-float ctrlIntAngularVelocity(float ki);
+float ctrlIntOmega(float ki);
 /****************************************
  角速度D制御
  ****************************************/
-float ctrlDeriAngularVelocity(float kd);
+float ctrlDeriOmega(float kd);
+/****************************************
+ 角速度比例定数変更
+ ****************************************/
+float changeOmegaCtrlConst(float value);
 /****************************************
  角度P制御
  ****************************************/

@@ -58,7 +58,7 @@ extern volatile float g_distance;
 extern volatile float g_accele;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //現在角加速度
-extern volatile float g_current_alpha;
+extern volatile float g_target_alpha;
 //最高角加速度
 extern volatile float g_alpha_max;
 extern volatile float g_turn_peaktime;

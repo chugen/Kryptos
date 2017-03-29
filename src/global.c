@@ -30,7 +30,7 @@ volatile float g_target_omega = 0;
 volatile float g_target_omega_max = 0;
 //現在角速度
 volatile float g_current_omega;
-volatile float g_current_omega_tmp;
+volatile float g_current_omega_tmp;//リファレンス補正前
 //現在偏差
 volatile float g_omega_error;
 //偏差積分
@@ -56,7 +56,7 @@ volatile float g_distance;
 //加速度
 volatile float g_accele;
 //角加速度
-volatile float g_current_alpha;//現在角加速度
+volatile float g_target_alpha;//現在角加速度
 volatile float g_alpha_max;//最高角加速度
 volatile float g_turn_peaktime;//最高角速度到達時間
 

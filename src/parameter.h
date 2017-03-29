@@ -79,11 +79,17 @@
 #define VELO_I 10
 
 //角速度P制御
-#define ANG_VELO_P 300//0//200//300//200
+#define ANG_VELO_P 200.0
 //角速度I制御
-#define ANG_VELO_I 13//0//6//10//6
+#define ANG_VELO_I 6.0
 //角速度D制御
-#define ANG_VELO_D 70//0//5//50//5
+#define ANG_VELO_D 5.0
+//角速度P制御
+#define ANG_FASTVELO_P 300.0
+//角速度I制御
+#define ANG_FASTVELO_I 13.0
+//角速度D制御
+#define ANG_FASTVELO_D 70.0
 
 //角度P制御
 #define ANG_P 0//1//0.01
