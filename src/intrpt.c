@@ -116,23 +116,23 @@ void setMotorDuty(void) {
 	if (g_flag_control == 1) {
 		setMotorDutyL(
 				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
-						- ctrlPropAngularVelocity(ANG_VELO_P)
-						- ctrlIntAngularVelocity(ANG_VELO_I)
-						- ctrlDeriAngularVelocity(ANG_VELO_D)
+						- ctrlPropOmega(changeOmegaCtrlConst(ANG_VELO_P))
+						- ctrlIntOmega(changeOmegaCtrlConst(ANG_VELO_I))
+						- ctrlDeriOmega(changeOmegaCtrlConst(ANG_VELO_D))
 						- ctrlPropAngle(ANG_P) - ctrlIntAngle(ANG_I)
 						- ctrlWall(WALL_P) - ctrlWallFrontAng(WALL_FRONT_ANG)
 						+ ctrlWallFrontDis(WALL_FRONT_DIS)
-						+ ctrlFeedForwardL(g_accele, g_current_alpha));
+						+ ctrlFeedForwardL(g_accele, g_target_alpha));
 
 		setMotorDutyR(
 				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
-						+ ctrlPropAngularVelocity(ANG_VELO_P)
-						+ ctrlIntAngularVelocity(ANG_VELO_I)
-						+ ctrlDeriAngularVelocity(ANG_VELO_D)
+						+ ctrlPropOmega(ANG_VELO_P)
+						+ ctrlIntOmega(ANG_VELO_I)
+						+ ctrlDeriOmega(ANG_VELO_D)
 						+ ctrlPropAngle(ANG_P) + ctrlIntAngle(ANG_I)
 						+ ctrlWall(WALL_P) + ctrlWallFrontAng(WALL_FRONT_ANG)
 						+ ctrlWallFrontDis(WALL_FRONT_DIS)
-						+ ctrlFeedForwardR(g_accele, g_current_alpha));
+						+ ctrlFeedForwardR(g_accele, g_target_alpha));
 	}
 }
 /****************************************
@@ -157,7 +157,7 @@ void calcAngularAcc(void) {
 				- powf(
 						(g_count_time_angle * INTRPT_PERIOD - g_turn_peaktime)
 								/ g_turn_peaktime, 2) > 0) {
-			g_current_alpha = -2 * g_alpha_max
+			g_target_alpha = -2 * g_alpha_max
 					* (g_count_time_angle * INTRPT_PERIOD - g_turn_peaktime)
 					/ g_turn_peaktime
 					* sqrtf(
@@ -167,11 +167,11 @@ void calcAngularAcc(void) {
 													- g_turn_peaktime)
 													/ g_turn_peaktime, 2));
 		} else {
-			g_current_alpha = 0;
+			g_target_alpha = 0;
 		}
-		g_target_omega += g_current_alpha * INTRPT_PERIOD;
+		g_target_omega += g_target_alpha * INTRPT_PERIOD;
 	} else {
-		g_target_omega += g_current_alpha * INTRPT_PERIOD;
+		g_target_omega += g_target_alpha * INTRPT_PERIOD;
 	}
 
 }
