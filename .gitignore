@@ -8,5 +8,5 @@
 .Releaselinker
 *.launch
 Kryptos Release
-/custom.bat
+*.bat
 /parameters.c
