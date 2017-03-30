@@ -352,9 +352,9 @@ float ctrlFeedForwardL(float accele, float alpha) {
 	if (g_accele == 0 && g_target_alpha == 0 && g_target_omega != 0) {
 		const_torque = 0.000572 * g_target_velo + 0.000304;
 		if (g_target_omega > 0) {
-			const_torque += (0.00001492 * g_target_omega - 0.001341) * 0.6;
+			const_torque += (0.00001492 * g_target_omega - 0.001341) * 0;
 		} else {
-			const_torque += (0.000002314 * g_target_omega + 0.0002122) * 0.45;
+			const_torque += (0.000002314 * g_target_omega + 0.0002122) * 0;
 		}
 
 	} else {
@@ -389,9 +389,9 @@ float ctrlFeedForwardR(float accele, float alpha) {
 	if (g_accele == 0 && g_target_alpha == 0 && g_target_omega != 0) {
 		const_torque = 0.000572 * g_target_velo + 0.000304;
 		if (g_target_omega > 0) {
-			const_torque += (0.000002314 * g_target_omega + 0.0002122) * 0.6;
+			const_torque += (0.000002314 * g_target_omega + 0.0002122) * 0;
 		} else {
-			const_torque += (0.00001492 * g_target_omega - 0.001341) * 0.45;
+			const_torque += (0.00001492 * g_target_omega - 0.001341) * 0;
 		}
 
 	} else {

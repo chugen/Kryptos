@@ -257,21 +257,20 @@ void getSensorVal(void) {
  ****************************************/
 uint8_t checkPillarEdgeL() {
 	int16_t i;
-	static float sensor_L_before[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+	static float sensor_L_before[11] = {0};
 
 	static float sensor_L_pillar = 0;
 
-	for (i = 6; i >= 0; i--) {
+	for (i = 9; i >= 0; i--) {
 		sensor_L_before[i + 1] = sensor_L_before[i];
 	}
 	sensor_L_before[0] = g_sensor_L;
 
-	sensor_L_pillar = ((sensor_L_before[0] + sensor_L_before[1]
-			+ sensor_L_before[2])
-			- (sensor_L_before[5] + sensor_L_before[6] + sensor_L_before[7]))
+	sensor_L_pillar = ((sensor_L_before[0] + sensor_L_before[1]	+ sensor_L_before[2]+ sensor_L_before[3]+ sensor_L_before[4])
+			- (sensor_L_before[6] + sensor_L_before[7] + sensor_L_before[8]+ sensor_L_before[9]+ sensor_L_before[10]))
 			/ 3;
 
-	if (sensor_L_pillar < -100) {
+	if (sensor_L_pillar < -300) {
 		g_flag_pillar_edge_L = 1;
 	} else {
 		g_flag_pillar_edge_L = 0;
@@ -281,21 +280,21 @@ uint8_t checkPillarEdgeL() {
 }
 uint8_t checkPillarEdgeR() {
 	int16_t i;
-	static float sensor_R_before[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+	static float sensor_R_before[11] = {0};
 
 	static float sensor_R_pillar = 0;
 
-	for (i = 6; i >= 0; i--) {
+	for (i = 9; i >= 0; i--) {
 		sensor_R_before[i + 1] = sensor_R_before[i];
 	}
 	sensor_R_before[0] = g_sensor_R;
 
-	sensor_R_pillar = ((sensor_R_before[0] + sensor_R_before[1]
-			+ sensor_R_before[2])
-			- (sensor_R_before[5] + sensor_R_before[6] + sensor_R_before[7]))
-			/ 3;
+	sensor_R_pillar = ((sensor_R_before[0] + sensor_R_before[1]	+ sensor_R_before[2]+ sensor_R_before[3]+ sensor_R_before[4])
+				- (sensor_R_before[6] + sensor_R_before[7] + sensor_R_before[8]+ sensor_R_before[9]+ sensor_R_before[10]))
+				/ 3;
 
-	if (sensor_R_pillar < -100) {
+
+	if (sensor_R_pillar < -300) {
 		g_flag_pillar_edge_R = 1;
 	} else {
 		g_flag_pillar_edge_R = 0;
