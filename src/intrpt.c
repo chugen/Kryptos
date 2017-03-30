@@ -39,14 +39,15 @@ void intrptCMT0(void) {
 	//getLog(g_sensor_R,g_flag_pillar_edge_R);
 	//getLog(g_target_velo, g_current_velo);
 	//getLog(g_current_velo, g_accele);
-	getLog(g_target_omega, g_current_omega);
+	//getLog(g_target_omega, g_current_omega);
 	//getLog(fabsf(g_encoder_diff_L) * INTRPT_FREQENCY / (ENC_RESO * 4) * 60,fabsf(g_encoder_diff_R) * INTRPT_FREQENCY / (ENC_RESO * 4) * 60);
-	//getLog(ctrlFeedForwardL(g_accele,g_current_alpha),ctrlFeedForwardR(g_accele,g_current_alpha));
+	//getLog(ctrlFeedForwardL(g_accele,g_target_alpha),ctrlFeedForwardR(g_accele,g_target_alpha));
 	//getLog(g_target_angle, g_current_angle);
 	//getLog(g_duty_L, g_duty_R);
 	//getLogInt(commSPI(GYRO_ZOUT_H, 0x0f, READ),commSPI(GYRO_ZOUT_L, 0x0f, READ));
 	//getLog(g_sensor_R, g_target_omega);
 	//getLog4(g_torque_L,g_torque_R,g_target_omega,g_current_omega);
+	getLog4(g_sensor_L,g_sensor_R,g_current_velo*1000,g_current_omega);
 	/*========================================================*/
 
 	getBatteryVoltage();

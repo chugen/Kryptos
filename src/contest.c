@@ -58,7 +58,7 @@ void runAdachi(void) {
 	countStepQueue();
 
 	waitSensor();
-
+	initRun();
 	switchSensorLED(ON);
 	driveMotor(ON);
 	waitTime(1000);
@@ -81,7 +81,7 @@ void runAdachiAdachi(void) {
 	countStepQueue();
 
 	waitSensor();
-
+	initRun();
 	switchSensorLED(ON);
 	driveMotor(ON);
 	waitTime(1000);
@@ -90,7 +90,7 @@ void runAdachiAdachi(void) {
 	initRun();
 
 	searchAdachi();
-
+	initRun();
 	driveMotor(ON);
 	switchSensorLED(ON);
 	turnCorner(&pivot);
@@ -117,7 +117,7 @@ void runFurukawa(void) {
 	countStepQueue();
 
 	waitSensor();
-
+	initRun();
 	switchSensorLED(ON);
 	driveMotor(ON);
 	waitTime(1000);
@@ -139,7 +139,7 @@ void runFurukawaAdachi(void) {
 	countStepQueue();
 
 	waitSensor();
-
+	initRun();
 	switchSensorLED(ON);
 	driveMotor(ON);
 	waitTime(1000);
@@ -158,8 +158,9 @@ void runFurukawaAdachi(void) {
 	countStepQueue();
 
 	switchSensorLED(ON);
-	driveMotor(ON);
 	initRun();
+	driveMotor(ON);
+
 
 	searchAdachi();
 	turnCorner(&pivot);

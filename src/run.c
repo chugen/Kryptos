@@ -485,18 +485,22 @@ void runBlindAlley(float velo) {
 void initRun(void) {
 	g_flag_control = 1;
 	g_log_count = 0;
-	g_distance = 0;
-	g_target_velo = 0;
-	g_target_angle = 0;
-	g_current_angle = 0;
 	g_flag_failsafe = 0;
 	g_flag_shortest_goal = 0;
+
+	g_distance = 0;
+
+	g_target_velo = 0;
+
+	g_target_angle = 0;
+	g_current_angle = 0;
 
 	g_velo_error = 0;
 	g_velo_error_integral = 0;
 
 	g_omega_error = 0;
 	g_omega_error_integral = 0;
+	g_omega_error_derivative = 0;
 
 	g_angle_error = 0;
 	g_angle_error_integral = 0;
