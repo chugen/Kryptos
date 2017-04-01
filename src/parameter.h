@@ -66,12 +66,15 @@
 #define SEN_THRESHOLD_L 400
 #define SEN_THRESHOLD_R 410
 //壁有無判定基準値
-#define SEN_NOWALL_L 170
-#define SEN_NOWALL_R 200
+#define SEN_NOWALL_L 250//170
+#define SEN_NOWALL_R 250
 #define SEN_NOWALL_FL 75//160
 #define SEN_NOWALL_FR 65
 //死亡判定
 #define SEN_DEATH 1600
+//壁切れ判定変化量
+#define SEN_PILLAR_EDGE_L -250
+#define SEN_PILLAR_EDGE_R -250
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //速度P制御
 #define VELO_P 220

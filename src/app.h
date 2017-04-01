@@ -7,7 +7,11 @@
 
 #ifndef APP_HPP_
 #define APP_HPP_
-
+/****************************************
+ ビットシフト
+ ****************************************/
+void shiftBit(uint8_t *value, uint8_t shift, uint8_t shift_dir);
+uint8_t getBitShiftValue(uint8_t *value, uint8_t shift, uint8_t shift_dir);
 /****************************************
  Wait関数
  ****************************************/
@@ -74,6 +78,7 @@ void soundStartRun(void) ;
  ****************************************/
 void soundSensor(void);
 void soundButton(void);
+void soundPrint(void);
 /****************************************
  カウント音
  ****************************************/

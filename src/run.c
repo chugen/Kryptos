@@ -417,7 +417,7 @@ float ctrlFeedForwardR(float accele, float alpha) {
  ****************************************/
 void runBlindAlley(float velo) {
 	static uint16_t times_count = 0;
-	g_flag_gap = 1;
+
 	g_flag_turn = 1;
 	times_count++;
 	if (times_count > 5) {
@@ -430,7 +430,6 @@ void runBlindAlley(float velo) {
 
 		waitTime(500);
 	}
-	g_flag_gap = 0;
 
 	if (times_count == 0) {
 		calcGyroZRef();
@@ -442,8 +441,6 @@ void runBlindAlley(float velo) {
 	if (SEN_REFERENCE_L - g_sensor_L < -170) {
 		turnCorner(&pivot_90_R);
 		g_flag_blindalley = 1;
-
-		g_flag_gap = 0;
 
 		waitTime(500);
 		g_flag_blindalley = 0;
@@ -457,8 +454,6 @@ void runBlindAlley(float velo) {
 	} else if (SEN_REFERENCE_R - g_sensor_R < -170) {
 		turnCorner(&pivot_90_L);
 		g_flag_blindalley = 1;
-
-		g_flag_gap = 0;
 
 		waitTime(500);
 		g_flag_blindalley = 0;
@@ -642,25 +637,22 @@ void turnCorner(turn_t *p) {
 	} else {
 
 	}
-	driveRGB(BLUE, ON);
 
 	g_flag_turn = 1; //ターンフラグ立てる
 	g_flag_diagonal = p->dia;
 
 	if ((p->angle) <= 0) {
 		left_right = -1;
-		angacc_tmp = -p->angular_accele;
+		angacc_tmp = -p->alpha;
 	} else {
 		left_right = 1;
-		angacc_tmp = p->angular_accele;
+		angacc_tmp = p->alpha;
 	}
 
 	g_target_alpha = angacc_tmp;
 
-	section1 = (p->max_angular_velo * p->max_angular_velo)
-			/ (2 * p->angular_accele);
-	section3 = (p->max_angular_velo * p->max_angular_velo)
-			/ (2 * p->angular_accele);
+	section1 = (p->omega * p->omega) / (2 * p->alpha);
+	section3 = (p->omega * p->omega) / (2 * p->alpha);
 	section2 = fabsf(p->angle) - section1 - section3;
 
 	if (section2 <= 0) {
@@ -676,10 +668,10 @@ void turnCorner(turn_t *p) {
 
 			section2 = 0;
 
-			section1 = (-g_current_omega * g_current_omega)
-					/ (4 * p->angular_accele) + fabsf(p->angle) / 2;
-			section3 = (g_current_omega * g_current_omega)
-					/ (4 * p->angular_accele) + fabsf(p->angle) / 2;
+			section1 = (-g_current_omega * g_current_omega) / (4 * p->alpha)
+					+ fabsf(p->angle) / 2;
+			section3 = (g_current_omega * g_current_omega) / (4 * p->alpha)
+					+ fabsf(p->angle) / 2;
 		}
 
 	}
@@ -698,9 +690,9 @@ void turnCorner(turn_t *p) {
 	g_target_alpha = 0;
 
 	if (p->angle <= 0) {
-		g_target_omega = -p->max_angular_velo;
+		g_target_omega = -p->omega;
 	} else {
-		g_target_omega = p->max_angular_velo;
+		g_target_omega = p->omega;
 	}
 	while (g_flag_failsafe != 1) {
 		if (fabsf(g_target_angle) >= section2)
@@ -753,7 +745,7 @@ void turnCornerContinuous(float degree, float omega) {
 	g_target_angle_const = degree;
 	g_target_omega_max = omega;
 	g_alpha_max = 9.0 * M_PI / 16 * powf(omega, 2) / degree;
-	g_turn_peaktime = 3 * g_target_omega_max / g_alpha_max / 2;
+	g_turn_peaktime = 3 * g_target_omega_max / fabsf(g_alpha_max) / 2;
 
 	g_flag_turn_continuous = 1;
 

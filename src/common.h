@@ -42,6 +42,10 @@
 #define SOUTH 0x04
 #define EAST 0x08
 
+#define WALL_FRONT 0
+#define WALL_LEFT 1
+#define WALL_RIGHT 2
+
 #define START_X 0
 #define START_Y 0
 #define GOAL_X  1

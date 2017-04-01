@@ -85,11 +85,17 @@ extern volatile float g_torque_R;
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //map
-extern volatile uint8_t g_orient;
+extern uint8_t g_orient;
 extern volatile uint8_t g_current_x;
 extern volatile uint8_t g_current_y;
 extern volatile uint8_t g_wall_data_tmp[16][16];
 extern volatile uint8_t g_wall_data[16][16];
+
+extern volatile uint16_t g_wall_data_row[16];
+extern volatile uint16_t g_wall_data_column[16];
+extern volatile uint16_t g_wall_data_row_tmp[16];
+extern volatile uint16_t g_wall_data_column_tmp[16];
+
 extern volatile int16_t g_target_x;
 extern volatile int16_t g_target_y;
 extern volatile uint8_t g_step_map[16][16];
@@ -101,7 +107,6 @@ extern volatile uint8_t g_flag_step_goal;
 extern volatile uint8_t g_flag_step_goal_2;
 extern volatile uint8_t g_flag_step_goal_3;
 extern volatile uint8_t g_flag_curve;
-extern volatile uint8_t g_flag_gap;
 extern volatile uint8_t g_flag_adachi_goal;
 extern volatile uint8_t g_flag_path_run_goal;
 extern volatile uint8_t g_flag_diagonal;

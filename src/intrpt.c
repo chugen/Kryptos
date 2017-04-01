@@ -19,6 +19,8 @@
  割り込み関数0
  ****************************************/
 void intrptCMT0(void) {
+	static uint8_t log_count = 0;
+	log_count++;
 	g_wait_count++;
 
 	calcAcc();
@@ -32,23 +34,28 @@ void intrptCMT0(void) {
 	g_current_velo = returnVelocityL() + returnVelocityR();
 	g_current_omega = g_current_omega_tmp - g_gyro_reference;
 
-	/*Log=====================================================*/
-	//getLog(g_sensor_L, g_sensor_R);
-	//getLog(g_sensor_FL,g_sensor_FR);
-	//getLog(g_sensor_L,g_flag_pillar_edge_L);
-	//getLog(g_sensor_R,g_flag_pillar_edge_R);
-	//getLog(g_target_velo, g_current_velo);
-	//getLog(g_current_velo, g_accele);
-	//getLog(g_target_omega, g_current_omega);
-	//getLog(fabsf(g_encoder_diff_L) * INTRPT_FREQENCY / (ENC_RESO * 4) * 60,fabsf(g_encoder_diff_R) * INTRPT_FREQENCY / (ENC_RESO * 4) * 60);
-	//getLog(ctrlFeedForwardL(g_accele,g_target_alpha),ctrlFeedForwardR(g_accele,g_target_alpha));
-	//getLog(g_target_angle, g_current_angle);
-	//getLog(g_duty_L, g_duty_R);
-	//getLogInt(commSPI(GYRO_ZOUT_H, 0x0f, READ),commSPI(GYRO_ZOUT_L, 0x0f, READ));
-	//getLog(g_sensor_R, g_target_omega);
-	//getLog4(g_torque_L,g_torque_R,g_target_omega,g_current_omega);
-	getLog4(g_sensor_L,g_sensor_R,g_current_velo*1000,g_current_omega);
-	/*========================================================*/
+	if (log_count % 1 == 0) {
+		/*Log=====================================================*/
+		//getLog(g_sensor_L, g_sensor_R);
+		//getLog(g_sensor_FL,g_sensor_FR);
+		//getLog(g_sensor_L,g_flag_pillar_edge_L);
+		//getLog(g_sensor_R,g_flag_pillar_edge_R);
+		//getLog(g_target_velo, g_current_velo);
+		//getLog(g_current_velo, g_accele);
+		//getLog(g_target_omega, g_current_omega);
+		//getLog(fabsf(g_encoder_diff_L) * INTRPT_FREQENCY / (ENC_RESO * 4) * 60,fabsf(g_encoder_diff_R) * INTRPT_FREQENCY / (ENC_RESO * 4) * 60);
+		//getLog(ctrlFeedForwardL(g_accele,g_target_alpha),ctrlFeedForwardR(g_accele,g_target_alpha));
+		//getLog(g_target_angle, g_current_angle);
+		//getLog(g_duty_L, g_duty_R);
+		//getLogInt(commSPI(GYRO_ZOUT_H, 0x0f, READ),commSPI(GYRO_ZOUT_L, 0x0f, READ));
+		//getLog(g_sensor_R, g_target_omega);
+		//getLog4(g_torque_L,g_torque_R,g_target_omega,g_current_omega);
+		//getLog4(g_sensor_L, g_sensor_R,  g_battery_voltage, g_current_omega);
+		getLog4(g_current_x, g_current_y, (getWallData(WALL_RIGHT) == 0),
+				checkStep(WALL_RIGHT));
+		/*========================================================*/
+		log_count = 0;
+	}
 
 	getBatteryVoltage();
 	setMotorDuty();
@@ -127,11 +134,10 @@ void setMotorDuty(void) {
 
 		setMotorDutyR(
 				ctrlPropVelocity(VELO_P) + ctrlIntVelocity(VELO_I)
-						+ ctrlPropOmega(ANG_VELO_P)
-						+ ctrlIntOmega(ANG_VELO_I)
-						+ ctrlDeriOmega(ANG_VELO_D)
-						+ ctrlPropAngle(ANG_P) + ctrlIntAngle(ANG_I)
-						+ ctrlWall(WALL_P) + ctrlWallFrontAng(WALL_FRONT_ANG)
+						+ ctrlPropOmega(ANG_VELO_P) + ctrlIntOmega(ANG_VELO_I)
+						+ ctrlDeriOmega(ANG_VELO_D) + ctrlPropAngle(ANG_P)
+						+ ctrlIntAngle(ANG_I) + ctrlWall(WALL_P)
+						+ ctrlWallFrontAng(WALL_FRONT_ANG)
 						+ ctrlWallFrontDis(WALL_FRONT_DIS)
 						+ ctrlFeedForwardR(g_accele, g_target_alpha));
 	}
@@ -154,19 +160,9 @@ void calcDistance(void) {
 void calcAngularAcc(void) {
 	if (g_flag_turn_continuous == 1) {
 		g_count_time_angle++;
-		if (1
-				- powf(
-						(g_count_time_angle * INTRPT_PERIOD - g_turn_peaktime)
-								/ g_turn_peaktime, 2) > 0) {
-			g_target_alpha = -2 * g_alpha_max
-					* (g_count_time_angle * INTRPT_PERIOD - g_turn_peaktime)
-					/ g_turn_peaktime
-					* sqrtf(
-							1
-									- powf(
-											(g_count_time_angle * INTRPT_PERIOD
-													- g_turn_peaktime)
-													/ g_turn_peaktime, 2));
+		if (1- powf((g_count_time_angle * INTRPT_PERIOD - g_turn_peaktime)/ g_turn_peaktime, 2) > 0) {
+			g_target_alpha = -2 * g_alpha_max* (g_count_time_angle * INTRPT_PERIOD - g_turn_peaktime)
+					/ g_turn_peaktime* sqrtf(1- powf((g_count_time_angle * INTRPT_PERIOD- g_turn_peaktime)/ g_turn_peaktime, 2));
 		} else {
 			g_target_alpha = 0;
 		}
@@ -219,7 +215,8 @@ void getSensorVal(void) {
 	static uint16_t sensor_L_before;
 	static uint16_t sensor_R_before;
 
-	battery_correct = MAX_VOLTAGE / g_battery_voltage;
+	//battery_correct = MAX_VOLTAGE / g_battery_voltage;
+	battery_correct = 1;
 
 	sensor_L_before = g_sensor_L;
 	sensor_R_before = g_sensor_R;
@@ -257,7 +254,7 @@ void getSensorVal(void) {
  ****************************************/
 uint8_t checkPillarEdgeL() {
 	int16_t i;
-	static float sensor_L_before[11] = {0};
+	static float sensor_L_before[11] = { 0 };
 
 	static float sensor_L_pillar = 0;
 
@@ -266,11 +263,12 @@ uint8_t checkPillarEdgeL() {
 	}
 	sensor_L_before[0] = g_sensor_L;
 
-	sensor_L_pillar = ((sensor_L_before[0] + sensor_L_before[1]	+ sensor_L_before[2]+ sensor_L_before[3]+ sensor_L_before[4])
-			- (sensor_L_before[6] + sensor_L_before[7] + sensor_L_before[8]+ sensor_L_before[9]+ sensor_L_before[10]))
-			/ 3;
+	sensor_L_pillar = ((sensor_L_before[0] + sensor_L_before[1]
+			+ sensor_L_before[2] + sensor_L_before[3] + sensor_L_before[4])
+			- (sensor_L_before[6] + sensor_L_before[7] + sensor_L_before[8]
+					+ sensor_L_before[9] + sensor_L_before[10])) / 3;
 
-	if (sensor_L_pillar < -300) {
+	if (sensor_L_pillar < SEN_PILLAR_EDGE_L) {
 		g_flag_pillar_edge_L = 1;
 	} else {
 		g_flag_pillar_edge_L = 0;
@@ -280,7 +278,7 @@ uint8_t checkPillarEdgeL() {
 }
 uint8_t checkPillarEdgeR() {
 	int16_t i;
-	static float sensor_R_before[11] = {0};
+	static float sensor_R_before[11] = { 0 };
 
 	static float sensor_R_pillar = 0;
 
@@ -289,12 +287,12 @@ uint8_t checkPillarEdgeR() {
 	}
 	sensor_R_before[0] = g_sensor_R;
 
-	sensor_R_pillar = ((sensor_R_before[0] + sensor_R_before[1]	+ sensor_R_before[2]+ sensor_R_before[3]+ sensor_R_before[4])
-				- (sensor_R_before[6] + sensor_R_before[7] + sensor_R_before[8]+ sensor_R_before[9]+ sensor_R_before[10]))
-				/ 3;
+	sensor_R_pillar = ((sensor_R_before[0] + sensor_R_before[1]
+			+ sensor_R_before[2] + sensor_R_before[3] + sensor_R_before[4])
+			- (sensor_R_before[6] + sensor_R_before[7] + sensor_R_before[8]
+					+ sensor_R_before[9] + sensor_R_before[10])) / 3;
 
-
-	if (sensor_R_pillar < -300) {
+	if (sensor_R_pillar < SEN_PILLAR_EDGE_R) {
 		g_flag_pillar_edge_R = 1;
 	} else {
 		g_flag_pillar_edge_R = 0;

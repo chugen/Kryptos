@@ -63,7 +63,7 @@ void runAdachi(void) {
 	driveMotor(ON);
 	waitTime(1000);
 	soundStartSearch();
-	driveRGB(ORANGE, ON);
+
 	calcGyroZRef();
 
 	initRun();

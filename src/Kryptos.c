@@ -29,7 +29,7 @@
 
 void main(void) {
 	//uint8_t i, j;
-	float sp=0.9;
+	float sp = 0.7;
 	init();
 	checkLowVoltage();
 	notificateStartUp();
@@ -39,28 +39,28 @@ void main(void) {
 		driveRGB(ORANGE, ON);
 		g_flag_FF = 1;
 		selectContest();
-		//printMap();
+
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-		selectAdjustment1(T14);
-//		driveRGB(GREEN, ON);
-//		waitSensor();
-//		waitTime(1000);
-//		calcGyroZRef();
-//
-//		initRun();
-//		driveMotor(ON);
-//		switchSensorLED(OFF);
-//
-//		runStraight(5, SECTION, sp, sp);
-//		turnCorner(&t_test);
-//		runStraight(5, SECTION, sp, 0);
-//
-//		waitTime(300);
-//		driveMotor(OFF);
-//		waitButton();
-//		printLog4();
+		//selectAdjustment1(T14);
+		driveRGB(GREEN, ON);
+		waitSensor();
+		waitTime(1000);
+		calcGyroZRef();
+
+		initRun();
+		driveMotor(ON);
+		switchSensorLED(OFF);
+
+		runStraight(5, SECTION, sp, sp);
+		turnCornerContinuous(-90, 770);
+		runStraight(5, SECTION, sp, 0);
+
+		waitTime(300);
+		driveMotor(OFF);
+		waitButton();
+		printLog4();
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
@@ -107,7 +107,7 @@ void main(void) {
 		switchSensorLED(ON);
 		runStraight(13, SECTION, 2.2, 2.2);
 		g_log_count = 0;
-		g_flag_FF =1;
+		g_flag_FF = 1;
 		turnCornerContinuous(90, 1400);
 		runStraight(13, SECTION, 2.2, 0);
 		driveRGB(BLUE, ON);

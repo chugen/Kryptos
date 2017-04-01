@@ -13,13 +13,23 @@
 //
 typedef struct{
 	float angle;
-	float angular_accele;
-	float max_angular_velo;
+	float alpha;
+	float omega;
 	float velocity;
 	float front;
 	float rear;
 	int8_t dia;
 	int8_t mode;
 } turn_t;
+
+typedef struct{
+	float angle;
+	float omega;
+	float velocity;
+	float front;
+	float rear;
+	int8_t dia;
+	int8_t mode;
+} turn2_t;
 
 #endif /* MY_TYPEDEF_H_ */

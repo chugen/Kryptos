@@ -15,7 +15,56 @@
 #include "serial.h"
 #include "parameter.h"
 #include "sensor.h"
+/****************************************
+ ビットシフト
+ ****************************************/
+void shiftBit(uint8_t *value, uint8_t shift, uint8_t shift_dir) {
+	uint8_t bit;
 
+	switch (shift_dir) {
+	case LEFT:
+		*value = *value << shift;
+		if (*value >= 0x10) {
+			*value = *value >> 4;
+		}
+		break;
+	case RIGHT:
+		bit = *value >> shift;
+		if (bit == 0) {
+			*value = *value << 4;
+		}
+
+		*value = *value >> shift;
+		break;
+	default:
+		break;
+	}
+}
+
+uint8_t getBitShiftValue(uint8_t *value, uint8_t shift, uint8_t shift_dir) {
+	uint8_t bit;
+
+	switch (shift_dir) {
+	case LEFT:
+		bit = *value << shift;
+		if (bit >= 0x10) {
+			bit = bit >> 4;
+		}
+		return bit;
+		break;
+	case RIGHT:
+		bit = *value >> shift;
+		if (bit == 0) {
+			bit = *value << 4;
+			bit = bit >> shift;
+		}
+		return bit;
+		break;
+
+	default:
+		return 0;
+	}
+}
 /****************************************
  Wait関数
  ****************************************/
@@ -338,6 +387,7 @@ void printLog(void) {
 	for (i = 0; i < LOG_TIMES; i++) {
 		myprintf("%d	%f	%f\n", i, *(g_log_array + i), *(g_log_array2 + i));
 	}
+	soundPrint();
 }
 void printLog4(void) {
 	int32_t i;
@@ -345,6 +395,7 @@ void printLog4(void) {
 		myprintf("%d	%f	%f	%f	%f\n", i, *(g_log_array + i), *(g_log_array2 + i),
 				*(g_log_array3 + i), *(g_log_array4 + i));
 	}
+	soundPrint();
 }
 void printLogInt(void) {
 	int32_t i;
@@ -352,6 +403,7 @@ void printLogInt(void) {
 		myprintf("%d	%d	%d\n", i, *(g_log_array_int + i),
 				*(g_log_array2_int + i));
 	}
+	soundPrint();
 }
 /****************************************
  ゴール音
@@ -458,6 +510,14 @@ void soundButton(void) {
 	driveBuzzer(BZ_A4, 50);
 	waitTime(30);
 	driveBuzzer(BZ_B4, 50);
+}
+void soundPrint(void) {
+	driveBuzzer(BZ_A3, 50);
+	waitTime(30);
+	driveBuzzer(BZ_B4, 50);
+	driveBuzzer(BZ_A5, 50);
+	waitTime(30);
+	driveBuzzer(BZ_B3, 50);
 }
 /****************************************
  カウント音

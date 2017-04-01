@@ -17,30 +17,20 @@
 #include "mathf.h"
 #include "serial.h"
 #include "sensor.h"
+
 /****************************************
  方位管理
  ****************************************/
 void checkOrient(int ori_deg) {
 	if (ori_deg == 90) {
-		g_orient = g_orient << 1;
-		if (g_orient >= 0x10) {
-			g_orient = 0x01;
-		}
+		shiftBit(&g_orient, 1, LEFT);
+
 	} else if (ori_deg == -90) {
-		g_orient = g_orient >> 1;
-		if (g_orient == 0x00) {
-			g_orient = 0x08;
-		}
+		shiftBit(&g_orient, 1, RIGHT);
+
 	} else {
-		if (g_orient == 0x01) {
-			g_orient = 0x04;
-		} else if (g_orient == 0x02) {
-			g_orient = 0x08;
-		} else if (g_orient == 0x04) {
-			g_orient = 0x01;
-		} else if (g_orient == 0x08) {
-			g_orient = 0x02;
-		}
+		shiftBit(&g_orient, 2, LEFT);
+
 	}
 }
 /****************************************
@@ -156,7 +146,7 @@ void printMap(void) {
 	myprintf("\n\r");
 	myprintf(" ");
 	for (i_x = 0; i_x < 16; i_x++) {
-		if(i_x==10){
+		if (i_x == 10) {
 			myprintf(" ");
 		}
 		myprintf("%4d", i_x);
@@ -306,11 +296,104 @@ void checkWall(void) {
 	//comb_breaker();
 }
 /****************************************
- 壁有無判定
+ 壁データ有無判定
  ****************************************/
-uint8_t getWallData(uint8_t x, uint8_t y, uint8_t select) {
-	return (g_wall_data[x][y]) & select == 1;
+uint8_t getWallData(uint8_t dir) {
+	if (dir == WALL_FRONT) {
+		return ((g_wall_data_tmp[g_current_x][g_current_y] & g_orient)) != 0;
+	} else if (dir == WALL_RIGHT) {
+		return ((g_wall_data_tmp[g_current_x][g_current_y]
+				& getBitShiftValue(&g_orient, 1, RIGHT))) != 0;
+	} else if (dir == WALL_LEFT) {
+		return ((g_wall_data_tmp[g_current_x][g_current_y]
+				& getBitShiftValue(&g_orient, 1, LEFT))) != 0;
+	} else {
+		return 0;
+	}
 }
+/****************************************
+ 進行方向の歩数確認
+ ****************************************/
+uint8_t checkStep(uint8_t dir) {
+	uint8_t bit = 0;
+	int8_t x, y;
+
+	bit = g_orient;
+	if (dir == WALL_FRONT) {
+
+	} else if (dir == WALL_LEFT) {
+		shiftBit(&bit, 1, LEFT);
+	} else if (dir == WALL_RIGHT) {
+		shiftBit(&bit, 1, RIGHT);
+	} else {
+
+	}
+	switch (bit) {
+	case NORTH:
+		x = 0;
+		y = 1;
+		break;
+	case WEST:
+		x = -1;
+		y = 0;
+		break;
+	case SOUTH:
+		x = 0;
+		y = -1;
+		break;
+	case EAST:
+		x = 1;
+		y = 0;
+		break;
+
+	default:
+		break;
+	}
+	return (g_step_map[g_current_x + x][g_current_y + y]
+			- g_step_map[g_current_x][g_current_y]) < 0;
+
+}
+/****************************************
+ 進行方向が既知か未知か
+ ****************************************/
+uint8_t checkKnownSection(uint8_t dir) {
+	uint8_t bit = 0;
+	int8_t x, y;
+
+	bit = g_orient;
+	if (dir == WALL_FRONT) {
+
+	} else if (dir == WALL_LEFT) {
+		shiftBit(&bit, 1, LEFT);
+	} else if (dir == WALL_RIGHT) {
+		shiftBit(&bit, 1, RIGHT);
+	} else {
+
+	}
+	switch (bit) {
+	case NORTH:
+		x = 0;
+		y = 1;
+		break;
+	case WEST:
+		x = -1;
+		y = 0;
+		break;
+	case SOUTH:
+		x = 0;
+		y = -1;
+		break;
+	case EAST:
+		x = 1;
+		y = 0;
+		break;
+
+	default:
+		break;
+	}
+	return (g_wall_data_tmp[g_current_x + x][g_current_y + y] & 0xf0) != 0xf0;
+}
+
 /****************************************
  queuemap
  ****************************************/
@@ -379,9 +462,10 @@ void countStepQueue(void) {
  足立法
  ****************************************/
 void searchAdachi(void) {
+	float serch_velo = 0.7;
 	g_flag_run_mode = SEARCH;
 	g_log_count = 0;
-	runStraight(5, HALF_SECTION, 0.5, 0.5);
+	runStraight(5, HALF_SECTION, serch_velo, serch_velo);
 
 	countCoord();
 	checkWall();
@@ -417,154 +501,42 @@ void searchAdachi(void) {
 
 		//////////////////////////////////////////////////////////////////////////
 		checkWall();
-		g_flag_gap = 1;
+
 		g_distance = 0;
-		g_current_velo = 0.5;
+		g_current_velo = serch_velo;
 		countStepQueue();
 
-		if (g_orient == 0x01) {
-			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
-					&& g_step_map[g_current_x][g_current_y + 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
+		if (getWallData(WALL_FRONT) == 0 && checkStep(WALL_FRONT)) {
 
-				runStraight(5, SECTION, 0.5, 0.5);
+			runStraight(5, SECTION, serch_velo, serch_velo);
 
-				countCoord();
+			countCoord();
 
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
-					&& (g_step_map[g_current_x - 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y]) == -1) {
+		} else if ((getWallData(WALL_LEFT) == 0) && checkStep(WALL_LEFT)) {
+			driveRGB(LRED, ON);
+			//turnCorner(&t_90_L_05);
+			turnCornerContinuous(90, 770);
+			checkOrient(90);
+			countCoord();
 
-				turnCorner(&t_90_L_05);
+		} else if ((getWallData(WALL_RIGHT) == 0) && checkStep(WALL_RIGHT)) {
+			driveRGB(YELLOW, ON);
+			//turnCorner(&t_90_R_05);
+			turnCornerContinuous(-90, 770);
+			checkOrient(-90);
+			countCoord();
 
-				checkOrient(90);
-				countCoord();
+		} else {
 
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
-					&& (g_step_map[g_current_x + 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y]) == -1) {
+			runBlindAlley(serch_velo);
 
-				turnCorner(&t_90_R_05);
-
-				checkOrient(-90);
-				countCoord();
-
-			} else {
-
-				runBlindAlley(0.5);
-
-				checkOrient(180);
-				countCoord();
-			}
-		} else if (g_orient == 0x02) {
-			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
-					&& g_step_map[g_current_x - 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				runStraight(5, SECTION, 0.5, 0.5);
-
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
-					&& g_step_map[g_current_x][g_current_y - 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_L_05);
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
-					&& g_step_map[g_current_x][g_current_y + 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_R_05);
-
-				checkOrient(-90);
-				countCoord();
-
-			} else {
-
-				runBlindAlley(0.5);
-				checkOrient(180);
-				countCoord();
-
-			}
-		} else if (g_orient == 0x04) {
-			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
-					&& g_step_map[g_current_x][g_current_y - 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				runStraight(5, SECTION, 0.5, 0.5);
-
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
-					&& g_step_map[g_current_x + 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_L_05);
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
-					&& g_step_map[g_current_x - 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_R_05);
-
-				checkOrient(-90);
-				countCoord();
-
-			} else {
-
-				runBlindAlley(0.5);
-
-				checkOrient(180);
-				countCoord();
-
-			}
-		} else if (g_orient == 0x08) {
-			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
-					&& g_step_map[g_current_x + 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				runStraight(5, SECTION, 0.5, 0.5);
-
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
-					&& g_step_map[g_current_x][g_current_y + 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_L_05);
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
-					&& g_step_map[g_current_x][g_current_y - 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_R_05);
-
-				checkOrient(-90);
-				countCoord();
-
-			} else {
-				runBlindAlley(0.5);
-
-				checkOrient(180);
-				countCoord();
-
-			}
+			checkOrient(180);
+			countCoord();
 		}
 	}
-	g_flag_gap = 0;
 	if (g_flag_adachi_goal == 1) {
 
-		runStraight(5, HALF_SECTION, 0.5, 0);
+		runStraight(5, HALF_SECTION, serch_velo, 0);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		soundGoal();
@@ -579,9 +551,10 @@ void searchAdachi(void) {
  古川法
  ****************************************/
 void searchFurukawa(void) {
+	float serch_velo = 0.5;
 	g_flag_run_mode = SEARCH;
 	g_log_count = 0;
-	runStraight(5, HALF_SECTION, 0.5, 0.5);
+	runStraight(5, HALF_SECTION, serch_velo, serch_velo);
 	countCoord();
 	checkWall();
 	countStepQueue();
@@ -623,258 +596,63 @@ void searchFurukawa(void) {
 
 		//////////////////////////////////////////////////////////////////////////
 		checkWall();
-		g_flag_gap = 1;
+
 		g_distance = 0;
-		g_current_velo = 0.5;
+		g_current_velo = serch_velo;
 		countStepQueue();
-		if (g_orient == 0x01) {
-			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
-					&& (g_wall_data_tmp[g_current_x][g_current_y + 1] & 0xf0)
-							!= 0xf0) {
 
-				runStraight(5, SECTION, 0.5, 0.5);
+		if (getWallData(WALL_FRONT) == 0 && checkKnownSection(WALL_FRONT)) {
 
-				countCoord();
+			runStraight(5, SECTION, serch_velo, serch_velo);
 
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y] & 0xf0)
-							!= 0xf0) {
+			countCoord();
 
-				turnCorner(&t_90_L_05);
+		} else if (getWallData(WALL_LEFT) == 0
+				&& checkKnownSection(WALL_LEFT)) {
 
-				checkOrient(90);
-				countCoord();
+			turnCorner(&t_90_L_05);
 
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y] & 0xf0)
-							!= 0xf0) {
+			checkOrient(90);
+			countCoord();
 
-				turnCorner(&t_90_R_05);
+		} else if (getWallData(WALL_RIGHT) == 0
+				&& checkKnownSection(WALL_RIGHT)) {
 
-				checkOrient(-90);
-				countCoord();
+			turnCorner(&t_90_R_05);
 
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
-					&& g_step_map[g_current_x][g_current_y + 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
+			checkOrient(-90);
+			countCoord();
 
-				runStraight(5, SECTION, 0.5, 0.5);
+		} else if (getWallData(WALL_FRONT) == 0 && checkStep(WALL_FRONT)) {
 
-				countCoord();
+			runStraight(5, SECTION, serch_velo, serch_velo);
 
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
-					&& (g_step_map[g_current_x - 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y]) == -1) {
+			countCoord();
 
-				turnCorner(&t_90_L_05);
+		} else if ((getWallData(WALL_LEFT) == 0) && checkStep(WALL_LEFT)) {
+			driveRGB(LRED, ON);
+			turnCorner(&t_90_L_05);
 
-				checkOrient(90);
-				countCoord();
+			checkOrient(90);
+			countCoord();
 
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
-					&& (g_step_map[g_current_x + 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y]) == -1) {
+		} else if ((getWallData(WALL_RIGHT) == 0) && checkStep(WALL_RIGHT)) {
+			driveRGB(YELLOW, ON);
+			turnCorner(&t_90_R_05);
 
-				turnCorner(&t_90_R_05);
+			checkOrient(-90);
+			countCoord();
 
-				checkOrient(-90);
-				countCoord();
+		} else {
+			runBlindAlley(serch_velo);
 
-			} else {
-
-				runBlindAlley(0.5);
-
-				checkOrient(180);
-				countCoord();
-
-			}
-		} else if (g_orient == 0x02) {
-			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y] & 0xf0)
-							!= 0xf0) {
-
-				runStraight(5, SECTION, 0.5, 0.5);
-
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
-					&& (g_wall_data_tmp[g_current_x][g_current_y + 1] & 0xf0)
-							!= 0xf0) {
-
-				turnCorner(&t_90_L_05);
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
-					&& (g_wall_data_tmp[g_current_x][g_current_y - 1] & 0xf0)
-							!= 0xf0) {
-
-				turnCorner(&t_90_R_05);
-
-				checkOrient(-90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
-					&& g_step_map[g_current_x - 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				runStraight(5, SECTION, 0.5, 0.5);
-
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
-					&& g_step_map[g_current_x][g_current_y - 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_L_05);
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
-					&& g_step_map[g_current_x][g_current_y + 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_R_05);
-
-				checkOrient(-90);
-				countCoord();
-
-			} else {
-
-				runBlindAlley(0.5);
-
-				checkOrient(180);
-				countCoord();
-
-			}
-		} else if (g_orient == 0x04) {
-			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
-					&& (g_wall_data_tmp[g_current_x][g_current_y - 1] & 0xf0)
-							!= 0xf0) {
-
-				runStraight(5, SECTION, 0.5, 0.5);
-
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y] & 0xf0)
-							!= 0xf0) {
-
-				turnCorner(&t_90_L_05);
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y] & 0xf0)
-							!= 0xf0) {
-
-				turnCorner(&t_90_R_05);
-
-				checkOrient(-90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
-					&& g_step_map[g_current_x][g_current_y - 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				runStraight(5, SECTION, 0.5, 0.5);
-
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
-					&& g_step_map[g_current_x + 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_L_05);
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
-					&& g_step_map[g_current_x - 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_R_05);
-
-				checkOrient(-90);
-				countCoord();
-
-			} else {
-				checkWall();
-				runBlindAlley(0.5);
-
-				checkOrient(180);
-				countCoord();
-
-			}
-		} else if (g_orient == 0x08) {
-			if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y] & 0xf0)
-							!= 0xf0) {
-
-				runStraight(5, SECTION, 0.5, 0.5);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
-					&& (g_wall_data_tmp[g_current_x][g_current_y + 1] & 0xf0)
-							!= 0xf0) {
-
-				turnCorner(&t_90_L_05);
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
-					&& (g_wall_data_tmp[g_current_x][g_current_y - 1] & 0xf0)
-							!= 0xf0) {
-
-				turnCorner(&t_90_R_05);
-
-				checkOrient(-90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
-					&& g_step_map[g_current_x + 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				runStraight(5, SECTION, 0.5, 0.5);
-
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
-					&& g_step_map[g_current_x][g_current_y + 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_L_05);
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
-					&& g_step_map[g_current_x][g_current_y - 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				turnCorner(&t_90_R_05);
-
-				checkOrient(-90);
-				countCoord();
-
-			} else {
-
-				runBlindAlley(0.5);
-
-				checkOrient(180);
-				countCoord();
-
-			}
+			checkOrient(180);
+			countCoord();
 		}
 	}
-	g_flag_gap = 0;
+
 	if (g_flag_adachi_goal == 1) {
-		runStraight(5, HALF_SECTION, 0.5, 0);
+		runStraight(5, HALF_SECTION, serch_velo, 0);
 		driveMotor(OFF);
 		switchSensorLED(OFF);
 		soundGoal();
@@ -895,14 +673,14 @@ void breakComb(void) {		//fixme 櫛潰し 範囲外参照
 		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
 				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0) {
 			if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x02) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
-							& 0x20) == 0x20) {
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x20)
+							== 0x20) {
 				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x04;
 				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x40;
-			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
-					& 0x04) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
-							& 0x40) == 0x40) {
+			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x04)
+					== 0
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x40)
+							== 0x40) {
 				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x02;
 				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x20;
 			}
@@ -910,14 +688,14 @@ void breakComb(void) {		//fixme 櫛潰し 範囲外参照
 		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
 				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0) {
 			if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x08) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
-							& 0x80) == 0x80) {
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x80)
+							== 0x80) {
 				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x04;
 				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x40;
-			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
-					& 0x04) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
-							& 0x40) == 0x40) {
+			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x04)
+					== 0
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x40)
+							== 0x40) {
 				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x08;
 				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x80;
 			}
@@ -926,14 +704,14 @@ void breakComb(void) {		//fixme 櫛潰し 範囲外参照
 		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
 				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0) {
 			if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x04) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
-							& 0x40) == 0x40) {
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x40)
+							== 0x40) {
 				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x08;
 				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x80;
-			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
-					& 0x08) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1]
-							& 0x80) == 0x80) {
+			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x08)
+					== 0
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x80)
+							== 0x80) {
 				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x04;
 				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x40;
 			}
@@ -941,14 +719,14 @@ void breakComb(void) {		//fixme 櫛潰し 範囲外参照
 		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
 				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0) {
 			if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x08) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
-							& 0x80) == 0x80) {
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x80)
+							== 0x80) {
 				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x01;
 				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x10;
-			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
-					& 0x08) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
-							& 0x80) == 0x80) {
+			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x08)
+					== 0
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x80)
+							== 0x80) {
 				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x01;
 				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x10;
 			}
@@ -957,14 +735,14 @@ void breakComb(void) {		//fixme 櫛潰し 範囲外参照
 		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
 				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0) {
 			if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x01) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
-							& 0x10) == 0x10) {
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x10)
+							== 0x10) {
 				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x02;
 				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x20;
-			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
-					& 0x02) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
-							& 0x20) == 0x20) {
+			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x02)
+					== 0
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x20)
+							== 0x20) {
 				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x01;
 				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x10;
 			}
@@ -972,14 +750,14 @@ void breakComb(void) {		//fixme 櫛潰し 範囲外参照
 		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
 				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0) {
 			if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x01) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
-							& 0x10) == 0x10) {
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x10)
+							== 0x10) {
 				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x08;
 				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x80;
-			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
-					& 0x08) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1]
-							& 0x80) == 0x80) {
+			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x08)
+					== 0
+					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x80)
+							== 0x80) {
 				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x01;
 				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x10;
 			}
@@ -988,14 +766,14 @@ void breakComb(void) {		//fixme 櫛潰し 範囲外参照
 		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
 				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0) {
 			if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x02) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
-							& 0x20) == 0x20) {
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x20)
+							== 0x20) {
 				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x04;
 				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x40;
-			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
-					& 0x04) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1]
-							& 0x40) == 0x40) {
+			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x04)
+					== 0
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x40)
+							== 0x40) {
 				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x02;
 				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x20;
 			}
@@ -1003,14 +781,14 @@ void breakComb(void) {		//fixme 櫛潰し 範囲外参照
 		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
 				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0) {
 			if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x02) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
-							& 0x20) == 0x20) {
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x20)
+							== 0x20) {
 				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x01;
 				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x10;
-			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
-					& 0x01) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1]
-							& 0x10) == 0x10) {
+			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x01)
+					== 0
+					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x10)
+							== 0x10) {
 				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x02;
 				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x20;
 			}
@@ -1026,8 +804,8 @@ void countStepShortest(void) {
 	unsigned char x, y;
 	short head = 0, tail = 1;
 	unsigned char queue_s[257];
-	//init_wall_drv();
-	//wall_match_drv();
+//init_wall_drv();
+//wall_match_drv();
 	g_current_x = START_X;
 	g_current_y = START_Y;
 	g_target_x = GOAL_X;
@@ -1705,7 +1483,7 @@ void printPathTestDiagonal(void) {
  ****************************************/
 void runPath(void) {
 	int i = 0;
-	g_flag_gap = 0;
+
 	g_flag_diagonal = 0;
 	g_flag_run_mode = RUN;
 	while (1) {
@@ -1755,7 +1533,7 @@ void runPathDiagonal(uint8_t t_velo, float velo, float acc, float d_velo,
 		float d_acc) {
 	int i = 0;
 	float velocity;
-	g_flag_gap = 0;
+
 	g_flag_failsafe = 0;
 	g_flag_diagonal = 0;
 	g_flag_run_mode = RUN;
@@ -1940,7 +1718,7 @@ void processShotestGoal(void) {
  ****************************************/
 void selectModeCircuit(void) {
 	waitTime(300);
-	//full_color(255, 255, 0);
+//full_color(255, 255, 0);
 	switch (selectMode(4)) {
 	case 0:
 		//	circuit_ctrl(1500, 2);
