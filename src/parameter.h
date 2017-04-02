@@ -73,8 +73,8 @@
 //死亡判定
 #define SEN_DEATH 1600
 //壁切れ判定変化量
-#define SEN_PILLAR_EDGE_L -250
-#define SEN_PILLAR_EDGE_R -250
+#define SEN_PILLAR_EDGE_L -100
+#define SEN_PILLAR_EDGE_R -100
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //速度P制御
 #define VELO_P 220

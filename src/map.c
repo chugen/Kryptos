@@ -882,155 +882,37 @@ void makePath(void) {
 		if (g_current_x == g_target_x && g_current_y == g_target_y)
 			break;
 
-		if (g_orient == 0x01) {
-			if ((g_wall_data[g_current_x][g_current_y] & 0x01) == 0
-					&& g_step_map[g_current_x][g_current_y + 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
+		if (getWallData(WALL_FRONT) == 0 && checkStep(WALL_FRONT)) {
 
-				g_path[p_count] = STRAIGHT;
-				p_count++;
-				g_path[p_count] = STRAIGHT;
+			g_path[p_count] = STRAIGHT;
+			p_count++;
+			g_path[p_count] = STRAIGHT;
 
-				countCoord();
+			countCoord();
 
-			} else if ((g_wall_data[g_current_x][g_current_y] & 0x02) == 0
-					&& (g_step_map[g_current_x - 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y]) == -1) {
+		} else if (getWallData(WALL_LEFT) == 0 && checkStep(WALL_LEFT)) {
 
-				g_path[p_count] = L_CURVE;
+			g_path[p_count] = L_CURVE;
 
-				checkOrient(90);
-				countCoord();
+			checkOrient(90);
+			countCoord();
 
-			} else if ((g_wall_data[g_current_x][g_current_y] & 0x08) == 0
-					&& (g_step_map[g_current_x + 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y]) == -1) {
+		} else if (getWallData(WALL_RIGHT) == 0 && checkStep(WALL_RIGHT)) {
 
-				g_path[p_count] = R_CURVE;
+			g_path[p_count] = R_CURVE;
 
-				checkOrient(-90);
-				countCoord();
+			checkOrient(-90);
+			countCoord();
 
-			} else {
+		} else {
 
-				g_path[p_count] = ERROR;
+			g_path[p_count] = ERROR;
 
-				checkOrient(180);
-				countCoord();
+			checkOrient(180);
+			countCoord();
 
-			}
-		} else if (g_orient == 0x02) {
-			if ((g_wall_data[g_current_x][g_current_y] & 0x02) == 0
-					&& g_step_map[g_current_x - 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				g_path[p_count] = STRAIGHT;
-				p_count++;
-				g_path[p_count] = STRAIGHT;
-
-				countCoord();
-
-			} else if ((g_wall_data[g_current_x][g_current_y] & 0x04) == 0
-					&& g_step_map[g_current_x][g_current_y - 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				g_path[p_count] = L_CURVE;
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data[g_current_x][g_current_y] & 0x01) == 0
-					&& g_step_map[g_current_x][g_current_y + 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				g_path[p_count] = R_CURVE;
-
-				checkOrient(-90);
-				countCoord();
-
-			} else {
-
-				g_path[p_count] = ERROR;
-
-				checkOrient(180);
-				countCoord();
-
-			}
-		} else if (g_orient == 0x04) {
-			if ((g_wall_data[g_current_x][g_current_y] & 0x04) == 0
-					&& g_step_map[g_current_x][g_current_y - 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				g_path[p_count] = STRAIGHT;
-				p_count++;
-				g_path[p_count] = STRAIGHT;
-
-				countCoord();
-
-			} else if ((g_wall_data[g_current_x][g_current_y] & 0x08) == 0
-					&& g_step_map[g_current_x + 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				g_path[p_count] = L_CURVE;
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data[g_current_x][g_current_y] & 0x02) == 0
-					&& g_step_map[g_current_x - 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				g_path[p_count] = R_CURVE;
-
-				checkOrient(-90);
-				countCoord();
-
-			} else {
-
-				g_path[p_count] = ERROR;
-
-				checkOrient(180);
-				countCoord();
-
-			}
-		} else if (g_orient == 0x08) {
-			if ((g_wall_data[g_current_x][g_current_y] & 0x08) == 0
-					&& g_step_map[g_current_x + 1][g_current_y]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				g_path[p_count] = STRAIGHT;
-				p_count++;
-				g_path[p_count] = STRAIGHT;
-
-				countCoord();
-
-			} else if ((g_wall_data[g_current_x][g_current_y] & 0x01) == 0
-					&& g_step_map[g_current_x][g_current_y + 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				g_path[p_count] = L_CURVE;
-
-				checkOrient(90);
-				countCoord();
-
-			} else if ((g_wall_data[g_current_x][g_current_y] & 0x04) == 0
-					&& g_step_map[g_current_x][g_current_y - 1]
-							- g_step_map[g_current_x][g_current_y] == -1) {
-
-				g_path[p_count] = R_CURVE;
-
-				checkOrient(-90);
-				countCoord();
-
-			} else {
-
-				g_path[p_count] = ERROR;
-
-				checkOrient(180);
-				countCoord();
-
-			}
 		}
+
 	}
 	g_path[p_count] = STRAIGHT;
 	g_flag_step_goal = p_count;
@@ -1705,13 +1587,15 @@ float addInitDis(uint16_t count) {
  最短ゴール処理
  ****************************************/
 void processShotestGoal(void) {
-	g_accele = -0.5;
-	while ((g_sensor_FL + g_sensor_FR) < (SEN_REFERENCE_FL + SEN_REFERENCE_FR)) {
-		if (g_target_velo < 0.01)
-			break;
-	}
-	g_accele = 0;
-	g_target_velo = 0;
+//	g_accele = -0.5;
+//	while ((g_sensor_FL + g_sensor_FR) < (SEN_REFERENCE_FL + SEN_REFERENCE_FR)) {
+//		if (g_target_velo < 0.01)
+//			break;
+//	}
+//	g_accele = 0;
+//	g_target_velo = 0;
+	switchSensorLED(OFF);
+	runStraight(25, 0.01, g_current_velo, 0);
 }
 /****************************************
  サーキット
