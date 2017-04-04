@@ -75,6 +75,9 @@
 //壁切れ判定変化量
 #define SEN_PILLAR_EDGE_L -100
 #define SEN_PILLAR_EDGE_R -100
+
+#define SEN_PILLAR_EDGE_SEARCH_L -50
+#define SEN_PILLAR_EDGE_SEARCH_R -50
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //速度P制御
 #define VELO_P 220

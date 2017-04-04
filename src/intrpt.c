@@ -34,7 +34,7 @@ void intrptCMT0(void) {
 	g_current_velo = returnVelocityL() + returnVelocityR();
 	g_current_omega = g_current_omega_tmp - g_gyro_reference;
 
-	if (log_count % 1 == 0) {
+	if (log_count % 2 == 0) {
 		/*Log=====================================================*/
 		//getLog(g_sensor_L, g_sensor_R);
 		//getLog(g_sensor_FL,g_sensor_FR);
@@ -51,7 +51,7 @@ void intrptCMT0(void) {
 		//getLog(g_sensor_R, g_target_omega);
 		//getLog4(g_target_velo,g_current_velo,g_target_omega,g_current_omega);
 		//getLog4(g_torque_L,g_torque_R,g_target_omega,g_current_omega);
-		getLog4(g_sensor_L, g_sensor_R, g_battery_voltage, g_current_omega);
+		getLog4(g_sensor_FL, g_sensor_FR, g_distance, g_target_angle);
 		//getLog4(g_current_x, g_current_y, (getWallData(WALL_RIGHT) == 0),	checkStep(WALL_RIGHT));
 		/*========================================================*/
 		log_count = 0;
@@ -263,7 +263,7 @@ void getSensorVal(void) {
  壁切れ判定
  ****************************************/
 uint8_t checkPillarEdgeL() {
-	int16_t i;
+	int16_t i, diff;
 	static float sensor_L_before[8] = { 0 };
 
 	static float sensor_L_pillar = 0;
@@ -277,8 +277,13 @@ uint8_t checkPillarEdgeL() {
 			+ sensor_L_before[2])
 			- (sensor_L_before[5] + sensor_L_before[6] + sensor_L_before[7]))
 			/ 3;
+	if (g_flag_run_mode == RUN) {
+		diff = SEN_PILLAR_EDGE_L;
+	} else {
+		diff = SEN_PILLAR_EDGE_SEARCH_L;
+	}
 
-	if (sensor_L_pillar < SEN_PILLAR_EDGE_L) {
+	if (sensor_L_pillar < diff) {
 		g_flag_pillar_edge_L = 1;
 	} else {
 		g_flag_pillar_edge_L = 0;
@@ -287,7 +292,7 @@ uint8_t checkPillarEdgeL() {
 	return 0;
 }
 uint8_t checkPillarEdgeR() {
-	int16_t i;
+	int16_t i, diff;
 	static float sensor_R_before[8] = { 0 };
 
 	static float sensor_R_pillar = 0;
@@ -301,8 +306,12 @@ uint8_t checkPillarEdgeR() {
 			+ sensor_R_before[2])
 			- (sensor_R_before[5] + sensor_R_before[6] + sensor_R_before[7]))
 			/ 3;
-
-	if (sensor_R_pillar < SEN_PILLAR_EDGE_R) {
+	if (g_flag_run_mode == RUN) {
+		diff = SEN_PILLAR_EDGE_R;
+	} else {
+		diff = SEN_PILLAR_EDGE_SEARCH_R;
+	}
+	if (sensor_R_pillar < diff) {
 		g_flag_pillar_edge_R = 1;
 	} else {
 		g_flag_pillar_edge_R = 0;

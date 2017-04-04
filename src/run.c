@@ -575,7 +575,52 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 	g_distance = 0;
 	g_target_angle = 0;
 }
+/****************************************
+ 直線走行(探索)
+ ****************************************/
+void runStraightSearch(float dis, float velo) {
 
+	g_accele = 0;
+	g_target_velo = velo;
+
+	while (g_flag_failsafe != 1) {
+		if (fabsf(g_distance) >= dis
+				|| ((g_flag_pillar_edge_L == 1 || g_flag_pillar_edge_R == 1)
+						&& g_distance > 0.07))
+			break;
+	}
+	g_distance = 0;
+	if (g_flag_pillar_edge_L == 1 || g_flag_pillar_edge_R == 1) {
+		while (g_flag_failsafe != 1) {
+
+			if (fabsf(g_distance) >= 0.09)
+				break;
+		}
+	}
+
+	g_accele = 0;
+	g_target_velo = velo;
+	g_distance = 0;
+	g_target_angle = 0;
+}
+/****************************************
+ 直線走行(オフセット)
+ ****************************************/
+void runStraightOffset(float dis, float velo) {
+
+	g_accele = 0;
+	g_target_velo = velo;
+
+	while (g_flag_failsafe != 1) {
+		if (fabsf(g_distance) >= dis)
+			break;
+	}
+
+	g_accele = 0;
+	g_target_velo = velo;
+	g_distance = 0;
+	g_target_angle = 0;
+}
 /****************************************
  スラローム　非連続
  ****************************************/

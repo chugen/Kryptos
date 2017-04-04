@@ -122,8 +122,9 @@ void main(void) {
 		switchSensorLED(ON);
 		while (1) {
 
-			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL,
-					g_sensor_L, g_sensor_R, g_sensor_FR);
+//			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL,
+//					g_sensor_L, g_sensor_R, g_sensor_FR);
+			myprintf("FL:%6.1d FR:%6.1d\n", g_sensor_FL, (int)(g_sensor_FR * 2.6));
 			waitTime(50);
 		}
 		break;

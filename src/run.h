@@ -90,6 +90,10 @@ void initRun(void);
  ****************************************/
 void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo);
 /****************************************
+ 台形加速(探索)
+ ****************************************/
+void runStraightSearch(float dis, float velo);
+/****************************************
 袋小路
  ****************************************/
 void runBlindAlley(float velo);

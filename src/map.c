@@ -156,6 +156,35 @@ void printMap(void) {
 	myprintf("\x1b[0m");
 
 }
+/****************************************
+ 初期壁セット
+ ****************************************/
+void setWallData(uint16_t x, uint16_t y, uint8_t orient, uint16_t wall) {
+	switch (orient) {
+	case NORTH:
+		if (y < 15) {
+			g_wall_data_row_tmp[y] = wall << x;
+		}
+		break;
+	case WEST:
+		if (x > 0) {
+			g_wall_data_column_tmp[x - 1] = wall << y;
+		}
+		break;
+	case SOUTH:
+		if (y > 0) {
+			g_wall_data_row_tmp[y - 1] = wall << x;
+		}
+		break;
+	case EAST:
+		if (y < 15) {
+			g_wall_data_column_tmp[x] = wall << y;
+		}
+		break;
+	default:
+		break;
+	}
+}
 
 /****************************************
  初期壁セット
@@ -298,15 +327,15 @@ void checkWall(void) {
 /****************************************
  壁データ有無判定
  ****************************************/
-uint8_t getWallData(uint8_t dir) {
+uint8_t isNoWall(uint8_t dir) {
 	if (dir == WALL_FRONT) {
-		return ((g_wall_data_tmp[g_current_x][g_current_y] & g_orient)) != 0;
+		return ((g_wall_data_tmp[g_current_x][g_current_y] & g_orient)) == 0;
 	} else if (dir == WALL_RIGHT) {
 		return ((g_wall_data_tmp[g_current_x][g_current_y]
-				& getBitShiftValue(&g_orient, 1, RIGHT))) != 0;
+				& getBitShiftValue(&g_orient, 1, RIGHT))) == 0;
 	} else if (dir == WALL_LEFT) {
 		return ((g_wall_data_tmp[g_current_x][g_current_y]
-				& getBitShiftValue(&g_orient, 1, LEFT))) != 0;
+				& getBitShiftValue(&g_orient, 1, LEFT))) == 0;
 	} else {
 		return 0;
 	}
@@ -314,7 +343,7 @@ uint8_t getWallData(uint8_t dir) {
 /****************************************
  進行方向の歩数確認
  ****************************************/
-uint8_t checkStep(uint8_t dir) {
+uint8_t isSmallerSteps(uint8_t dir) {
 	uint8_t bit = 0;
 	int8_t x, y;
 
@@ -354,9 +383,9 @@ uint8_t checkStep(uint8_t dir) {
 
 }
 /****************************************
- 進行方向が既知か未知か
+ 進行方向が未知か確認
  ****************************************/
-uint8_t checkKnownSection(uint8_t dir) {
+uint8_t isUnknownSection(uint8_t dir) {
 	uint8_t bit = 0;
 	int8_t x, y;
 
@@ -462,10 +491,10 @@ void countStepQueue(void) {
  足立法
  ****************************************/
 void searchAdachi(void) {
-	float serch_velo = 0.7;
+	float search_velo = 0.7;
 	g_flag_run_mode = SEARCH;
 	g_log_count = 0;
-	runStraight(5, HALF_SECTION, serch_velo, serch_velo);
+	runStraight(5, HALF_SECTION, search_velo, search_velo);
 
 	countCoord();
 	checkWall();
@@ -503,23 +532,23 @@ void searchAdachi(void) {
 		checkWall();
 
 		g_distance = 0;
-		g_current_velo = serch_velo;
+		g_current_velo = search_velo;
 		countStepQueue();
 
-		if (getWallData(WALL_FRONT) == 0 && checkStep(WALL_FRONT)) {
+		if (isNoWall(WALL_FRONT) && isSmallerSteps(WALL_FRONT)) {
 
-			runStraight(5, SECTION, serch_velo, serch_velo);
-
+			//runStraight(5, SECTION, search_velo, search_velo);
+			runStraightSearch(SECTION, search_velo);
 			countCoord();
 
-		} else if ((getWallData(WALL_LEFT) == 0) && checkStep(WALL_LEFT)) {
+		} else if (isNoWall(WALL_LEFT) && isSmallerSteps(WALL_LEFT)) {
 			driveRGB(LRED, ON);
 			//turnCorner(&t_90_L_05);
 			turnCornerContinuous(90, 770);
 			checkOrient(90);
 			countCoord();
 
-		} else if ((getWallData(WALL_RIGHT) == 0) && checkStep(WALL_RIGHT)) {
+		} else if (isNoWall(WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)) {
 			driveRGB(YELLOW, ON);
 			//turnCorner(&t_90_R_05);
 			turnCornerContinuous(-90, 770);
@@ -528,7 +557,7 @@ void searchAdachi(void) {
 
 		} else {
 
-			runBlindAlley(serch_velo);
+			runBlindAlley(search_velo);
 
 			checkOrient(180);
 			countCoord();
@@ -536,7 +565,7 @@ void searchAdachi(void) {
 	}
 	if (g_flag_adachi_goal == 1) {
 
-		runStraight(5, HALF_SECTION, serch_velo, 0);
+		runStraight(5, HALF_SECTION, search_velo, 0);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		soundGoal();
@@ -551,10 +580,10 @@ void searchAdachi(void) {
  古川法
  ****************************************/
 void searchFurukawa(void) {
-	float serch_velo = 0.5;
+	float search_velo = 0.5;
 	g_flag_run_mode = SEARCH;
 	g_log_count = 0;
-	runStraight(5, HALF_SECTION, serch_velo, serch_velo);
+	runStraight(5, HALF_SECTION, search_velo, search_velo);
 	countCoord();
 	checkWall();
 	countStepQueue();
@@ -598,45 +627,45 @@ void searchFurukawa(void) {
 		checkWall();
 
 		g_distance = 0;
-		g_current_velo = serch_velo;
+		g_current_velo = search_velo;
 		countStepQueue();
 
-		if (getWallData(WALL_FRONT) == 0 && checkKnownSection(WALL_FRONT)) {
+		if (isNoWall(WALL_FRONT) && isUnknownSection(WALL_FRONT)) {
 
-			runStraight(5, SECTION, serch_velo, serch_velo);
+//			runStraight(5, SECTION, search_velo, search_velo);
+			runStraightSearch(SECTION, search_velo);
 
 			countCoord();
 
-		} else if (getWallData(WALL_LEFT) == 0
-				&& checkKnownSection(WALL_LEFT)) {
+		} else if (isNoWall(WALL_LEFT) && isUnknownSection(WALL_LEFT)) {
 
 			turnCorner(&t_90_L_05);
 
 			checkOrient(90);
 			countCoord();
 
-		} else if (getWallData(WALL_RIGHT) == 0
-				&& checkKnownSection(WALL_RIGHT)) {
+		} else if (isNoWall(WALL_RIGHT) && isUnknownSection(WALL_RIGHT)) {
 
 			turnCorner(&t_90_R_05);
 
 			checkOrient(-90);
 			countCoord();
 
-		} else if (getWallData(WALL_FRONT) == 0 && checkStep(WALL_FRONT)) {
+		} else if (isNoWall(WALL_FRONT) && isSmallerSteps(WALL_FRONT)) {
 
-			runStraight(5, SECTION, serch_velo, serch_velo);
+//			runStraight(5, SECTION, search_velo, search_velo);
+			runStraightSearch(SECTION, search_velo);
 
 			countCoord();
 
-		} else if ((getWallData(WALL_LEFT) == 0) && checkStep(WALL_LEFT)) {
+		} else if (isNoWall(WALL_LEFT) && isSmallerSteps(WALL_LEFT)) {
 			driveRGB(LRED, ON);
 			turnCorner(&t_90_L_05);
 
 			checkOrient(90);
 			countCoord();
 
-		} else if ((getWallData(WALL_RIGHT) == 0) && checkStep(WALL_RIGHT)) {
+		} else if (isNoWall(WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)) {
 			driveRGB(YELLOW, ON);
 			turnCorner(&t_90_R_05);
 
@@ -644,7 +673,7 @@ void searchFurukawa(void) {
 			countCoord();
 
 		} else {
-			runBlindAlley(serch_velo);
+			runBlindAlley(search_velo);
 
 			checkOrient(180);
 			countCoord();
@@ -652,7 +681,7 @@ void searchFurukawa(void) {
 	}
 
 	if (g_flag_adachi_goal == 1) {
-		runStraight(5, HALF_SECTION, serch_velo, 0);
+		runStraight(5, HALF_SECTION, search_velo, 0);
 		driveMotor(OFF);
 		switchSensorLED(OFF);
 		soundGoal();
@@ -882,7 +911,7 @@ void makePath(void) {
 		if (g_current_x == g_target_x && g_current_y == g_target_y)
 			break;
 
-		if (getWallData(WALL_FRONT) == 0 && checkStep(WALL_FRONT)) {
+		if (isNoWall(WALL_FRONT) && isSmallerSteps(WALL_FRONT)) {
 
 			g_path[p_count] = STRAIGHT;
 			p_count++;
@@ -890,14 +919,14 @@ void makePath(void) {
 
 			countCoord();
 
-		} else if (getWallData(WALL_LEFT) == 0 && checkStep(WALL_LEFT)) {
+		} else if (isNoWall(WALL_LEFT) && isSmallerSteps(WALL_LEFT)) {
 
 			g_path[p_count] = L_CURVE;
 
 			checkOrient(90);
 			countCoord();
 
-		} else if (getWallData(WALL_RIGHT) == 0 && checkStep(WALL_RIGHT)) {
+		} else if (isNoWall(WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)) {
 
 			g_path[p_count] = R_CURVE;
 
@@ -1587,13 +1616,7 @@ float addInitDis(uint16_t count) {
  最短ゴール処理
  ****************************************/
 void processShotestGoal(void) {
-//	g_accele = -0.5;
-//	while ((g_sensor_FL + g_sensor_FR) < (SEN_REFERENCE_FL + SEN_REFERENCE_FR)) {
-//		if (g_target_velo < 0.01)
-//			break;
-//	}
-//	g_accele = 0;
-//	g_target_velo = 0;
+
 	switchSensorLED(OFF);
 	runStraight(25, 0.01, g_current_velo, 0);
 }

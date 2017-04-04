@@ -91,10 +91,14 @@ extern volatile uint8_t g_current_y;
 extern volatile uint8_t g_wall_data_tmp[16][16];
 extern volatile uint8_t g_wall_data[16][16];
 
-extern volatile uint16_t g_wall_data_row[16];
-extern volatile uint16_t g_wall_data_column[16];
-extern volatile uint16_t g_wall_data_row_tmp[16];
-extern volatile uint16_t g_wall_data_column_tmp[16];
+extern volatile uint16_t g_wall_data_row[14];
+extern volatile uint16_t g_wall_data_column[14];
+extern volatile uint16_t g_wall_data_row_tmp[14];
+extern volatile uint16_t g_wall_data_column_tmp[14];
+extern volatile uint16_t g_wall_known_row[14];
+extern volatile uint16_t g_wall_known_column[14];
+extern volatile uint16_t g_wall_known_row_tmp[14];
+extern volatile uint16_t g_wall_known_column_tmp[14];
 
 extern volatile int16_t g_target_x;
 extern volatile int16_t g_target_y;

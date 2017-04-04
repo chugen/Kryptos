@@ -86,10 +86,15 @@ volatile uint8_t g_current_x = 0;
 volatile uint8_t g_current_y = 0;
 volatile uint8_t g_wall_data_tmp[16][16];
 volatile uint8_t g_wall_data[16][16];
-volatile uint16_t g_wall_data_row[16];
-volatile uint16_t g_wall_data_column[16];
-volatile uint16_t g_wall_data_row_tmp[16];
-volatile uint16_t g_wall_data_column_tmp[16];
+
+volatile uint16_t g_wall_data_row[14];
+volatile uint16_t g_wall_data_column[14];
+volatile uint16_t g_wall_data_row_tmp[14];
+volatile uint16_t g_wall_data_column_tmp[14];
+volatile uint16_t g_wall_known_row[14];
+volatile uint16_t g_wall_known_column[14];
+volatile uint16_t g_wall_known_row_tmp[14];
+volatile uint16_t g_wall_known_column_tmp[14];
 
 volatile int16_t g_target_x = 1;
 volatile int16_t g_target_y = 0;
