@@ -69,6 +69,9 @@ extern volatile int32_t g_sensor_FR;
 extern volatile int32_t g_sensor_L;
 extern volatile int32_t g_sensor_R;
 
+extern volatile float g_sensor_FL_average;
+extern volatile float g_sensor_FR_average;
+
 extern volatile int32_t g_sensor_L_derivative;
 extern volatile int32_t g_sensor_R_derivative;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

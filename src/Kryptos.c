@@ -124,7 +124,7 @@ void main(void) {
 
 //			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL,
 //					g_sensor_L, g_sensor_R, g_sensor_FR);
-			myprintf("FL:%6.1d FR:%6.1d\n", g_sensor_FL, (int)(g_sensor_FR * 2.6));
+			myprintf("%4.1d	%4.1d\n", g_sensor_FL, g_sensor_FR);
 			waitTime(50);
 		}
 		break;

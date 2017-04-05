@@ -51,7 +51,8 @@ void intrptCMT0(void) {
 		//getLog(g_sensor_R, g_target_omega);
 		//getLog4(g_target_velo,g_current_velo,g_target_omega,g_current_omega);
 		//getLog4(g_torque_L,g_torque_R,g_target_omega,g_current_omega);
-		getLog4(g_sensor_FL, g_sensor_FR, g_distance, g_target_angle);
+		getLog4(g_sensor_FL, g_sensor_FR, g_sensor_FL_average,
+				g_sensor_FR_average);
 		//getLog4(g_current_x, g_current_y, (getWallData(WALL_RIGHT) == 0),	checkStep(WALL_RIGHT));
 		/*========================================================*/
 		log_count = 0;
@@ -224,6 +225,8 @@ void getSensorVal(void) {
 	float battery_correct;
 	static uint16_t sensor_L_before;
 	static uint16_t sensor_R_before;
+	static float sensor_FL_before[10] = { 0 };
+	static float sensor_FR_before[10] = { 0 };
 
 	//battery_correct = MAX_VOLTAGE / g_battery_voltage;
 	battery_correct = 1;
@@ -251,12 +254,30 @@ void getSensorVal(void) {
 	sensor_R_on = returnSenVal(SEN_R);
 	driveSensorLED(OFF);
 	g_sensor_FL = (sensor_FL_on - sensor_FL_off) * battery_correct;
-	g_sensor_FR = (sensor_FR_on - sensor_FR_off) * battery_correct;
+	//g_sensor_FR = (sensor_FR_on - sensor_FR_off) * battery_correct;
+	g_sensor_FR = (int32_t) (2.55 * (sensor_FR_on - sensor_FR_off)
+			* battery_correct);
 	g_sensor_L = (sensor_L_on - sensor_L_off) * battery_correct;
 	g_sensor_R = (sensor_R_on - sensor_R_off) * battery_correct;
 
 	g_sensor_L_derivative = g_sensor_L - sensor_L_before;
 	g_sensor_R_derivative = g_sensor_R - sensor_R_before;
+
+	g_sensor_FL_average = (sensor_FL_before[0] + sensor_FL_before[1]
+			+ sensor_FL_before[2] + sensor_FL_before[3] + sensor_FL_before[4]
+			+ sensor_FL_before[5] + sensor_FL_before[6] + sensor_FL_before[7]
+			+ sensor_FL_before[8] + sensor_FL_before[9]) / 10.0;
+	g_sensor_FR_average = (sensor_FR_before[0] + sensor_FR_before[1]
+			+ sensor_FR_before[2] + sensor_FR_before[3] + sensor_FR_before[4]
+			+ sensor_FR_before[5] + sensor_FR_before[6] + sensor_FR_before[7]
+			+ sensor_FR_before[8] + sensor_FR_before[9]) / 10.0;
+	for (i = 8; i >= 0; i--) {
+		sensor_FL_before[i + 1] = sensor_FL_before[i];
+		sensor_FR_before[i + 1] = sensor_FR_before[i];
+	}
+	sensor_FL_before[0] = g_sensor_FL;
+	sensor_FR_before[0] = g_sensor_FR;
+
 }
 
 /****************************************

@@ -311,7 +311,8 @@ void checkWall(void) {
 			g_wall_data_tmp[g_current_x][g_current_y] |= 0x04;
 		}
 	}
-	if (g_sensor_FL + g_sensor_FR > SEN_NOWALL_FL + SEN_NOWALL_FR) {
+	if ((g_sensor_FL + g_sensor_FR > SEN_NOWALL_FL + SEN_NOWALL_FR)
+			&& g_sensor_FL > SEN_NOWALL_FL && g_sensor_FR > SEN_NOWALL_FR) {
 		if (g_orient == 0x01) {
 			g_wall_data_tmp[g_current_x][g_current_y] |= 0x01;
 		} else if (g_orient == 0x02) {
@@ -544,14 +545,16 @@ void searchAdachi(void) {
 		} else if (isNoWall(WALL_LEFT) && isSmallerSteps(WALL_LEFT)) {
 			driveRGB(LRED, ON);
 			//turnCorner(&t_90_L_05);
-			turnCornerContinuous(90, 770);
+			//turnCornerContinuous(90, 790);
+			turnSearch(&tc_90_L_07);
 			checkOrient(90);
 			countCoord();
 
 		} else if (isNoWall(WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)) {
 			driveRGB(YELLOW, ON);
 			//turnCorner(&t_90_R_05);
-			turnCornerContinuous(-90, 770);
+			//turnCornerContinuous(-90, 790);
+			turnSearch(&tc_90_R_07);
 			checkOrient(-90);
 			countCoord();
 
@@ -580,7 +583,7 @@ void searchAdachi(void) {
  古川法
  ****************************************/
 void searchFurukawa(void) {
-	float search_velo = 0.5;
+	float search_velo = 0.7;
 	g_flag_run_mode = SEARCH;
 	g_log_count = 0;
 	runStraight(5, HALF_SECTION, search_velo, search_velo);
@@ -639,14 +642,16 @@ void searchFurukawa(void) {
 
 		} else if (isNoWall(WALL_LEFT) && isUnknownSection(WALL_LEFT)) {
 
-			turnCorner(&t_90_L_05);
+			//turnCorner(&t_90_L_05);
+			turnSearch(&tc_90_L_07);
 
 			checkOrient(90);
 			countCoord();
 
 		} else if (isNoWall(WALL_RIGHT) && isUnknownSection(WALL_RIGHT)) {
 
-			turnCorner(&t_90_R_05);
+			//turnCorner(&t_90_R_05);
+			turnSearch(&tc_90_R_07);
 
 			checkOrient(-90);
 			countCoord();
@@ -660,14 +665,16 @@ void searchFurukawa(void) {
 
 		} else if (isNoWall(WALL_LEFT) && isSmallerSteps(WALL_LEFT)) {
 			driveRGB(LRED, ON);
-			turnCorner(&t_90_L_05);
+			//turnCorner(&t_90_L_05);
+			turnSearch(&tc_90_L_07);
 
 			checkOrient(90);
 			countCoord();
 
 		} else if (isNoWall(WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)) {
 			driveRGB(YELLOW, ON);
-			turnCorner(&t_90_R_05);
+			//turnCorner(&t_90_R_05);
+			turnSearch(&tc_90_R_07);
 
 			checkOrient(-90);
 			countCoord();
@@ -697,132 +704,8 @@ void searchFurukawa(void) {
 /****************************************
  櫛潰し
  ****************************************/
-void breakComb(void) {		//fixme 櫛潰し 範囲外参照
-	if (g_orient == 0x01) {
-		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
-				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0) {
-			if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x02) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x20)
-							== 0x20) {
-				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x04;
-				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x40;
-			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x04)
-					== 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x40)
-							== 0x40) {
-				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x02;
-				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x20;
-			}
-		}
-		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0
-				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0) {
-			if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x08) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x80)
-							== 0x80) {
-				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x04;
-				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x40;
-			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x04)
-					== 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x40)
-							== 0x40) {
-				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x08;
-				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x80;
-			}
-		}
-	} else if (g_orient == 0x02) {
-		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
-				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0) {
-			if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x04) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x40)
-							== 0x40) {
-				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x08;
-				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x80;
-			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x08)
-					== 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y + 1] & 0x80)
-							== 0x80) {
-				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x04;
-				g_wall_data_tmp[g_current_x - 1][g_current_y + 1] |= 0x40;
-			}
-		}
-		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0
-				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0) {
-			if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x08) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x80)
-							== 0x80) {
-				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x01;
-				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x10;
-			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x08)
-					== 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x80)
-							== 0x80) {
-				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x01;
-				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x10;
-			}
-		}
-	} else if (g_orient == 0x04) {
-		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
-				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0) {
-			if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x01) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x10)
-							== 0x10) {
-				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x02;
-				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x20;
-			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x02)
-					== 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x20)
-							== 0x20) {
-				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x01;
-				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x10;
-			}
-		}
-		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0
-				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x02) == 0) {
-			if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x01) == 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x10)
-							== 0x10) {
-				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x08;
-				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x80;
-			} else if ((g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x08)
-					== 0
-					&& (g_wall_data_tmp[g_current_x - 1][g_current_y - 1] & 0x80)
-							== 0x80) {
-				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x01;
-				g_wall_data_tmp[g_current_x - 1][g_current_y - 1] |= 0x10;
-			}
-		}
-	} else if (g_orient == 0x08) {
-		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
-				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x01) == 0) {
-			if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x02) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x20)
-							== 0x20) {
-				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x04;
-				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x40;
-			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x04)
-					== 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y + 1] & 0x40)
-							== 0x40) {
-				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x02;
-				g_wall_data_tmp[g_current_x + 1][g_current_y + 1] |= 0x20;
-			}
-		}
-		if ((g_wall_data_tmp[g_current_x][g_current_y] & 0x08) == 0
-				&& (g_wall_data_tmp[g_current_x][g_current_y] & 0x04) == 0) {
-			if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x02) == 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x20)
-							== 0x20) {
-				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x01;
-				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x10;
-			} else if ((g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x01)
-					== 0
-					&& (g_wall_data_tmp[g_current_x + 1][g_current_y - 1] & 0x10)
-							== 0x10) {
-				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x02;
-				g_wall_data_tmp[g_current_x + 1][g_current_y - 1] |= 0x20;
-			}
-		}
-	}
+void breakComb(void) {
+
 }
 
 /****************************************

@@ -607,12 +607,21 @@ void runStraightSearch(float dis, float velo) {
  直線走行(オフセット)
  ****************************************/
 void runStraightOffset(float dis, float velo) {
+	uint32_t sensor_value_FL, sensor_value_FR;
 
 	g_accele = 0;
 	g_target_velo = velo;
 
+	if ((g_sensor_FL + g_sensor_FR > SEN_NOWALL_FL + SEN_NOWALL_FR)
+			&& g_sensor_FL > SEN_NOWALL_FL && g_sensor_FR > SEN_NOWALL_FR) {
+		sensor_value_FL = 222.82 * expf(13.64 * dis);
+		sensor_value_FR = 216.23 * expf(14.11 * dis);
+	}
+
 	while (g_flag_failsafe != 1) {
-		if (fabsf(g_distance) >= dis)
+		if (fabsf(g_distance) >= dis
+				|| (g_sensor_FL_average > sensor_value_FL
+						&& g_sensor_FR_average > sensor_value_FR))
 			break;
 	}
 
@@ -622,7 +631,7 @@ void runStraightOffset(float dis, float velo) {
 	g_target_angle = 0;
 }
 /****************************************
- スラローム　非連続
+ ターン　非連続
  ****************************************/
 void turnCorner(turn_t *p) {
 	double section1 = 0;
@@ -631,7 +640,7 @@ void turnCorner(turn_t *p) {
 	int8_t left_right = 0;
 	float angacc_tmp;
 
-	if (p->mode == 0) { //通常壁切れ
+	if (p->mode == 0 || p->mode == 1) { //壁切れ
 		if (p->angle >= 0) {
 
 			while (g_flag_failsafe != 1) {
@@ -653,31 +662,7 @@ void turnCorner(turn_t *p) {
 			runStraight(5, p->front, p->velocity, p->velocity);
 
 		}
-	} else if (p->mode == 1) { //斜め中壁切れ
-		g_flag_turn = 1; //ターンフラグ立てる
-		if (p->angle >= 0) {
-
-			while (g_flag_failsafe != 1) {
-				if (g_flag_pillar_edge_L == 1)
-					break;
-
-			}
-			g_distance = 0;
-
-			runStraight(5, p->front, p->velocity, p->velocity);
-
-		} else {
-
-			while (g_flag_failsafe != 1) {
-				if (g_flag_pillar_edge_R == 1)
-					break;
-			}
-			g_distance = 0;
-
-			runStraight(5, p->front, p->velocity, p->velocity);
-
-		}
-	} else if (p->mode == -1) {
+	} else if (p->mode == -1) { //壁切れなし
 		runStraight(5, p->front, p->velocity, p->velocity);
 	} else {
 
@@ -786,19 +771,21 @@ void turnCorner(turn_t *p) {
  スラローム　連続
  ****************************************/
 void turnCornerContinuous(float degree, float omega) {
-
+	//パラメータ計算
 	g_target_angle_const = degree;
 	g_target_omega_max = omega;
 	g_alpha_max = 9.0 * M_PI / 16 * powf(omega, 2) / degree;
 	g_turn_peaktime = 3 * g_target_omega_max / fabsf(g_alpha_max) / 2;
 
-	g_flag_turn_continuous = 1;
+	//フラグ立てる
+	g_flag_turn_continuous = 1; //連続角速度ターンフラグ
+	g_flag_turn = 1; //ターンフラグ
 
+	//初期化
 	g_count_time_angle = 0;
 	g_target_omega = 0;
 	g_current_angle = 0;
 	g_target_alpha = 0;
-	g_flag_turn = 1; //ターンフラグ立てる
 
 	while (g_count_time_angle * INTRPT_PERIOD < g_turn_peaktime * 2) {
 		if (g_target_omega > 2000) {
@@ -807,6 +794,7 @@ void turnCornerContinuous(float degree, float omega) {
 		}
 	}
 
+	//初期化
 	g_distance = 0;
 	g_target_alpha = 0;
 	g_alpha_max = 0;
@@ -817,6 +805,45 @@ void turnCornerContinuous(float degree, float omega) {
 	g_target_angle = 0;
 	g_current_angle = 0;
 
+	//フラグ降ろす
 	g_flag_turn_continuous = 0;
-	g_flag_turn = 0; //ターンフラグ立てる
+	g_flag_turn = 0;
+}
+/****************************************
+ ターン連続_探索
+ ****************************************/
+void turnSearch(turn2_t *p) {
+
+	runStraightOffset(p->front, p->velocity);
+	turnCornerContinuous(p->angle, p->omega);
+	runStraight(5, p->rear, p->velocity, p->velocity);
+
+}
+/****************************************
+ ターン連続_最短走行
+ ****************************************/
+void turnShortest(turn2_t *p) {
+	//壁切れ
+	if (p->angle >= 0) {
+		while (g_flag_failsafe != 1) {
+			if (g_flag_pillar_edge_L == 1)
+				break;
+		}
+		g_distance = 0;
+		runStraight(5, p->front, p->velocity, p->velocity);
+	} else {
+		while (g_flag_failsafe != 1) {
+			if (g_flag_pillar_edge_R == 1)
+				break;
+		}
+		g_distance = 0;
+		runStraight(5, p->front, p->velocity, p->velocity);
+	}
+	//ターン
+	turnCornerContinuous(p->angle, p->omega);
+	//ターン後オフセット
+	g_flag_diagonal = p->dia;//斜めフラグ
+	if ((g_flag_shortest_goal == 1)) {
+		runStraight(5, p->rear, p->velocity, p->velocity);
+	}
 }

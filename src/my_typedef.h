@@ -29,7 +29,6 @@ typedef struct{
 	float front;
 	float rear;
 	int8_t dia;
-	int8_t mode;
 } turn2_t;
 
 #endif /* MY_TYPEDEF_H_ */

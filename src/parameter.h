@@ -52,10 +52,10 @@
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 470//510//535//430//400//430//470//525//500
-#define SEN_REFERENCE_R 517//580//520//480//550//520//520
-#define SEN_REFERENCE_FL 1000//980//1000//1030//1030
-#define SEN_REFERENCE_FR 392//410//395//400//410
+#define SEN_REFERENCE_L 470
+#define SEN_REFERENCE_R 517
+#define SEN_REFERENCE_FL 1000
+#define SEN_REFERENCE_FR 1170
 /*==========*/
 #define SEN_DIAGONAL_FL 70
 #define SEN_DIAGONAL_FR 70
@@ -187,6 +187,81 @@ extern turn_t t_v90_R_16;
 extern turn_t t_w90_R_1500;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /****************************************
+ ターンパラメータ
+ ****************************************/
+/*others~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn2_t tc_pivot;
+extern turn2_t tc_pivotc_90_L;
+extern turn2_t tc_pivotc_90_R;
+
+extern turn2_t tc_test;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn2_t tc_90_L_07;
+extern turn2_t tc_90_R_07;
+/*1000~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn2_t tc_w90_L_10;
+extern turn2_t tc_w90_R_10;
+extern turn2_t tc_180_L_10;
+extern turn2_t tc_180_R_10;
+extern turn2_t tc_i45_L_10;
+extern turn2_t tc_i45_R_10;
+extern turn2_t tc_o45_L_10;
+extern turn2_t tc_o45_R_10;
+extern turn2_t tc_i135_L_10;
+extern turn2_t tc_i135_R_10;
+extern turn2_t tc_o135_L_10;
+extern turn2_t tc_o135_R_10;
+extern turn2_t tc_v90_L_10;
+extern turn2_t tc_v90_R_10;
+/*1200~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn2_t tc_w90_L_12;
+extern turn2_t tc_w90_R_12;
+extern turn2_t tc_180_L_12;
+extern turn2_t tc_180_R_12;
+extern turn2_t tc_i45_L_12;
+extern turn2_t tc_i45_R_12;
+extern turn2_t tc_o45_L_12;
+extern turn2_t tc_o45_R_12;
+extern turn2_t tc_i135_L_12;
+extern turn2_t tc_i135_R_12;
+extern turn2_t tc_o135_L_12;
+extern turn2_t tc_o135_R_12;
+extern turn2_t tc_v90_L_12;
+extern turn2_t tc_v90_R_12;
+/*1400~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn2_t tc_w90_L_14;
+extern turn2_t tc_w90_R_14;
+extern turn2_t tc_180_L_14;
+extern turn2_t tc_180_R_14;
+extern turn2_t tc_i45_L_14;
+extern turn2_t tc_i45_R_14;
+extern turn2_t tc_o45_L_14;
+extern turn2_t tc_o45_R_14;
+extern turn2_t tc_i135_L_14;
+extern turn2_t tc_i135_R_14;
+extern turn2_t tc_o135_L_14;
+extern turn2_t tc_o135_R_14;
+extern turn2_t tc_v90_L_14;
+extern turn2_t tc_v90_R_14;
+/*1600~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn2_t tc_w90_L_16;
+extern turn2_t tc_w90_R_16;
+extern turn2_t tc_180_L_16;
+extern turn2_t tc_180_R_16;
+extern turn2_t tc_i45_L_16;
+extern turn2_t tc_i45_R_16;
+extern turn2_t tc_o45_L_16;
+extern turn2_t tc_o45_R_16;
+extern turn2_t tc_i135_L_16;
+extern turn2_t tc_i135_R_16;
+extern turn2_t tc_o135_L_16;
+extern turn2_t tc_o135_R_16;
+extern turn2_t tc_v90_L_16;
+extern turn2_t tc_v90_R_16;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern turn2_t tc_w90_R_1500;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/****************************************
  ターン種類保存配列
  ****************************************/
 extern turn_t * t10[];
@@ -194,10 +269,17 @@ extern turn_t * t12[];
 extern turn_t * t14[];
 extern turn_t * t16[];
 extern turn_t * t18[];
+//continuous
+extern turn2_t * tc10[];
+extern turn2_t * tc12[];
+extern turn2_t * tc14[];
+extern turn2_t * tc16[];
+extern turn2_t * tc18[];
 /****************************************
  ターン速度保存配列
  ****************************************/
 extern turn_t ** t_para[];
+extern turn2_t ** tc_para[];
 
 enum TURN_VELO {
 	T10, T12, T14, T16, T18
