@@ -132,11 +132,13 @@ extern volatile int8_t g_flag_pillar_edge_R;
 extern volatile int8_t g_flag_shortest_goal;
 extern volatile int8_t g_flag_turn_continuous;
 extern volatile int8_t g_flag_FF;
+extern volatile int8_t g_flag_buzzer;
 //テスト用
 
 extern volatile float g_duty_L;
 extern volatile float g_duty_R;
 extern volatile int16_t g_wait_count;
+extern volatile int16_t g_buzzer_count;
 extern volatile int16_t g_log_count;
 extern volatile float g_log_array[];
 extern volatile float g_log_array2[];

@@ -44,6 +44,7 @@ int16_t driveRGB(int16_t red, int16_t green, int16_t blue, int8_t on_off);
  ブザー
  ****************************************/
 void driveBuzzer(float freq, float wait_ms);
+void driveBuzzerIntrpt(uint8_t left_right,uint8_t on_off);
 /****************************************
  モード選択
  ****************************************/

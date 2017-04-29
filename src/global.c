@@ -128,12 +128,14 @@ volatile int8_t g_flag_pillar_edge_R=0;
 volatile int8_t g_flag_shortest_goal;
 volatile int8_t g_flag_turn_continuous=0;
 volatile int8_t g_flag_FF=0;
+volatile int8_t g_flag_buzzer=0;
 
 //テスト用
 volatile float g_duty_L;
 volatile float g_duty_R;
 
 volatile int16_t g_wait_count = 0; //waitTime関数用カウンタ
+volatile int16_t g_buzzer_count = 0; //ブザー関数用カウンタ
 volatile int16_t g_log_count = 0;
 volatile float g_log_array[LOG_TIMES];
 volatile float g_log_array2[LOG_TIMES];

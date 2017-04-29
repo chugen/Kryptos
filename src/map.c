@@ -86,36 +86,38 @@ void printMap(void) {
 	myprintf("\x1b[31m");
 
 	for (i_y = 15; i_y >= 0; i_y--) {
-		if (i_y != 15) {
-			myprintf("  ├");
-		} else {
-			myprintf("  ┌");
-		}
+
+			myprintf("  +");
+
 		for (i_x = 0; i_x < 16; i_x++) {
 			if (((g_wall_data[i_x][i_y] & 1) == 1)) {
-				myprintf("───");
+				//myprintf("───");
+				myprintf("---");
 			} else {
 				myprintf("   ");
 			}
 			if (i_y != 15) {
 				if (i_x != 15) {
-					myprintf("┼");
-					//myprintf("+");
+					//myprintf("┼");
+					myprintf("+");
 				} else {
-					myprintf("┤");
+					//myprintf("┤");
+					myprintf("+");
 				}
 			} else {
 				if (i_x != 15) {
 
-					myprintf("┬");
+					//myprintf("┬");
+					myprintf("+");
 				} else {
 
-					myprintf("┐");
+					//myprintf("┐");
+					myprintf("+");
 				}
 			}
 		}
 		myprintf("\n\r");
-		myprintf("%2d│", i_y);
+		myprintf("%2d|", i_y);
 		for (i_x = 0; i_x < 16; i_x++) {
 
 			myprintf("\x1b[0m");
@@ -126,20 +128,25 @@ void printMap(void) {
 			myprintf("\x1b[0m");
 			myprintf("\x1b[31m");
 			if (((g_wall_data[i_x][i_y] & 0x08) == 0x08) || i_x == 15) {
-				myprintf("│");
+				//myprintf("│");
+				myprintf("|");
 			} else {
 				myprintf(" ");
 			}
 		}
 		myprintf("\n\r");
 	}
-	myprintf("  └");
+	//myprintf("  └");
+	myprintf("  +");
 	for (i_x = 0; i_x < 16; i_x++) {
-		myprintf("───");
+		//myprintf("───");
+		myprintf("---");
 		if (i_x != 15) {
-			myprintf("┴");
+			//myprintf("┴");
+			myprintf("+");
 		} else {
-			myprintf("┘");
+			//myprintf("┘");
+			myprintf("+");
 		}
 	}
 
@@ -511,19 +518,19 @@ void searchAdachi(void) {
 			break;
 		}
 		if (g_step_map[g_current_x][g_current_y] == 255) {
-			driveRGB(RED, ON);
+//			driveRGB(RED, ON);
 			driveMotor(OFF);
 			soundError();
 			break;
 		}
 		if (g_sensor_FL + g_sensor_FR >= SEN_DEATH) {
-			driveRGB(BLUE, ON);
+//			driveRGB(BLUE, ON);
 			driveMotor(OFF);
 			soundError();
 			break;
 		}
 		if (pushButton() == 0) {
-			driveRGB(MAGENTA, ON);
+//			driveRGB(MAGENTA, ON);
 			driveMotor(OFF);
 			soundError();
 			break;
@@ -539,21 +546,25 @@ void searchAdachi(void) {
 		if (isNoWall(WALL_FRONT) && isSmallerSteps(WALL_FRONT)) {
 
 			//runStraight(5, SECTION, search_velo, search_velo);
-			runStraightSearch(SECTION, search_velo);
+			runStraightSearch(0, SECTION, search_velo);
 			countCoord();
 
 		} else if (isNoWall(WALL_LEFT) && isSmallerSteps(WALL_LEFT)) {
-			driveRGB(LRED, ON);
+//			driveRGB(LRED, ON);
 			//turnCorner(&t_90_L_05);
-			//turnCornerContinuous(90, 790);
+//			runStraight(5, 0.007, 0.7, 0.7);
+//			turnCornerContinuous(90, 790);
+//			runStraight(5, 0.005, 0.7, 0.7);
 			turnSearch(&tc_90_L_07);
 			checkOrient(90);
 			countCoord();
 
 		} else if (isNoWall(WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)) {
-			driveRGB(YELLOW, ON);
+//			driveRGB(YELLOW, ON);
 			//turnCorner(&t_90_R_05);
-			//turnCornerContinuous(-90, 790);
+//			runStraight(5, 0.005, 0.7, 0.7);
+//			turnCornerContinuous(-90, 790);
+//			runStraight(5, 0.005, 0.7, 0.7);
 			turnSearch(&tc_90_R_07);
 			checkOrient(-90);
 			countCoord();
@@ -601,7 +612,7 @@ void searchFurukawa(void) {
 			break;
 		}
 		if (g_step_map[g_current_x][g_current_y] == 255) {
-			driveRGB(RED, ON);
+//			driveRGB(RED, ON);
 			g_target_velo = 0;
 			waitTime(100);
 			driveMotor(OFF);
@@ -610,7 +621,7 @@ void searchFurukawa(void) {
 			break;
 		}
 		if (g_sensor_FL + g_sensor_FR >= SEN_DEATH) {
-			driveRGB(BLUE, ON);
+//			driveRGB(BLUE, ON);
 			g_target_velo = 0;
 			waitTime(100);
 			driveMotor(OFF);
@@ -618,7 +629,7 @@ void searchFurukawa(void) {
 			break;
 		}
 		if (pushButton() == 0) {
-			driveRGB(MAGENTA, ON);
+//			driveRGB(MAGENTA, ON);
 			g_target_velo = 0;
 			waitTime(100);
 			driveMotor(OFF);
@@ -636,7 +647,7 @@ void searchFurukawa(void) {
 		if (isNoWall(WALL_FRONT) && isUnknownSection(WALL_FRONT)) {
 
 //			runStraight(5, SECTION, search_velo, search_velo);
-			runStraightSearch(SECTION, search_velo);
+			runStraightSearch(0, SECTION, search_velo);
 
 			countCoord();
 
@@ -659,13 +670,13 @@ void searchFurukawa(void) {
 		} else if (isNoWall(WALL_FRONT) && isSmallerSteps(WALL_FRONT)) {
 
 //			runStraight(5, SECTION, search_velo, search_velo);
-			runStraightSearch(SECTION, search_velo);
+			runStraightSearch(0, SECTION, search_velo);
 
 			countCoord();
 
 		} else if (isNoWall(WALL_LEFT) && isSmallerSteps(WALL_LEFT)) {
 			driveRGB(LRED, ON);
-			//turnCorner(&t_90_L_05);
+//			//turnCorner(&t_90_L_05);
 			turnSearch(&tc_90_L_07);
 
 			checkOrient(90);
@@ -673,7 +684,7 @@ void searchFurukawa(void) {
 
 		} else if (isNoWall(WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)) {
 			driveRGB(YELLOW, ON);
-			//turnCorner(&t_90_R_05);
+//			//turnCorner(&t_90_R_05);
 			turnSearch(&tc_90_R_07);
 
 			checkOrient(-90);
@@ -698,7 +709,7 @@ void searchFurukawa(void) {
 		switchSensorLED(OFF);
 
 	}
-	g_flag_run_mode = SEARCH;
+	g_flag_run_mode = DEFAULT;
 }
 
 /****************************************
@@ -794,7 +805,8 @@ void makePath(void) {
 		if (g_current_x == g_target_x && g_current_y == g_target_y)
 			break;
 
-		if (isNoWall(WALL_FRONT) && isSmallerSteps(WALL_FRONT)) {
+		if (isNoWall(WALL_FRONT) && isSmallerSteps(WALL_FRONT)
+				&& isUnknownSection(WALL_FRONT) != 1) {
 
 			g_path[p_count] = STRAIGHT;
 			p_count++;
@@ -802,14 +814,16 @@ void makePath(void) {
 
 			countCoord();
 
-		} else if (isNoWall(WALL_LEFT) && isSmallerSteps(WALL_LEFT)) {
+		} else if (isNoWall(WALL_LEFT) && isSmallerSteps(WALL_LEFT)
+				&& isUnknownSection(WALL_LEFT) != 1) {
 
 			g_path[p_count] = L_CURVE;
 
 			checkOrient(90);
 			countCoord();
 
-		} else if (isNoWall(WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)) {
+		} else if (isNoWall(WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)
+				&& isUnknownSection(WALL_RIGHT) != 1) {
 
 			g_path[p_count] = R_CURVE;
 

@@ -92,11 +92,15 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo);
 /****************************************
  台形加速(探索)
  ****************************************/
-void runStraightSearch(float dis, float velo);
+void runStraightSearch(float acceleration ,float distance, float velosity);
 /****************************************
 袋小路
  ****************************************/
 void runBlindAlley(float velo);
+/****************************************
+ 直線走行(オフセット)
+ ****************************************/
+void runStraightOffset(float dis, float velo) ;
 /****************************************
  ターン　非連続
  ****************************************/

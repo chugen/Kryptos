@@ -203,6 +203,8 @@ void selectAdjustment1(uint8_t velo) {
 void selectAdjustment2(void) {
 	uint8_t i;
 	uint8_t mode;
+	float velo=0.7;
+	g_flag_FF=1;
 	driveRGB(YELLOW, ON);
 	waitTime(500);
 
@@ -212,36 +214,36 @@ void selectAdjustment2(void) {
 
 	case 0:
 		initAdjustment2();
-		runStraight(5, HALF_SECTION, 0.5, 0.5);
+		runStraight(5, HALF_SECTION, velo, velo);
 
 		for (i = 0; i < 16; i++) {
-			runStraight(5, SECTION, 0.5, 0.5);
-			turnCorner(&t_90_L_05);
+			runStraight(5, SECTION, velo, velo);
+			turnSearch(&tc_90_L_07);
 		}
-		runStraight(5, SECTION, 0.5, 0);
+		runStraight(5, SECTION, velo, 0);
 		break;
 	case 1:
 		initAdjustment2();
-		runStraight(5, HALF_SECTION, 0.5, 0.5);
+		runStraight(5, HALF_SECTION, velo, velo);
 
 		for (i = 0; i < 16; i++) {
-			runStraight(5, SECTION, 0.5, 0.5);
-			turnCorner(&t_90_R_05);
+			runStraight(5, SECTION, velo, velo);
+			turnSearch(&tc_90_R_07);
 		}
-		runStraight(5, SECTION, 0.5, 0);
+		runStraight(5, SECTION, velo, 0);
 		break;
 	case 2:
 		initAdjustment2();
-		runStraight(5, SECTION, 0.5, 0.5);
-		turnCorner(&t_90_L_05);
-		runStraight(5, SECTION, 0.5, 0);
+		runStraight(5, SECTION, velo, velo);
+		turnSearch(&tc_90_L_07);
+		runStraight(5, SECTION, velo, 0);
 		break;
 
 	case 3:
 		initAdjustment2();
-		runStraight(5, SECTION, 0.5, 0.5);
-		turnCorner(&t_90_R_05);
-		runStraight(5, SECTION, 0.5, 0);
+		runStraight(5, SECTION, velo, velo);
+		turnSearch(&tc_90_R_07);
+		runStraight(5, SECTION, velo, 0);
 		break;
 	case 4:
 		initAdjustment2();
@@ -266,19 +268,19 @@ void selectAdjustment2(void) {
 		break;
 	case 7:
 		initAdjustment2();
-		runStraight(5, SECTION, 0.5, 0.5);
+		runStraight(5, SECTION, velo, velo);
 		switchSensorLED(ON);
-		runBlindAlley(0.5);
-		runStraight(5, SECTION, 0.5, 0);
+		runBlindAlley(velo);
+		runStraight(5, SECTION, velo, 0);
 		break;
 	case 8:
 		initAdjustment2();
-		runStraight(5, SECTION * 4, 0.5, 0);
+		runStraight(5, SECTION * 4, velo, 0);
 		break;
 	case 9:
 		initAdjustment2();
 		g_flag_diagonal = 1;
-		runStraight(5, SECTION * 4, 0.5, 0);
+		runStraight(5, SECTION * 4, velo, 0);
 		break;
 	case 10:
 
@@ -297,8 +299,9 @@ void selectAdjustment2(void) {
 		break;
 
 	}
+	waitTime(300);
 	driveMotor(OFF);
 	driveSuction(70, OFF);
 	waitButton();
-	printLog();
+	printLog4();
 }

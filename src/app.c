@@ -335,6 +335,91 @@ void driveBuzzer(float freq, float wait_ms) {
 
 	}
 }
+
+void driveBuzzerIntrpt(uint8_t left_right, uint8_t on_off) {
+	float cycle;
+	uint32_t time1 = 150, time2, time3;
+	time2 = time1 + 30;
+	time3 = time2 + 150;
+	if (g_flag_buzzer == 0) {
+		if (on_off == 1) {
+			switch (left_right) {
+			case LEFT:
+				g_flag_buzzer = LEFT;
+				cycle = (float) 625000 / 2 / (float) BZ_G3;
+				break;
+			case RIGHT:
+				g_flag_buzzer = RIGHT;
+				cycle = (float) 625000 / 2 / (float) BZ_G6;
+				break;
+			case BOTH:
+				g_flag_buzzer = BOTH;
+				cycle = (float) 625000 / 2 / (float) BZ_A5;
+				break;
+			default:
+				break;
+			}
+			g_buzzer_count = 0;
+
+			MTU2.TGRA = (int) cycle / 2;
+			MTU2.TGRB = (int) cycle;
+			MTU2.TIOR.BIT.IOA = 0x05;	//初期出力：H,コンペアマッチ：L
+			MTU.TSTR.BIT.CST2 = 1;
+		}
+	} else if (g_flag_buzzer == LEFT) {
+		if (g_buzzer_count > time1 && g_buzzer_count <= time1) {
+
+			MTU2.TIOR.BIT.IOA = 0x00;	//出力禁止
+			MTU.TSTR.BIT.CST2 = 0;
+
+		} else if (g_buzzer_count > time1 && g_buzzer_count <= time3) {
+			cycle = (float) 625000 / 2 / (float) BZ_G3;
+			MTU2.TGRA = (int) cycle / 2;
+			MTU2.TGRB = (int) cycle;
+			MTU2.TIOR.BIT.IOA = 0x05;	//初期出力：H,コンペアマッチ：L
+			MTU.TSTR.BIT.CST2 = 1;
+		} else if (g_buzzer_count > time3) {
+			MTU2.TIOR.BIT.IOA = 0x00;	//出力禁止
+			MTU.TSTR.BIT.CST2 = 0;
+			g_flag_buzzer = 0;
+		}
+	} else if (g_flag_buzzer == RIGHT) {
+		if (g_buzzer_count > time1 && g_buzzer_count <= time2) {
+
+			MTU2.TIOR.BIT.IOA = 0x00;	//出力禁止
+			MTU.TSTR.BIT.CST2 = 0;
+
+		} else if (g_buzzer_count > time2 && g_buzzer_count <= time3) {
+			cycle = (float) 625000 / 2 / (float) BZ_G3;
+			MTU2.TGRA = (int) cycle / 2;
+			MTU2.TGRB = (int) cycle;
+			MTU2.TIOR.BIT.IOA = 0x05;	//初期出力：H,コンペアマッチ：L
+			MTU.TSTR.BIT.CST2 = 1;
+		} else if (g_buzzer_count > time3) {
+			MTU2.TIOR.BIT.IOA = 0x00;	//出力禁止
+			MTU.TSTR.BIT.CST2 = 0;
+			g_flag_buzzer = 0;
+		}
+	} else if (g_flag_buzzer == BOTH) {
+		if (g_buzzer_count > time1 && g_buzzer_count <= time2) {
+
+			MTU2.TIOR.BIT.IOA = 0x00;	//出力禁止
+			MTU.TSTR.BIT.CST2 = 0;
+
+		} else if (g_buzzer_count > time2 && g_buzzer_count <= time3) {
+			cycle = (float) 625000 / 2 / (float) BZ_A2;
+			MTU2.TGRA = (int) cycle / 2;
+			MTU2.TGRB = (int) cycle;
+			MTU2.TIOR.BIT.IOA = 0x05;	//初期出力：H,コンペアマッチ：L
+			MTU.TSTR.BIT.CST2 = 1;
+		} else if (g_buzzer_count > time3) {
+			MTU2.TIOR.BIT.IOA = 0x00;	//出力禁止
+			MTU.TSTR.BIT.CST2 = 0;
+			g_flag_buzzer = 0;
+		}
+	}
+}
+
 /****************************************
  モード選択
  ****************************************/

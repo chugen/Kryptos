@@ -16,12 +16,13 @@
 #include "app.h"
 
 /****************************************
- 割り込み関数0
+ 割り込み関数CMT0
  ****************************************/
 void intrptCMT0(void) {
 	static uint8_t log_count = 0;
 	log_count++;
 	g_wait_count++;
+	g_buzzer_count++;
 
 	calcAcc();
 	calcDistance();
@@ -64,12 +65,30 @@ void intrptCMT0(void) {
 
 }
 /****************************************
- 割り込み関数1
+ 割り込み関数CMT1
  ****************************************/
 void intrptCMT1(void) {
 	getSensorVal();
 	checkPillarEdgeL();
 	checkPillarEdgeR();
+
+	if (g_flag_run_mode == SEARCH && g_flag_turn != 1) {
+		if (g_flag_pillar_edge_L == 1 && g_flag_pillar_edge_R == 1) {
+			driveRGB(GREEN, ON);
+			driveBuzzerIntrpt(BOTH,ON);
+		} else if (g_flag_pillar_edge_R == 1) {
+			driveRGB(RED, ON);
+			driveBuzzerIntrpt(RIGHT,ON);
+
+		} else if (g_flag_pillar_edge_L == 1) {
+			driveRGB(BLUE, ON);
+			driveBuzzerIntrpt(LEFT,ON);
+
+		} else {
+			driveRGB(BLUE, OFF);
+			driveBuzzerIntrpt(0,OFF);
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

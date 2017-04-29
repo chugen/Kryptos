@@ -159,6 +159,7 @@ void initMTU(void) {
 	MTU0.TIORL.BIT.IOC = 0x05;	//初期出力：H,コンペアマッチ：L
 	MTU2.TIOR.BIT.IOA = 0x00;	//出力禁止
 
+
 	//MTU0:MOTOR MTU2:SPEAKER
 	MTU0.TGRA = (int8_t) (250 * 15 / 100);	//MOTOR_R
 	MTU0.TGRC = (int8_t) (250 * 15 / 100);	//MOTOR_L
@@ -171,14 +172,9 @@ void initMTU(void) {
 	MTU1.TMDR.BIT.MD = 0x07;	//位相係数モード4
 	MTU2.TMDR.BIT.MD = 0x03;	//PWMモード2
 
-//	IPR( MTU0, TGIA0 )= 0x0A;	//割り込み優先度設定:10
-//	IEN( MTU0, TGIA0 )= 0x01;
-//
-//	IPR( MTU3, TGIA3 )= 0x09;//割り込み優先度設定:9
-//	IEN( MTU3, TGIA3 )= 0x01;
-//
-//	IPR( MTU4, TGIA4 )= 0x08;//割り込み優先度設定:8
-//	IEN( MTU4, TGIA4 )= 0x01;
+	IPR( MTU2, TGIA2 )= 0x0A;	//割り込み優先度設定:10
+	IEN( MTU2, TGIA2 )= 0x01;	//割り込み許可
+
 	MTU.TSTR.BYTE = 0x00;		//全MTUストップ
 	MTU.TSTR.BIT.CST1 = 1;	//位相係数スタート
 
@@ -227,7 +223,7 @@ void initTPU(void) {
 	//LED_RED
 	TPU1.TGRA = 0;
 	TPU1.TGRB = fled_width;
-	//GREEN_GREEN
+	//LED_GREEN
 	TPU2.TGRA = 0;
 	TPU2.TGRB = fled_width;
 	//SUCTION_FAN

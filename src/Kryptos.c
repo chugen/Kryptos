@@ -33,7 +33,7 @@ void main(void) {
 	init();
 	checkLowVoltage();
 	notificateStartUp();
-
+	switchSensorLED(ON);
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
@@ -43,24 +43,24 @@ void main(void) {
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-		//selectAdjustment1(T14);
-		driveRGB(GREEN, ON);
-		waitSensor();
-		waitTime(1000);
-		calcGyroZRef();
-
-		initRun();
-		driveMotor(ON);
-		switchSensorLED(OFF);
-
-		runStraight(5, SECTION, sp, sp);
-		turnCornerContinuous(-90, 770);
-		runStraight(5, SECTION, sp, 0);
-
-		waitTime(300);
-		driveMotor(OFF);
-		waitButton();
-		printLog4();
+		selectAdjustment1(T14);
+//		driveRGB(GREEN, ON);
+//		waitSensor();
+//		waitTime(1000);
+//		calcGyroZRef();
+//
+//		initRun();
+//		driveMotor(ON);
+//		switchSensorLED(OFF);
+//
+//		runStraight(5, SECTION, sp, sp);
+//		turnSearch(&tc_90_L_07);
+//		runStraight(5, SECTION, sp, 0);
+//
+//		waitTime(300);
+//		driveMotor(OFF);
+//		waitButton();
+//		printLog4();
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
@@ -122,9 +122,9 @@ void main(void) {
 		switchSensorLED(ON);
 		while (1) {
 
-//			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL,
-//					g_sensor_L, g_sensor_R, g_sensor_FR);
-			myprintf("%4.1d	%4.1d\n", g_sensor_FL, g_sensor_FR);
+			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL,
+					g_sensor_L, g_sensor_R, g_sensor_FR);
+//			myprintf("%4.1d	%4.1d\n", g_sensor_FL, g_sensor_FR);
 			waitTime(50);
 		}
 		break;
