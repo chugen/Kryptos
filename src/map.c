@@ -87,7 +87,7 @@ void printMap(void) {
 
 	for (i_y = 15; i_y >= 0; i_y--) {
 
-			myprintf("  +");
+		myprintf("  +");
 
 		for (i_x = 0; i_x < 16; i_x++) {
 			if (((g_wall_data[i_x][i_y] & 1) == 1)) {
@@ -578,8 +578,15 @@ void searchAdachi(void) {
 		}
 	}
 	if (g_flag_adachi_goal == 1) {
-
+		if (isNoWall(WALL_FRONT)) {
+			runStraightSearch(0, SECTION, search_velo);
+			countCoord();
+		}
 		runStraight(5, HALF_SECTION, search_velo, 0);
+
+		g_flag_blindalley = 1;
+		waitTime(500);
+		g_flag_blindalley = 0;
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		soundGoal();
@@ -699,7 +706,15 @@ void searchFurukawa(void) {
 	}
 
 	if (g_flag_adachi_goal == 1) {
+		if (isNoWall(WALL_FRONT)) {
+			runStraightSearch(0, SECTION, search_velo);
+			countCoord();
+		}
 		runStraight(5, HALF_SECTION, search_velo, 0);
+
+		g_flag_blindalley = 1;
+		waitTime(500);
+		g_flag_blindalley = 0;
 		driveMotor(OFF);
 		switchSensorLED(OFF);
 		soundGoal();

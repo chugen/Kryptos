@@ -648,7 +648,7 @@ void runStraightOffset(float dis, float velo) {
 			&& g_sensor_FL > SEN_NOWALL_FL && g_sensor_FR > SEN_NOWALL_FR) {
 		sensor_value_FL = 222.82 * expf(13.64 * dis);
 		sensor_value_FR = 216.23 * expf(14.11 * dis);
-		//driveRGB(WHITE, ON);
+
 		while (g_flag_failsafe != 1) {
 			if ((g_sensor_FL_average > sensor_value_FL
 					&& g_sensor_FR_average > sensor_value_FR))

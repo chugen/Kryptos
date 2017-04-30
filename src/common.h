@@ -49,7 +49,7 @@
 
 #define START_X 0
 #define START_Y 0
-#define GOAL_X  1
+#define GOAL_X  2
 #define GOAL_Y 	0
 /****************************************
  path

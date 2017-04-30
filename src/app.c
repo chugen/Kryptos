@@ -346,7 +346,7 @@ void driveBuzzerIntrpt(uint8_t left_right, uint8_t on_off) {
 			switch (left_right) {
 			case LEFT:
 				g_flag_buzzer = LEFT;
-				cycle = (float) 625000 / 2 / (float) BZ_G3;
+				cycle = (float) 625000 / 2 / (float) BZ_A5;
 				break;
 			case RIGHT:
 				g_flag_buzzer = RIGHT;
@@ -354,7 +354,7 @@ void driveBuzzerIntrpt(uint8_t left_right, uint8_t on_off) {
 				break;
 			case BOTH:
 				g_flag_buzzer = BOTH;
-				cycle = (float) 625000 / 2 / (float) BZ_A5;
+				cycle = (float) 625000 / 2 / (float) BZ_G3;
 				break;
 			default:
 				break;
@@ -367,13 +367,13 @@ void driveBuzzerIntrpt(uint8_t left_right, uint8_t on_off) {
 			MTU.TSTR.BIT.CST2 = 1;
 		}
 	} else if (g_flag_buzzer == LEFT) {
-		if (g_buzzer_count > time1 && g_buzzer_count <= time1) {
+		if (g_buzzer_count > time1 && g_buzzer_count <= time2) {
 
 			MTU2.TIOR.BIT.IOA = 0x00;	//出力禁止
 			MTU.TSTR.BIT.CST2 = 0;
 
-		} else if (g_buzzer_count > time1 && g_buzzer_count <= time3) {
-			cycle = (float) 625000 / 2 / (float) BZ_G3;
+		} else if (g_buzzer_count > time2 && g_buzzer_count <= time3) {
+			cycle = (float) 625000 / 2 / (float) BZ_A2;
 			MTU2.TGRA = (int) cycle / 2;
 			MTU2.TGRB = (int) cycle;
 			MTU2.TIOR.BIT.IOA = 0x05;	//初期出力：H,コンペアマッチ：L
@@ -401,13 +401,13 @@ void driveBuzzerIntrpt(uint8_t left_right, uint8_t on_off) {
 			g_flag_buzzer = 0;
 		}
 	} else if (g_flag_buzzer == BOTH) {
-		if (g_buzzer_count > time1 && g_buzzer_count <= time2) {
+		if (g_buzzer_count > time1 && g_buzzer_count <= time1) {
 
 			MTU2.TIOR.BIT.IOA = 0x00;	//出力禁止
 			MTU.TSTR.BIT.CST2 = 0;
 
-		} else if (g_buzzer_count > time2 && g_buzzer_count <= time3) {
-			cycle = (float) 625000 / 2 / (float) BZ_A2;
+		} else if (g_buzzer_count > time1 && g_buzzer_count <= time3) {
+			cycle = (float) 625000 / 2 / (float) BZ_G3;
 			MTU2.TGRA = (int) cycle / 2;
 			MTU2.TGRB = (int) cycle;
 			MTU2.TIOR.BIT.IOA = 0x05;	//初期出力：H,コンペアマッチ：L

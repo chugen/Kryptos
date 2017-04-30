@@ -72,7 +72,7 @@ void intrptCMT1(void) {
 	checkPillarEdgeL();
 	checkPillarEdgeR();
 
-	if (g_flag_run_mode == SEARCH && g_flag_turn != 1) {
+	if (g_flag_run_mode == SEARCH && g_flag_turn != 1&&g_target_velo>0.5) {
 		if (g_flag_pillar_edge_L == 1 && g_flag_pillar_edge_R == 1) {
 			driveRGB(GREEN, ON);
 			driveBuzzerIntrpt(BOTH,ON);
