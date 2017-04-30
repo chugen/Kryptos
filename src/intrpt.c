@@ -35,7 +35,7 @@ void intrptCMT0(void) {
 	g_current_velo = returnVelocityL() + returnVelocityR();
 	g_current_omega = g_current_omega_tmp - g_gyro_reference;
 
-	if (log_count % 2 == 0) {
+	if (log_count % 10 == 0) {
 		/*Log=====================================================*/
 		//getLog(g_sensor_L, g_sensor_R);
 		//getLog(g_sensor_FL,g_sensor_FR);
@@ -51,9 +51,10 @@ void intrptCMT0(void) {
 		//getLogInt(commSPI(GYRO_ZOUT_H, 0x0f, READ),commSPI(GYRO_ZOUT_L, 0x0f, READ));
 		//getLog(g_sensor_R, g_target_omega);
 		//getLog4(g_target_velo,g_current_velo,g_target_omega,g_current_omega);
+		getLog4(g_sensor_L,g_sensor_R,g_flag_pillar_edge_L,g_flag_pillar_edge_R);
 		//getLog4(g_torque_L,g_torque_R,g_target_omega,g_current_omega);
-		getLog4(g_sensor_FL, g_sensor_FR, g_sensor_FL_average,
-				g_sensor_FR_average);
+		//getLog4(g_sensor_FL, g_sensor_FR, g_sensor_FL_average,
+		//		g_sensor_FR_average);
 		//getLog4(g_current_x, g_current_y, (getWallData(WALL_RIGHT) == 0),	checkStep(WALL_RIGHT));
 		/*========================================================*/
 		log_count = 0;
@@ -72,7 +73,7 @@ void intrptCMT1(void) {
 	checkPillarEdgeL();
 	checkPillarEdgeR();
 
-	if (g_flag_run_mode == SEARCH && g_flag_turn != 1&&g_target_velo>0.5) {
+	if (g_flag_run_mode == SEARCH && g_flag_turn != 1&&g_target_velo>=0.7) {
 		if (g_flag_pillar_edge_L == 1 && g_flag_pillar_edge_R == 1) {
 			driveRGB(GREEN, ON);
 			driveBuzzerIntrpt(BOTH,ON);

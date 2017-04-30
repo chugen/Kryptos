@@ -145,7 +145,7 @@ float ctrlPropVelocity(float kp) {
  ****************************************/
 float ctrlIntVelocity(float ki) {
 	g_velo_error_integral += g_velo_error;
-	if (g_flag_blindalley == 1) {
+	if (g_flag_blindalley == 1 || g_flag_blindalley == 2) {
 		g_velo_error_integral = 0;
 	}
 	return g_velo_error_integral * ki;
@@ -194,7 +194,7 @@ float ctrlIntOmega(float ki) {
 			&& g_flag_turn == 0) {
 		g_omega_error_integral = 0;
 		return 0;
-	} else if (g_flag_blindalley == 1) {
+	} else if (g_flag_blindalley == 1 || g_flag_blindalley == 2) {
 		g_omega_error_integral = 0;
 		return 0;
 	} else {
@@ -227,7 +227,7 @@ float ctrlIntAngle(float ki) {
 			&& g_flag_turn == 0) {
 		g_angle_error_integral = 0;
 		return 0;
-	} else if (g_flag_blindalley == 1) {
+	} else if (g_flag_blindalley == 1 || g_flag_blindalley == 2) {
 		g_angle_error_integral = 0;
 		return 0;
 	} else {
@@ -238,58 +238,60 @@ float ctrlIntAngle(float ki) {
  壁制御
  ****************************************/
 float ctrlWall(float kp) {
-	float temp;
+	float tmp;
 	if (g_target_velo <= 0.4) { //低速域
 
-		temp = 0;
+		tmp = 0;
 
-	} else if ((g_flag_turn == 1) || (g_flag_blindalley == 1)) {
+	} else if ((g_flag_turn == 1) || (g_flag_blindalley == 1)
+			|| (g_flag_blindalley == 2)) {
 
-		temp = 0;
+		tmp = 0;
 
 	} else if (g_flag_diagonal == 1) {
 
 		if (SEN_DIAGONAL_FL > g_sensor_FL) {
-			temp = ( SEN_DIAGONAL_FL - g_sensor_FL) * 0.8;
+			tmp = ( SEN_DIAGONAL_FL - g_sensor_FL) * 0.8;
 		}
 		if (SEN_DIAGONAL_FR > g_sensor_FR) {
-			temp = -( SEN_DIAGONAL_FR - g_sensor_FR) * 0.8;
+			tmp = -( SEN_DIAGONAL_FR - g_sensor_FR) * 0.8;
 		}
-		temp += 0.07
+		tmp += 0.07
 				* (( SEN_REFERENCE_L - g_sensor_L)
 						- ( SEN_REFERENCE_R - g_sensor_R));
 
 	} else if (g_flag_circuit == 1) {
-		temp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
+		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
 	} else if (((fabsf(g_sensor_L_derivative) > SEN_DERIVATIVE_L)
 
 	|| (fabsf(g_sensor_R_derivative) > SEN_DERIVATIVE_R))
 			&& (g_target_velo <= 0.5)) {
 
-		temp = 0;
+		tmp = 0;
 
 	} else if ((g_sensor_L > SEN_THRESHOLD_L)
 			&& (g_sensor_R > SEN_THRESHOLD_R)) {
 		//	driveRGB(GREEN,ON);
-		temp = (( SEN_REFERENCE_L - g_sensor_L)
-				- ( SEN_REFERENCE_R - g_sensor_R));
+		tmp =
+				(( SEN_REFERENCE_L - g_sensor_L)
+						- ( SEN_REFERENCE_R - g_sensor_R));
 
 	} else if ((g_sensor_L < SEN_THRESHOLD_L)
 			&& (g_sensor_R < SEN_THRESHOLD_R)) {
 		//	driveRGB(ORANGE,ON);
-		temp = 0;
+		tmp = 0;
 
 	} else if (g_sensor_L > SEN_THRESHOLD_L) {
 		//	driveRGB(BLUE,ON);
-		temp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
+		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
 
 	} else if (g_sensor_R > SEN_REFERENCE_R) {
 		//	driveRGB(RED,ON);
-		temp = -2 * ( SEN_REFERENCE_R - g_sensor_R);
+		tmp = -2 * ( SEN_REFERENCE_R - g_sensor_R);
 
 	} else {
 
-		temp = 0;
+		tmp = 0;
 	}
 
 //	if (fabsf(temp) < 0.00001) {
@@ -299,53 +301,53 @@ float ctrlWall(float kp) {
 //	}
 
 	if (g_target_velo < 0.5) {
-		return temp * kp;
+		return tmp * kp;
 	} else if (g_target_velo < 1.5) {
-		return temp * 0.1;
+		return tmp * 0.1;
 	} else {
-		return temp * WALL_HIGH_SPEED;
+		return tmp * WALL_HIGH_SPEED;
 	}
 
 }
 
 float ctrlWallFrontAng(float kp) {
-	float temp = 0;
+	float tmp = 0;
 	if ((g_flag_blindalley == 1) && (g_sensor_FL > SEN_NOWALL_FL)
 			&& (g_sensor_FR > SEN_NOWALL_FR)) {
 		g_omega_error_integral = 0;
-		temp = -kp
+		tmp = -kp
 				* (( SEN_REFERENCE_FL - g_sensor_FL)
 						- ( SEN_REFERENCE_FR - g_sensor_FR));
 
 	} else if ((g_flag_blindalley == 2) && (g_sensor_FL > SEN_NOWALL_FL)
 			&& (g_sensor_FR > SEN_NOWALL_FR)) {
 		g_omega_error_integral = 0;
-		temp = -kp
+		tmp = -kp
 				* ((SEN_REFERENCE_FL_S - g_sensor_FL)
 						- (SEN_REFERENCE_FR_S - g_sensor_FR));
 	} else {
-		temp = 0;
+		tmp = 0;
 	}
-	return temp;
+	return tmp;
 }
 float ctrlWallFrontDis(float kp) {
-	float temp = 0;
+	float tmp = 0;
 	if ((g_flag_blindalley == 1) && (g_sensor_FL > SEN_NOWALL_FL)
 			&& (g_sensor_FR > SEN_NOWALL_FR)) {
 
-		temp = kp
+		tmp = kp
 				* (( SEN_REFERENCE_FL - g_sensor_FL)
 						+ ( SEN_REFERENCE_FR - g_sensor_FR));
 
 	} else if ((g_flag_blindalley == 2) && (g_sensor_FL > SEN_NOWALL_FL)
 			&& (g_sensor_FR > SEN_NOWALL_FR)) {
-		temp = kp
+		tmp = kp
 				* ((SEN_REFERENCE_FL_S - g_sensor_FL)
 						+ (SEN_REFERENCE_FR_S - g_sensor_FR));
 	} else {
-		temp = 0;
+		tmp = 0;
 	}
-	return temp;
+	return tmp;
 }
 /****************************************
  フィードフォワード制御
@@ -462,6 +464,7 @@ void runBlindAlley(float velo) {
 		g_distance = 0;
 
 		//runStraight(5, HALF_SECTION + 0.01, velo, velo);
+		runStraight(5, -0.02, 0.5, 0);
 		runStraightSearch(5, HALF_SECTION, velo);
 	} else if (SEN_REFERENCE_R - g_sensor_R < -170) {
 		turnCorner(&pivot_90_L);
@@ -475,6 +478,7 @@ void runBlindAlley(float velo) {
 		waitTime(300);
 		g_distance = 0;
 		//runStraight(5, HALF_SECTION + 0.01, velo, velo);
+		runStraight(5, -0.02, 0.5, 0);
 		runStraightSearch(5, HALF_SECTION, velo);
 	} else {
 		g_target_angle = 0;
@@ -482,6 +486,7 @@ void runBlindAlley(float velo) {
 		waitTime(300);
 		g_distance = 0;
 		//runStraight(5, HALF_SECTION + BLIND_ALLEY, velo, velo);
+		runStraight(5, -0.02, 0.5, 0);
 		runStraightSearch(5, HALF_SECTION, velo);
 	}
 
@@ -622,10 +627,16 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 			break;
 	}
 	g_distance = 0;
-	if (g_flag_pillar_edge_L == 1 || g_flag_pillar_edge_R == 1) {
+	if (g_flag_pillar_edge_L == 1) {
 		while (g_flag_failsafe != 1) {
 
 			if (fabsf(g_distance) >= 0.09)
+				break;
+		}
+	} else if (g_flag_pillar_edge_R == 1) {
+		while (g_flag_failsafe != 1) {
+
+			if (fabsf(g_distance) >= 0.075)
 				break;
 		}
 	}

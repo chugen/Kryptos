@@ -52,12 +52,12 @@
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 494//525//470
-#define SEN_REFERENCE_R 457//455//517
+#define SEN_REFERENCE_L 461//494//525//470
+#define SEN_REFERENCE_R 495//457//455//517
 #define SEN_REFERENCE_FL 1120
 #define SEN_REFERENCE_FR 1100
-#define SEN_REFERENCE_FL_S 920
-#define SEN_REFERENCE_FR_S 880
+#define SEN_REFERENCE_FL_S 960//920
+#define SEN_REFERENCE_FR_S 930//880
 /*==========*/
 #define SEN_DIAGONAL_FL 70
 #define SEN_DIAGONAL_FR 70

@@ -545,26 +545,17 @@ void searchAdachi(void) {
 
 		if (isNoWall(WALL_FRONT) && isSmallerSteps(WALL_FRONT)) {
 
-			//runStraight(5, SECTION, search_velo, search_velo);
 			runStraightSearch(0, SECTION, search_velo);
 			countCoord();
 
 		} else if (isNoWall(WALL_LEFT) && isSmallerSteps(WALL_LEFT)) {
-//			driveRGB(LRED, ON);
-			//turnCorner(&t_90_L_05);
-//			runStraight(5, 0.007, 0.7, 0.7);
-//			turnCornerContinuous(90, 790);
-//			runStraight(5, 0.005, 0.7, 0.7);
+
 			turnSearch(&tc_90_L_07);
 			checkOrient(90);
 			countCoord();
 
 		} else if (isNoWall(WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)) {
-//			driveRGB(YELLOW, ON);
-			//turnCorner(&t_90_R_05);
-//			runStraight(5, 0.005, 0.7, 0.7);
-//			turnCornerContinuous(-90, 790);
-//			runStraight(5, 0.005, 0.7, 0.7);
+
 			turnSearch(&tc_90_R_07);
 			checkOrient(-90);
 			countCoord();
@@ -653,7 +644,6 @@ void searchFurukawa(void) {
 
 		if (isNoWall(WALL_FRONT) && isUnknownSection(WALL_FRONT)) {
 
-//			runStraight(5, SECTION, search_velo, search_velo);
 			runStraightSearch(0, SECTION, search_velo);
 
 			countCoord();
@@ -676,13 +666,13 @@ void searchFurukawa(void) {
 
 		} else if (isNoWall(WALL_FRONT) && isSmallerSteps(WALL_FRONT)) {
 
-//			runStraight(5, SECTION, search_velo, search_velo);
+
 			runStraightSearch(0, SECTION, search_velo);
 
 			countCoord();
 
 		} else if (isNoWall(WALL_LEFT) && isSmallerSteps(WALL_LEFT)) {
-			driveRGB(LRED, ON);
+//			driveRGB(LRED, ON);
 //			//turnCorner(&t_90_L_05);
 			turnSearch(&tc_90_L_07);
 
@@ -690,7 +680,7 @@ void searchFurukawa(void) {
 			countCoord();
 
 		} else if (isNoWall(WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)) {
-			driveRGB(YELLOW, ON);
+//			driveRGB(YELLOW, ON);
 //			//turnCorner(&t_90_R_05);
 			turnSearch(&tc_90_R_07);
 

@@ -29,7 +29,7 @@
 
 void main(void) {
 	//uint8_t i, j;
-	float sp = 0.7;
+
 	init();
 	checkLowVoltage();
 	notificateStartUp();
@@ -43,24 +43,24 @@ void main(void) {
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-		selectAdjustment1(T14);
-//		driveRGB(GREEN, ON);
-//		waitSensor();
-//		waitTime(1000);
-//		calcGyroZRef();
-//
-//		initRun();
-//		driveMotor(ON);
-//		switchSensorLED(OFF);
-//
+//		selectAdjustment1(T14);
+		driveRGB(GREEN, ON);
+		waitSensor();
+		waitTime(1000);
+		calcGyroZRef();
+
+		initRun();
+		driveMotor(ON);
+		switchSensorLED(OFF);
+
 //		runStraight(5, SECTION, sp, sp);
 //		turnSearch(&tc_90_L_07);
 //		runStraight(5, SECTION, sp, 0);
-//
-//		waitTime(300);
-//		driveMotor(OFF);
-//		waitButton();
-//		printLog4();
+
+		waitTime(300);
+		driveMotor(OFF);
+		waitButton();
+		printLog4();
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
@@ -142,7 +142,7 @@ void main(void) {
 		calcGyroZRef();
 		switchSensorLED(ON);
 		g_flag_control = 1;
-		g_flag_blindalley = 1;
+		g_flag_blindalley = 2;
 		driveMotor(ON);
 		while (1) {
 
