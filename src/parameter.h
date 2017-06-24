@@ -56,8 +56,8 @@
 #define SEN_REFERENCE_R 495//457//455//517
 #define SEN_REFERENCE_FL 1120
 #define SEN_REFERENCE_FR 1100
-#define SEN_REFERENCE_FL_S 960//920
-#define SEN_REFERENCE_FR_S 930//880
+#define SEN_REFERENCE_FL_S 910//960//920
+#define SEN_REFERENCE_FR_S 880//930//880
 /*==========*/
 #define SEN_DIAGONAL_FL 70
 #define SEN_DIAGONAL_FR 70
@@ -75,8 +75,8 @@
 //死亡判定
 #define SEN_DEATH 1600
 //壁切れ判定変化量
-#define SEN_PILLAR_EDGE_L -70//-100
-#define SEN_PILLAR_EDGE_R -70//-100
+#define SEN_PILLAR_EDGE_L -50//-100
+#define SEN_PILLAR_EDGE_R -50//-100
 
 #define SEN_PILLAR_EDGE_SEARCH_L -40
 #define SEN_PILLAR_EDGE_SEARCH_R -40
@@ -87,7 +87,7 @@
 #define VELO_I 10
 
 //角速度P制御
-#define ANG_VELO_P 200.0
+#define ANG_VELO_P 250.0
 //角速度I制御
 #define ANG_VELO_I 6.0
 //角速度D制御
@@ -105,7 +105,7 @@
 #define ANG_I 0//10//0.7//0.02
 
 //壁制御
-#define WALL_P 0.7//0.3
+#define WALL_P 0.3//0.7//0.3
 #define WALL_HIGH_SPEED 0.08
 #define WALL_FRONT_ANG 0.05//0.07
 #define WALL_FRONT_DIS 0.08//0.1
