@@ -107,8 +107,8 @@
 //壁制御
 #define WALL_P 0.3//0.7//0.3
 #define WALL_HIGH_SPEED 0.08
-#define WALL_FRONT_ANG 0.05//0.07
-#define WALL_FRONT_DIS 0.08//0.1
+#define WALL_FRONT_ANG 0.03//0.05//0.07
+#define WALL_FRONT_DIS 0.05//0.08//0.1
 /*Interrupt*/
 #define INTRPT_PERIOD 0.0005
 #define INTRPT_MS 0.001/INTRPT_PERIOD
