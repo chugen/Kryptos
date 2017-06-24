@@ -51,7 +51,8 @@ void intrptCMT0(void) {
 		//getLogInt(commSPI(GYRO_ZOUT_H, 0x0f, READ),commSPI(GYRO_ZOUT_L, 0x0f, READ));
 		//getLog(g_sensor_R, g_target_omega);
 		//getLog4(g_target_velo,g_current_velo,g_target_omega,g_current_omega);
-		getLog4(g_sensor_L,g_sensor_R,g_flag_pillar_edge_L,g_flag_pillar_edge_R);
+		getLog4(g_sensor_L, g_sensor_R, g_flag_pillar_edge_L,
+				g_flag_pillar_edge_R);
 		//getLog4(g_torque_L,g_torque_R,g_target_omega,g_current_omega);
 		//getLog4(g_sensor_FL, g_sensor_FR, g_sensor_FL_average,
 		//		g_sensor_FR_average);
@@ -73,21 +74,22 @@ void intrptCMT1(void) {
 	checkPillarEdgeL();
 	checkPillarEdgeR();
 
-	if (g_flag_run_mode == SEARCH && g_flag_turn != 1&&g_target_velo>=0.7) {
-		if (g_flag_pillar_edge_L == 1 && g_flag_pillar_edge_R == 1) {
+	if (g_flag_run_mode == SEARCH && g_flag_turn != 1) {
+		if (g_flag_pillar_edge_L == 1 && g_flag_pillar_edge_R == 1
+				&& g_target_velo >= 0.7) {
 			driveRGB(GREEN, ON);
-			driveBuzzerIntrpt(BOTH,ON);
-		} else if (g_flag_pillar_edge_R == 1) {
+			driveBuzzerIntrpt(BOTH, ON);
+		} else if (g_flag_pillar_edge_R == 1 && g_target_velo >= 0.7) {
 			driveRGB(RED, ON);
-			driveBuzzerIntrpt(RIGHT,ON);
+			driveBuzzerIntrpt(RIGHT, ON);
 
-		} else if (g_flag_pillar_edge_L == 1) {
+		} else if (g_flag_pillar_edge_L == 1 && g_target_velo >= 0.7) {
 			driveRGB(BLUE, ON);
-			driveBuzzerIntrpt(LEFT,ON);
+			driveBuzzerIntrpt(LEFT, ON);
 
 		} else {
 			driveRGB(BLUE, OFF);
-			driveBuzzerIntrpt(0,OFF);
+			driveBuzzerIntrpt(0, OFF);
 		}
 	}
 }

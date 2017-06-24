@@ -502,6 +502,7 @@ void searchAdachi(void) {
 	float search_velo = 0.7;
 	g_flag_run_mode = SEARCH;
 	g_log_count = 0;
+	driveSuction(5, ON);
 	runStraight(5, HALF_SECTION, search_velo, search_velo);
 
 	countCoord();
@@ -569,6 +570,7 @@ void searchAdachi(void) {
 		}
 	}
 	if (g_flag_adachi_goal == 1) {
+		driveSuction(5, OFF);
 		if (isNoWall(WALL_FRONT)) {
 			runStraightSearch(0, SECTION, search_velo);
 			countCoord();
@@ -583,6 +585,8 @@ void searchAdachi(void) {
 		soundGoal();
 		matchWallGoal();
 	} else {
+		driveSuction(5, OFF);
+		driveMotor(OFF);
 		switchSensorLED(OFF);
 
 	}
@@ -595,6 +599,7 @@ void searchFurukawa(void) {
 	float search_velo = 0.7;
 	g_flag_run_mode = SEARCH;
 	g_log_count = 0;
+	driveSuction(5, ON);
 	runStraight(5, HALF_SECTION, search_velo, search_velo);
 	countCoord();
 	checkWall();
@@ -696,6 +701,7 @@ void searchFurukawa(void) {
 	}
 
 	if (g_flag_adachi_goal == 1) {
+		driveSuction(5, OFF);
 		if (isNoWall(WALL_FRONT)) {
 			runStraightSearch(0, SECTION, search_velo);
 			countCoord();
@@ -710,6 +716,7 @@ void searchFurukawa(void) {
 		soundGoal();
 		matchWallGoal();
 	} else {
+		driveSuction(5, OFF);
 		driveMotor(OFF);
 		switchSensorLED(OFF);
 
