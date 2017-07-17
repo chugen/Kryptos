@@ -29,6 +29,7 @@
 
 void main(void) {
 	//uint8_t i, j;
+	float sp = 0.7;
 
 	init();
 	checkLowVoltage();
@@ -43,7 +44,7 @@ void main(void) {
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-//		selectAdjustment1(T14);
+
 		driveRGB(GREEN, ON);
 		waitSensor();
 		waitTime(1000);
@@ -53,9 +54,9 @@ void main(void) {
 		driveMotor(ON);
 		switchSensorLED(OFF);
 
-//		runStraight(5, SECTION, sp, sp);
-//		turnSearch(&tc_90_L_07);
-//		runStraight(5, SECTION, sp, 0);
+		runStraight(5, SECTION, sp, sp);
+		turnSearch(&tc_90_L_07);
+		runStraight(5, SECTION, sp, 0);
 
 		waitTime(300);
 		driveMotor(OFF);
@@ -64,7 +65,8 @@ void main(void) {
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
-		selectAdjustment2();
+		selectAdjustment1(T14);
+//		selectAdjustment2();
 		break;
 	case 3: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(YELLOW, ON);
@@ -122,8 +124,7 @@ void main(void) {
 		switchSensorLED(ON);
 		while (1) {
 
-			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL,
-					g_sensor_L, g_sensor_R, g_sensor_FR);
+			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL, g_sensor_L, g_sensor_R, g_sensor_FR);
 //			myprintf("%4.1d	%4.1d\n", g_sensor_FL, g_sensor_FR);
 			waitTime(50);
 		}

@@ -52,10 +52,10 @@
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 461//494//525//470
-#define SEN_REFERENCE_R 495//457//455//517
-#define SEN_REFERENCE_FL 1120
-#define SEN_REFERENCE_FR 1100
+#define SEN_REFERENCE_L 443//461//494//525//470
+#define SEN_REFERENCE_R 523//495//457//455//517
+#define SEN_REFERENCE_FL 890//1120
+#define SEN_REFERENCE_FR 920//1100
 #define SEN_REFERENCE_FL_S 910//960//920
 #define SEN_REFERENCE_FR_S 880//930//880
 /*==========*/
@@ -68,18 +68,18 @@
 #define SEN_THRESHOLD_L 400
 #define SEN_THRESHOLD_R 410
 //壁有無判定基準値
-#define SEN_NOWALL_L 250//170
-#define SEN_NOWALL_R 250
-#define SEN_NOWALL_FL 75//160
-#define SEN_NOWALL_FR 65
+#define SEN_NOWALL_L 200//170
+#define SEN_NOWALL_R 200
+#define SEN_NOWALL_FL 100//75//160
+#define SEN_NOWALL_FR 90//65
 //死亡判定
 #define SEN_DEATH 1600
 //壁切れ判定変化量
-#define SEN_PILLAR_EDGE_L -50//-100
-#define SEN_PILLAR_EDGE_R -50//-100
+#define SEN_PILLAR_EDGE_L -45//-50//-100
+#define SEN_PILLAR_EDGE_R -50//-50//-100
 
-#define SEN_PILLAR_EDGE_SEARCH_L -40
-#define SEN_PILLAR_EDGE_SEARCH_R -40
+#define SEN_PILLAR_EDGE_SEARCH_L -50
+#define SEN_PILLAR_EDGE_SEARCH_R -50
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //速度P制御
 #define VELO_P 220
@@ -91,7 +91,7 @@
 //角速度I制御
 #define ANG_VELO_I 6.0
 //角速度D制御
-#define ANG_VELO_D 5.0
+#define ANG_VELO_D 20//5.0
 //角速度P制御
 #define ANG_FASTVELO_P 300.0
 //角速度I制御
@@ -107,8 +107,8 @@
 //壁制御
 #define WALL_P 0.3//0.7//0.3
 #define WALL_HIGH_SPEED 0.08
-#define WALL_FRONT_ANG 0.03//0.05//0.07
-#define WALL_FRONT_DIS 0.05//0.08//0.1
+#define WALL_FRONT_ANG 0.02//0.05//0.07
+#define WALL_FRONT_DIS 0.01//0.08//0.1
 /*Interrupt*/
 #define INTRPT_PERIOD 0.0005
 #define INTRPT_MS 0.001/INTRPT_PERIOD

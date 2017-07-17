@@ -195,7 +195,7 @@ void selectAdjustment1(uint8_t velo) {
 	driveMotor(OFF);
 	driveSuction(70, OFF);
 	waitButton();
-	printLog();
+	printLog4();
 }
 /****************************************
  調整用関数2

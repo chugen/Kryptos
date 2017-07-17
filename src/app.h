@@ -11,7 +11,8 @@
  ビットシフト
  ****************************************/
 void shiftBit(uint8_t *value, uint8_t shift, uint8_t shift_dir);
-uint8_t getBitShiftValue(uint8_t *value, uint8_t shift, uint8_t shift_dir);
+uint8_t getBitShiftValue4bit(uint8_t *value, uint8_t shift, uint8_t shift_dir);
+uint8_t getBitShiftValue8bit(uint8_t *value, uint8_t shift, uint8_t shift_dir);
 /****************************************
  Wait関数
  ****************************************/

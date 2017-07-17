@@ -90,12 +90,13 @@ void runAdachiAdachi(void) {
 	initRun();
 
 	searchAdachi();
+
 	initRun();
 	driveMotor(ON);
 	switchSensorLED(ON);
 	turnCorner(&pivot);
 	checkOrient(180);
-
+	runStraight(5, -0.035, 0.5, 0);
 	setTargetCoord(START_X, START_Y);
 	countStepQueue();
 
@@ -153,6 +154,7 @@ void runFurukawaAdachi(void) {
 	switchSensorLED(ON);
 	turnCorner(&pivot);
 	checkOrient(180);
+	runStraight(5, -0.035, 0.5, 0);
 	setTargetCoord(START_X, START_Y);
 
 	countStepQueue();
@@ -206,6 +208,7 @@ void selectRun(void) {
 
 		setOrient(NORTH);
 		makePath();
+
 		makePath3();
 
 		waitSensor();
@@ -377,7 +380,7 @@ void selectContest(void) {
 			waitButton();
 			countStepShortest();
 			waitTime(200);
-			printMap();
+			printMapNew();
 			makePath();
 			makePath2();
 			makePath3();
@@ -388,21 +391,22 @@ void selectContest(void) {
 			break;
 
 		case 3:
-			//runCircuit(8, 16, 2, 4, 20, 1);
+//			runCircuit(16, 16, 2, 3.5, 20, 1.4);
 			setTargetCoord(GOAL_X, GOAL_Y);
-
-			countStepShortest();
-			setCurrentCoord(START_X, START_Y);
-
 			setOrient(NORTH);
-			makePath();
-			makePath3();
+			countStepShortest();
+	//		setCurrentCoord(START_X, START_Y);
 
-			printMap();
-			printPath3();
+
+	//		makePath();
+	//		makePath3();
+
+	//		printMap();
+			printMapNew();
+	//		printPath3();
 			break;
 		case 4:
-			//runCircuit(8, 16, 2, 4.5, 25, 1);
+//			runCircuit(16, 16, 2, 4, 30, 1.4);
 			waitButton();
 			printLog4();
 			break;

@@ -31,20 +31,27 @@ void setTargetCoord(uint16_t x,uint16_t y);
 /****************************************
  map表示
  ****************************************/
-void printMap(void);
+
+void printMapNew(void);
 /****************************************
  初期壁セット
  ****************************************/
 void setInitWall(void);
 /****************************************
- 壁情報一致
+ 壁情報セット
  ****************************************/
-void matchWall(void);
+void setWallData(wall_t *wall_info,uint16_t x, uint16_t y, uint8_t orient, uint16_t wall);
+void setWallDataKnown(wall_t *wall_info,uint16_t x, uint16_t y);
+/****************************************
+ 壁情報ゲット
+ ****************************************/
+uint8_t getWallData(wall_t *wall_info,uint16_t x, uint16_t y, uint8_t orient);
+uint8_t getWallDataKnown(wall_t *wall_info,uint16_t x, uint16_t y, uint8_t orient);
+
 /****************************************
  壁情報決定版
  ****************************************/
 void matchWallGoal(void) ;
-
 /****************************************
  壁情報読み込み
  ****************************************/
@@ -52,7 +59,11 @@ void checkWall(void);
 /****************************************
  壁有無判定
  ****************************************/
-uint8_t isNoWall(uint8_t dir);
+uint8_t isNoWall(wall_t *wall_info,uint8_t dir);
+/****************************************
+ 壁既知データ有無判定
+ ****************************************/
+uint8_t isUnknownWall(wall_t *wall_info,uint8_t dir) ;
 /****************************************
  進行方向の歩数確認
  ****************************************/
@@ -60,7 +71,8 @@ uint8_t isSmallerSteps(uint8_t dir);
 /****************************************
  進行方向が既知か未知か
  ****************************************/
-uint8_t isUnknownSection(uint8_t dir);
+uint8_t isUnknownSection(uint16_t x, uint16_t y);
+uint8_t isUnknownNextSection(uint8_t dir);
 /****************************************
  queuemap
  ****************************************/

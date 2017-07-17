@@ -91,17 +91,11 @@ extern volatile float g_torque_R;
 extern uint8_t g_orient;
 extern volatile uint8_t g_current_x;
 extern volatile uint8_t g_current_y;
-extern volatile uint8_t g_wall_data_tmp[16][16];
-extern volatile uint8_t g_wall_data[16][16];
 
-extern volatile uint16_t g_wall_data_row[14];
-extern volatile uint16_t g_wall_data_column[14];
-extern volatile uint16_t g_wall_data_row_tmp[14];
-extern volatile uint16_t g_wall_data_column_tmp[14];
-extern volatile uint16_t g_wall_known_row[14];
-extern volatile uint16_t g_wall_known_column[14];
-extern volatile uint16_t g_wall_known_row_tmp[14];
-extern volatile uint16_t g_wall_known_column_tmp[14];
+extern wall_t g_wall_info[15];
+extern wall_t g_wall_info_tmp[15];
+
+extern step_t g_step[15];
 
 extern volatile int16_t g_target_x;
 extern volatile int16_t g_target_y;

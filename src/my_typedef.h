@@ -1,7 +1,7 @@
 /*
  * my_typedef.h
  *
- *  Created on: 2016/09/17
+ *  Created on: 2016/09/17b
  *      Author: Gen
  */
 
@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 //
-typedef struct{
+typedef struct {
 	float angle;
 	float alpha;
 	float omega;
@@ -22,7 +22,7 @@ typedef struct{
 	int8_t mode;
 } turn_t;
 
-typedef struct{
+typedef struct {
 	float angle;
 	float omega;
 	float velocity;
@@ -30,5 +30,17 @@ typedef struct{
 	float rear;
 	int8_t dia;
 } turn2_t;
+
+typedef struct {
+	uint16_t row;
+	uint16_t column;
+	uint16_t row_known;
+	uint16_t column_known;
+} wall_t;
+
+typedef struct{
+	float row[15];
+	float column[15];
+} step_t;
 
 #endif /* MY_TYPEDEF_H_ */

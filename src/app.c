@@ -40,8 +40,8 @@ void shiftBit(uint8_t *value, uint8_t shift, uint8_t shift_dir) {
 		break;
 	}
 }
-
-uint8_t getBitShiftValue(uint8_t *value, uint8_t shift, uint8_t shift_dir) {
+//4bit
+uint8_t getBitShiftValue4bit(uint8_t *value, uint8_t shift, uint8_t shift_dir) {
 	uint8_t bit;
 
 	switch (shift_dir) {
@@ -65,6 +65,26 @@ uint8_t getBitShiftValue(uint8_t *value, uint8_t shift, uint8_t shift_dir) {
 		return 0;
 	}
 }
+uint8_t getBitShiftValue8bit(uint8_t *value, uint8_t shift, uint8_t shift_dir) {
+	uint8_t bit;
+
+	switch (shift_dir) {
+	case LEFT:
+		bit = *value << shift;
+
+		return bit;
+		break;
+	case RIGHT:
+		bit = *value >> shift;
+
+		return bit;
+		break;
+
+	default:
+		return 0;
+	}
+}
+
 /****************************************
  Wait関数
  ****************************************/
@@ -470,14 +490,14 @@ float convDegreeToRadian(float degree) {
 void printLog(void) {
 	int32_t i;
 	for (i = 0; i < LOG_TIMES; i++) {
-		myprintf("%d	%f	%f\n", i, *(g_log_array + i), *(g_log_array2 + i));
+		myprintf("%d\t%f\t%f\n", i, *(g_log_array + i), *(g_log_array2 + i));
 	}
 	soundPrint();
 }
 void printLog4(void) {
 	int32_t i;
 	for (i = 0; i < LOG_TIMES; i++) {
-		myprintf("%d	%f	%f	%f	%f\n", i, *(g_log_array + i), *(g_log_array2 + i),
+		myprintf("%d\t%f\t%f\t%f\t%f\n", i, *(g_log_array + i), *(g_log_array2 + i),
 				*(g_log_array3 + i), *(g_log_array4 + i));
 	}
 	soundPrint();

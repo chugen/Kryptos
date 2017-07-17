@@ -93,7 +93,7 @@ int16_t setMotorDutyR(float duty) {
 	return (int16_t) (250 * duty / 100 * voltage_temp);
 }
 /****************************************
- モータ 　CW/CCW
+ モータ CW/CCW
  ****************************************/
 int8_t setMotorDirL(int8_t cw_ccw) {
 	if (cw_ccw == 0) {
@@ -123,13 +123,11 @@ int8_t setMotorDirR(int8_t cw_ccw) {
  速度返す
  ****************************************/
 float returnVelocityL(void) {
-	return returnEncoderDiffL() * DIAMETER_L * INTRPT_FREQENCY * M_PI
-			/ (ENC_RESO * 4) / GEAR_RATIO;
+	return returnEncoderDiffL() * DIAMETER_L * INTRPT_FREQENCY * M_PI / (ENC_RESO * 4) / GEAR_RATIO;
 }
 
 float returnVelocityR(void) {
-	return returnEncoderDiffR() * DIAMETER_R * INTRPT_FREQENCY * M_PI
-			/ (ENC_RESO * 4) / GEAR_RATIO;
+	return returnEncoderDiffR() * DIAMETER_R * INTRPT_FREQENCY * M_PI / (ENC_RESO * 4) / GEAR_RATIO;
 }
 
 /****************************************
@@ -190,8 +188,7 @@ float ctrlPropOmega(float kp) {
  ****************************************/
 float ctrlIntOmega(float ki) {
 	g_omega_error_integral += g_omega_error;
-	if (((g_sensor_L > SEN_THRESHOLD_L) || (g_sensor_R > SEN_THRESHOLD_R))
-			&& g_flag_turn == 0) {
+	if (((g_sensor_L > SEN_THRESHOLD_L) || (g_sensor_R > SEN_THRESHOLD_R)) && g_flag_turn == 0) {
 		g_omega_error_integral = 0;
 		return 0;
 	} else if (g_flag_blindalley == 1 || g_flag_blindalley == 2) {
@@ -223,8 +220,7 @@ float ctrlPropAngle(float kp) {
  ****************************************/
 float ctrlIntAngle(float ki) {
 	g_angle_error_integral += g_angle_error;
-	if (((g_sensor_L > SEN_THRESHOLD_L) || (g_sensor_R > SEN_THRESHOLD_R))
-			&& g_flag_turn == 0) {
+	if (((g_sensor_L > SEN_THRESHOLD_L) || (g_sensor_R > SEN_THRESHOLD_R)) && g_flag_turn == 0) {
 		g_angle_error_integral = 0;
 		return 0;
 	} else if (g_flag_blindalley == 1 || g_flag_blindalley == 2) {
@@ -243,8 +239,7 @@ float ctrlWall(float kp) {
 
 		tmp = 0;
 
-	} else if ((g_flag_turn == 1) || (g_flag_blindalley == 1)
-			|| (g_flag_blindalley == 2)) {
+	} else if ((g_flag_turn == 1) || (g_flag_blindalley == 1) || (g_flag_blindalley == 2)) {
 
 		tmp = 0;
 
@@ -256,28 +251,21 @@ float ctrlWall(float kp) {
 		if (SEN_DIAGONAL_FR > g_sensor_FR) {
 			tmp = -( SEN_DIAGONAL_FR - g_sensor_FR) * 0.8;
 		}
-		tmp += 0.07
-				* (( SEN_REFERENCE_L - g_sensor_L)
-						- ( SEN_REFERENCE_R - g_sensor_R));
+		tmp += 0.07 * (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
 
 	} else if (g_flag_circuit == 1) {
 		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
 	} else if (((fabsf(g_sensor_L_derivative) > SEN_DERIVATIVE_L)
 
-	|| (fabsf(g_sensor_R_derivative) > SEN_DERIVATIVE_R))
-			&& (g_target_velo <= 0.5)) {
+	|| (fabsf(g_sensor_R_derivative) > SEN_DERIVATIVE_R)) && (g_target_velo <= 0.5)) {
 
 		tmp = 0;
 
-	} else if ((g_sensor_L > SEN_THRESHOLD_L)
-			&& (g_sensor_R > SEN_THRESHOLD_R)) {
+	} else if ((g_sensor_L > SEN_THRESHOLD_L) && (g_sensor_R > SEN_THRESHOLD_R)) {
 		//	driveRGB(GREEN,ON);
-		tmp =
-				(( SEN_REFERENCE_L - g_sensor_L)
-						- ( SEN_REFERENCE_R - g_sensor_R));
+		tmp = (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
 
-	} else if ((g_sensor_L < SEN_THRESHOLD_L)
-			&& (g_sensor_R < SEN_THRESHOLD_R)) {
+	} else if ((g_sensor_L < SEN_THRESHOLD_L) && (g_sensor_R < SEN_THRESHOLD_R)) {
 		//	driveRGB(ORANGE,ON);
 		tmp = 0;
 
@@ -312,19 +300,16 @@ float ctrlWall(float kp) {
 
 float ctrlWallFrontAng(float kp) {
 	float tmp = 0;
-	if ((g_flag_blindalley == 1) && (g_sensor_FL > SEN_NOWALL_FL)
-			&& (g_sensor_FR > SEN_NOWALL_FR)) {
-		g_omega_error_integral = 0;
-		tmp = -kp
-				* (( SEN_REFERENCE_FL - g_sensor_FL)
-						- ( SEN_REFERENCE_FR - g_sensor_FR));
+	if ((g_flag_blindalley == 1) && (g_sensor_FL_average > SEN_NOWALL_FL) && (g_sensor_FR_average > SEN_NOWALL_FR)) {
 
-	} else if ((g_flag_blindalley == 2) && (g_sensor_FL > SEN_NOWALL_FL)
-			&& (g_sensor_FR > SEN_NOWALL_FR)) {
 		g_omega_error_integral = 0;
-		tmp = -kp
-				* ((SEN_REFERENCE_FL_S - g_sensor_FL)
-						- (SEN_REFERENCE_FR_S - g_sensor_FR));
+		tmp = -kp * (( SEN_REFERENCE_FL - g_sensor_FL_average) - ( SEN_REFERENCE_FR - g_sensor_FR_average));
+
+	} else if ((g_flag_blindalley == 2) && (g_sensor_FL_average > SEN_NOWALL_FL) && (g_sensor_FR_average > SEN_NOWALL_FR)) {
+
+		g_omega_error_integral = 0;
+		tmp = -kp * ((SEN_REFERENCE_FL_S - g_sensor_FL_average) - (SEN_REFERENCE_FR_S - g_sensor_FR_average));
+
 	} else {
 		tmp = 0;
 	}
@@ -332,18 +317,14 @@ float ctrlWallFrontAng(float kp) {
 }
 float ctrlWallFrontDis(float kp) {
 	float tmp = 0;
-	if ((g_flag_blindalley == 1) && (g_sensor_FL > SEN_NOWALL_FL)
-			&& (g_sensor_FR > SEN_NOWALL_FR)) {
+	if ((g_flag_blindalley == 1) && (g_sensor_FL_average > SEN_NOWALL_FL) && (g_sensor_FR_average > SEN_NOWALL_FR)) {
 
-		tmp = kp
-				* (( SEN_REFERENCE_FL - g_sensor_FL)
-						+ ( SEN_REFERENCE_FR - g_sensor_FR));
+		tmp = kp * (( SEN_REFERENCE_FL - g_sensor_FL_average) + ( SEN_REFERENCE_FR - g_sensor_FR_average));
 
-	} else if ((g_flag_blindalley == 2) && (g_sensor_FL > SEN_NOWALL_FL)
-			&& (g_sensor_FR > SEN_NOWALL_FR)) {
-		tmp = kp
-				* ((SEN_REFERENCE_FL_S - g_sensor_FL)
-						+ (SEN_REFERENCE_FR_S - g_sensor_FR));
+	} else if ((g_flag_blindalley == 2) && (g_sensor_FL_average > SEN_NOWALL_FL) && (g_sensor_FR_average > SEN_NOWALL_FR)) {
+
+		tmp = kp * ((SEN_REFERENCE_FL_S - g_sensor_FL_average) + (SEN_REFERENCE_FR_S - g_sensor_FR_average));
+
 	} else {
 		tmp = 0;
 	}
@@ -359,8 +340,7 @@ float ctrlFeedForwardL(float accele, float alpha) {
 //加速トルク
 	accele_torque = (MASS * accele / 2) * DIAMETER_L / 2 / GEAR_RATIO;
 //角加速トルク
-	alpha_torque = (INERTIA * convDegreeToRadian(alpha) / TREAD) * DIAMETER_L
-			/ 2 / GEAR_RATIO;
+	alpha_torque = (INERTIA * convDegreeToRadian(alpha) / TREAD) * DIAMETER_L / 2 / GEAR_RATIO;
 //等速時トルク
 	if (g_accele == 0 && g_target_alpha == 0 && g_target_omega != 0) {
 		const_torque = 0.000572 * g_target_velo + 0.000304;
@@ -378,12 +358,9 @@ float ctrlFeedForwardL(float accele, float alpha) {
 	torque = accele_torque - alpha_torque + const_torque;
 //実際のトルク
 	g_torque_L =
-			MOTOR_TORQUE
-					* (g_battery_voltage * g_duty_L / 100 - MOTOR_BACK_EMF * rpm)/ MOTOR_RESISTANCE;
+	MOTOR_TORQUE * (g_battery_voltage * g_duty_L / 100 - MOTOR_BACK_EMF * rpm) / MOTOR_RESISTANCE;
 	if (g_flag_FF == 1) {
-		return 100
-				* (MOTOR_RESISTANCE * torque / MOTOR_TORQUE
-						+ MOTOR_BACK_EMF * rpm) / g_battery_voltage;
+		return 100 * (MOTOR_RESISTANCE * torque / MOTOR_TORQUE + MOTOR_BACK_EMF * rpm) / g_battery_voltage;
 	} else {
 		return 0;
 	}
@@ -396,8 +373,7 @@ float ctrlFeedForwardR(float accele, float alpha) {
 //加速トルク
 	accele_torque = (MASS * accele / 2) * DIAMETER_R / 2 / GEAR_RATIO;
 //角加速トルク
-	alpha_torque = (INERTIA * convDegreeToRadian(alpha) / TREAD) * DIAMETER_R
-			/ 2 / GEAR_RATIO;
+	alpha_torque = (INERTIA * convDegreeToRadian(alpha) / TREAD) * DIAMETER_R / 2 / GEAR_RATIO;
 //等速時トルク
 	if (g_accele == 0 && g_target_alpha == 0 && g_target_omega != 0) {
 		const_torque = 0.000572 * g_target_velo + 0.000304;
@@ -415,12 +391,9 @@ float ctrlFeedForwardR(float accele, float alpha) {
 	torque = accele_torque + alpha_torque + const_torque;
 //実際のトルク
 	g_torque_R =
-			MOTOR_TORQUE
-					* (g_battery_voltage * g_duty_R / 100 - MOTOR_BACK_EMF * rpm)/ MOTOR_RESISTANCE;
+	MOTOR_TORQUE * (g_battery_voltage * g_duty_R / 100 - MOTOR_BACK_EMF * rpm) / MOTOR_RESISTANCE;
 	if (g_flag_FF == 1) {
-		return 100
-				* (MOTOR_RESISTANCE * torque / MOTOR_TORQUE
-						+ MOTOR_BACK_EMF * rpm) / g_battery_voltage;
+		return 100 * (MOTOR_RESISTANCE * torque / MOTOR_TORQUE + MOTOR_BACK_EMF * rpm) / g_battery_voltage;
 	} else {
 		return 0;
 	}
@@ -437,11 +410,11 @@ void runBlindAlley(float velo) {
 		times_count = 0;
 	}
 
-	runStraight(5, HALF_SECTION, velo, 0);
+	runStraight(5, HALF_SECTION+0.02, velo, 0);
 	if ((g_sensor_FL + g_sensor_FR) > (SEN_NOWALL_FL + SEN_NOWALL_FR)) {
 		g_flag_blindalley = 1;
 
-		waitTime(500);
+		waitTime(300);
 	}
 
 	if (times_count == 0) {
@@ -455,7 +428,7 @@ void runBlindAlley(float velo) {
 		turnCorner(&pivot_90_R);
 		g_flag_blindalley = 2;
 
-		waitTime(500);
+		waitTime(300);
 		g_flag_blindalley = 0;
 
 		initRun();
@@ -464,13 +437,13 @@ void runBlindAlley(float velo) {
 		g_distance = 0;
 
 		//runStraight(5, HALF_SECTION + 0.01, velo, velo);
-		runStraight(5, -0.02, 0.5, 0);
+		runStraight(5, -0.035, 0.5, 0);
 		runStraightSearch(5, HALF_SECTION, velo);
 	} else if (SEN_REFERENCE_R - g_sensor_R < -170) {
 		turnCorner(&pivot_90_L);
 		g_flag_blindalley = 2;
 
-		waitTime(500);
+		waitTime(300);
 		g_flag_blindalley = 0;
 
 		initRun();
@@ -478,7 +451,7 @@ void runBlindAlley(float velo) {
 		waitTime(300);
 		g_distance = 0;
 		//runStraight(5, HALF_SECTION + 0.01, velo, velo);
-		runStraight(5, -0.02, 0.5, 0);
+		runStraight(5, -0.035, 0.5, 0);
 		runStraightSearch(5, HALF_SECTION, velo);
 	} else {
 		g_target_angle = 0;
@@ -486,7 +459,7 @@ void runBlindAlley(float velo) {
 		waitTime(300);
 		g_distance = 0;
 		//runStraight(5, HALF_SECTION + BLIND_ALLEY, velo, velo);
-		runStraight(5, -0.02, 0.5, 0);
+		runStraight(5, -0.035, 0.5, 0);
 		runStraightSearch(5, HALF_SECTION, velo);
 	}
 
@@ -530,10 +503,8 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 	float acc_temp;
 	int8_t sign;
 
-	section1 = (t_max_velo * t_max_velo - g_target_velo * g_target_velo)
-			/ (2 * t_acc);
-	section3 = (t_max_velo * t_max_velo - t_end_velo * t_end_velo)
-			/ (2 * t_acc);
+	section1 = (t_max_velo * t_max_velo - g_target_velo * g_target_velo) / (2 * t_acc);
+	section3 = (t_max_velo * t_max_velo - t_end_velo * t_end_velo) / (2 * t_acc);
 	section2 = fabsf(t_dis) - section1 - section3;
 
 	if (section2 <= 0) {
@@ -549,10 +520,8 @@ void runStraight(float t_acc, float t_dis, float t_max_velo, float t_end_velo) {
 
 			section2 = 0;
 
-			section1 = (t_end_velo * t_end_velo - g_target_velo * g_target_velo)
-					/ (4 * t_acc) + fabsf(t_dis) / 2;
-			section3 = (g_target_velo * g_target_velo - t_end_velo * t_end_velo)
-					/ (4 * t_acc) + fabsf(t_dis) / 2;
+			section1 = (t_end_velo * t_end_velo - g_target_velo * g_target_velo) / (4 * t_acc) + fabsf(t_dis) / 2;
+			section3 = (g_target_velo * g_target_velo - t_end_velo * t_end_velo) / (4 * t_acc) + fabsf(t_dis) / 2;
 		}
 
 	}
@@ -603,8 +572,7 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 	g_accele = 0;
 
 	if (acceleration != 0) {
-		section1 = (velocity * velocity - g_target_velo * g_target_velo)
-				/ (2 * acceleration);
+		section1 = (velocity * velocity - g_target_velo * g_target_velo) / (2 * acceleration);
 	} else {
 		section1 = 0;
 	}
@@ -613,17 +581,13 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 //section1////////////////////////////////////////////////////////////////////
 	g_accele = acceleration;
 	while (g_flag_failsafe != 1) {
-		if (fabsf(g_distance) >= section1
-				|| ((g_flag_pillar_edge_L == 1 || g_flag_pillar_edge_R == 1)
-						&& g_distance > distance / 2))
+		if (fabsf(g_distance) >= section1 || ((g_flag_pillar_edge_L == 1 || g_flag_pillar_edge_R == 1) && g_distance > distance / 2))
 			break;
 	}
 	g_target_velo = velocity;
 
 	while (g_flag_failsafe != 1) {
-		if (fabsf(g_distance) >= section2
-				|| ((g_flag_pillar_edge_L == 1 || g_flag_pillar_edge_R == 1)
-						&& g_distance > distance / 2))
+		if (fabsf(g_distance) >= section2 || ((g_flag_pillar_edge_L == 1 || g_flag_pillar_edge_R == 1) && g_distance > distance / 2))
 			break;
 	}
 	g_distance = 0;
@@ -655,14 +619,12 @@ void runStraightOffset(float dis, float velo) {
 	g_accele = 0;
 	g_target_velo = velo;
 
-	if ((g_sensor_FL + g_sensor_FR > SEN_NOWALL_FL + SEN_NOWALL_FR)
-			&& g_sensor_FL > SEN_NOWALL_FL && g_sensor_FR > SEN_NOWALL_FR) {
+	if ((g_sensor_FL + g_sensor_FR > SEN_NOWALL_FL + SEN_NOWALL_FR) && g_sensor_FL > SEN_NOWALL_FL && g_sensor_FR > SEN_NOWALL_FR) {
 		sensor_value_FL = 222.82 * expf(13.64 * dis);
 		sensor_value_FR = 216.23 * expf(14.11 * dis);
 
 		while (g_flag_failsafe != 1) {
-			if ((g_sensor_FL_average > sensor_value_FL
-					&& g_sensor_FR_average > sensor_value_FR))
+			if ((g_sensor_FL_average > sensor_value_FL && g_sensor_FR_average > sensor_value_FR))
 				break;
 		}
 	} else {
@@ -678,7 +640,7 @@ void runStraightOffset(float dis, float velo) {
 	g_target_angle = 0;
 }
 /****************************************
- ターン　非連続
+ ターン 非連続
  ****************************************/
 void turnCorner(turn_t *p) {
 	double section1 = 0;
@@ -745,10 +707,8 @@ void turnCorner(turn_t *p) {
 
 			section2 = 0;
 
-			section1 = (-g_current_omega * g_current_omega) / (4 * p->alpha)
-					+ fabsf(p->angle) / 2;
-			section3 = (g_current_omega * g_current_omega) / (4 * p->alpha)
-					+ fabsf(p->angle) / 2;
+			section1 = (-g_current_omega * g_current_omega) / (4 * p->alpha) + fabsf(p->angle) / 2;
+			section3 = (g_current_omega * g_current_omega) / (4 * p->alpha) + fabsf(p->angle) / 2;
 		}
 
 	}
@@ -815,7 +775,7 @@ void turnCorner(turn_t *p) {
 }
 
 /****************************************
- スラローム　連続
+ スラローム 連続
  ****************************************/
 void turnCornerContinuous(float degree, float omega) {
 //パラメータ計算

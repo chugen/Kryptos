@@ -46,6 +46,7 @@
 #define WALL_FRONT 0
 #define WALL_LEFT 1
 #define WALL_RIGHT 2
+#define WALL_BEHIND 3
 
 #define START_X 0
 #define START_Y 0
