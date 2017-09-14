@@ -380,7 +380,7 @@ void selectContest(void) {
 			waitButton();
 			countStepShortest();
 			waitTime(200);
-			printMapNew();
+			printMap();
 			makePath();
 			makePath2();
 			makePath3();
@@ -402,7 +402,7 @@ void selectContest(void) {
 	//		makePath3();
 
 	//		printMap();
-			printMapNew();
+			printMap();
 	//		printPath3();
 			break;
 		case 4:

@@ -28,6 +28,8 @@ void initAdjustment(void) {
 	initRun();
 	driveMotor(ON);
 	switchSensorLED(ON);
+
+	g_flag_shortest_goal=1;
 }
 /****************************************
  調整用初期化2
@@ -74,7 +76,7 @@ void selectAdjustment1(uint8_t velo) {
 		initAdjustment();
 		runStraight(15, SECTION, velocity,velocity);
 
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION, velocity,0);
 
@@ -83,7 +85,7 @@ void selectAdjustment1(uint8_t velo) {
 		initAdjustment();
 		runStraight(15, SECTION, velocity,velocity);
 
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION, velocity,0);
 
@@ -92,7 +94,7 @@ void selectAdjustment1(uint8_t velo) {
 		initAdjustment();
 		runStraight(15, SECTION, velocity,velocity);
 
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION, velocity,0);
 
@@ -102,7 +104,7 @@ void selectAdjustment1(uint8_t velo) {
 		initAdjustment();
 		runStraight(15, SECTION, velocity,velocity);
 
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION, velocity,0);
 
@@ -110,7 +112,7 @@ void selectAdjustment1(uint8_t velo) {
 	case 4:
 		initAdjustment();
 		runStraight(15, SECTION, velocity,velocity);
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, velocity,0);
 
@@ -118,7 +120,7 @@ void selectAdjustment1(uint8_t velo) {
 	case 5:
 		initAdjustment();
 		runStraight(15, SECTION, velocity,velocity);
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, velocity,0);
 
@@ -126,7 +128,7 @@ void selectAdjustment1(uint8_t velo) {
 	case 6:
 		initAdjustment();
 		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION, velocity,0);
 
@@ -134,7 +136,7 @@ void selectAdjustment1(uint8_t velo) {
 	case 7:
 		initAdjustment();
 		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION, velocity,0);
 
@@ -142,7 +144,7 @@ void selectAdjustment1(uint8_t velo) {
 	case 8:
 		initAdjustment();
 		runStraight(15, SECTION, velocity,velocity);
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, velocity,0);
 
@@ -150,7 +152,7 @@ void selectAdjustment1(uint8_t velo) {
 	case 9:
 		initAdjustment();
 		runStraight(15, SECTION, velocity,velocity);
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, velocity,0);
 
@@ -158,7 +160,7 @@ void selectAdjustment1(uint8_t velo) {
 	case 10:
 		initAdjustment();
 		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION, velocity,0);
 
@@ -166,7 +168,7 @@ void selectAdjustment1(uint8_t velo) {
 	case 11:
 		initAdjustment();
 		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION, velocity,0);
 
@@ -174,7 +176,7 @@ void selectAdjustment1(uint8_t velo) {
 	case 12:
 		initAdjustment();
 		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, velocity,0);
 
@@ -182,7 +184,7 @@ void selectAdjustment1(uint8_t velo) {
 	case 13:
 		initAdjustment();
 		runStraight(15, SECTION * M_SQRT2, velocity,velocity);
-		turnCorner(t_para[velo][mode]);
+		turnShortest(tc_para[velo][mode]);
 		switchSensorLED(OFF);
 		runStraight(15, SECTION * M_SQRT2, velocity,0);
 

@@ -37,7 +37,7 @@ volatile float g_omega_error;
 volatile float g_omega_error_integral;
 //偏差微分
 volatile float g_omega_error_derivative;
-//Gyro　リファレンス
+//Gyro リファレンス
 volatile float g_gyro_reference;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //目標角度

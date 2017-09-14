@@ -45,28 +45,14 @@ void main(void) {
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
 
-		driveRGB(GREEN, ON);
-		waitSensor();
-		waitTime(1000);
-		calcGyroZRef();
+		selectAdjustment1(T14);
 
-		initRun();
-		driveMotor(ON);
-		switchSensorLED(OFF);
-
-		runStraight(5, SECTION, sp, sp);
-		turnSearch(&tc_90_L_07);
-		runStraight(5, SECTION, sp, 0);
-
-		waitTime(300);
-		driveMotor(OFF);
-		waitButton();
-		printLog4();
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
-		selectAdjustment1(T14);
-//		selectAdjustment2();
+
+		selectAdjustment2();
+
 		break;
 	case 3: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(YELLOW, ON);

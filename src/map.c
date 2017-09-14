@@ -104,7 +104,7 @@ void setTargetCoord(uint16_t x, uint16_t y) {
  map表示
  ****************************************/
 
-void printMapNew(void) {
+void printMap(void) {
 	int i_x;
 	int i_y;
 
@@ -171,6 +171,24 @@ void printMapNew(void) {
 	myprintf("\n\r");
 	myprintf("\x1b[0m");
 
+}
+
+void printMap2(void) {
+	uint8_t i_x;
+	uint8_t i_y;
+
+	waitTime(500);
+	myprintf("\x1b[2");
+	myprintf("\x1b[31m");
+	myprintf("\n\r");
+	myprintf(" ");
+	for (i_x = 0; i_x < 16; i_x++) {
+		if (i_x == 10) {
+			myprintf(" ");
+		}
+		myprintf("%4d", i_x);
+
+	}
 }
 /****************************************
  壁情報セット
@@ -506,65 +524,134 @@ void countStepQueue(void) {
 	}
 }
 void countStepQueueNew(void) {
-	int i, j;
+	uint16_t i, j, NorE = 0;
 #define MAX 999
-	unsigned char x, y;
+
+	uint8_t x, y, orient2;
+	uint8_t plus_straight = 10, plus_diagonal = 7;
 	short head = 0, tail = 1;
-	unsigned char queue[MAX];
+	uint16_t queue[MAX];
 	setInitWall();
 
-	for (i = 0; i < 16; i++) {
-		for (j = 0; j < 16; j++) {
+	for (i = 0; i < 15; i++) {
+		for (j = 0; j < 15; j++) {
 			g_step[i].row[j] = 999;
 			g_step[i].column[j] = 999;
 		}
 	}
 
-	g_step_map[g_target_x][g_target_y] = 0;
-
-	queue[0] = (g_target_x + g_target_y * 16);
+	g_step[g_target_x].row[g_target_y] = 0;
+	g_step[g_target_x].column[g_target_y] = 0;
+	queue[0] = (g_target_x + g_target_y * 16 + NorE * 256);
+	NorE = 1;
+	queue[1] = (g_target_x + g_target_y * 16 + NorE * 256);
+	tail++;
 
 	while (head != tail) {
-		y = queue[head] >> 4;
+		orient2 = (queue[head] >> 8) & 0x0f;
+		y = (queue[head] >> 4) & 0x0f;
 		x = queue[head] & 0x0f;
 		head++;
-		if (y < 16) {
-			if (getWallData(g_wall_info_tmp, x, y, NORTH) == 0) {
-				if (g_step_map[x][y + 1] == 255) {
-					g_step_map[x][y + 1] = g_step_map[x][y] + 1;
-					queue[tail] = (x + (y + 1) * 16);
-					tail++;
-				}
-			}
-		}
-		if (x > 0) {
-			if (getWallData(g_wall_info_tmp, x, y, WEST) == 0) {
-				if (g_step_map[x - 1][y] == 255) {
-					g_step_map[x - 1][y] = g_step_map[x][y] + 1;
-					queue[tail] = (x - 1 + y * 16);
-					tail++;
-				}
-			}
-		}
-		if (y > 0) {
-			if (getWallData(g_wall_info_tmp, x, y, SOUTH) == 0) {
-				if (g_step_map[x][y - 1] == 255) {
-					g_step_map[x][y - 1] = g_step_map[x][y] + 1;
-					queue[tail] = (x + (y - 1) * 16);
-					tail++;
-				}
-			}
-		}
-		if (x < 16) {
-			if (getWallData(g_wall_info_tmp, x, y, EAST) == 0) {
-				if (g_step_map[x + 1][y] == 255) {
-					g_step_map[x + 1][y] = g_step_map[x][y] + 1;
-					queue[tail] = (x + 1 + y * 16);
-					tail++;
-				}
-			}
-		}
 
+		if (orient2 == 0) {
+			if (getWallData(g_wall_info_tmp, x, y, WEST) == 0) {
+				if (g_step[x - 1].column[y] > g_step[x].row[y] + plus_diagonal) {
+					g_step[x - 1].column[y] = g_step[x].row[y] + plus_diagonal;
+					NorE = 1;
+					queue[tail] = (x - 1 + (y) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+			if (getWallData(g_wall_info_tmp, x, y, SOUTH) == 0) {
+				if (g_step[x].row[y - 1] > g_step[x].row[y] + plus_straight) {
+					g_step[x].row[y - 1] = g_step[x].row[y] + plus_straight;
+					NorE = 0;
+					queue[tail] = (x + (y - 1) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+			if (getWallData(g_wall_info_tmp, x, y, EAST) == 0) {
+				if (g_step[x].column[y] > g_step[x].row[y] + plus_diagonal) {
+					g_step[x].column[y] = g_step[x].row[y] + plus_diagonal;
+					NorE = 1;
+					queue[tail] = (x + (y) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+			if (getWallData(g_wall_info_tmp, x, y + 1, WEST) == 0) {
+				if (g_step[x - 1].column[y + 1] > g_step[x].row[y] + plus_diagonal) {
+					g_step[x - 1].column[y + 1] = g_step[x].row[y] + plus_diagonal;
+					NorE = 1;
+					queue[tail] = (x - 1 + (y + 1) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+			if (getWallData(g_wall_info_tmp, x, y + 1, NORTH) == 0) {
+				if (g_step[x].row[y + 1] > g_step[x].row[y] + plus_straight) {
+					g_step[x].row[y + 1] = g_step[x].row[y] + plus_straight;
+					NorE = 0;
+					queue[tail] = (x + (y + 1) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+			if (getWallData(g_wall_info_tmp, x, y + 1, EAST) == 0) {
+				if (g_step[x].column[y + 1] > g_step[x].row[y] + plus_diagonal) {
+					g_step[x].column[y + 1] = g_step[x].row[y] + plus_diagonal;
+					NorE = 1;
+					queue[tail] = (x + (y + 1) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+		} else if (orient2 == 1) {
+			if (getWallData(g_wall_info_tmp, x, y, NORTH) == 0) {
+				if (g_step[x].row[y] > g_step[x].column[y] + plus_diagonal) {
+					g_step[x].row[y] = g_step[x].column[y] + plus_diagonal;
+					NorE = 0;
+					queue[tail] = (x + (y) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+			if (getWallData(g_wall_info_tmp, x, y, WEST) == 0) {
+				if (g_step[x - 1].column[y] > g_step[x].column[y] + plus_straight) {
+					g_step[x - 1].column[y] = g_step[x].column[y] + plus_straight;
+					NorE = 1;
+					queue[tail] = (x - 1 + (y) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+			if (getWallData(g_wall_info_tmp, x, y, SOUTH) == 0) {
+				if (g_step[x].row[y - 1] > g_step[x].column[y] + plus_diagonal) {
+					g_step[x].row[y - 1] = g_step[x].column[y] + plus_diagonal;
+					NorE = 0;
+					queue[tail] = (x + (y - 1) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+			if (getWallData(g_wall_info_tmp, x + 1, y, NORTH) == 0) {
+				if (g_step[x + 1].row[y] > g_step[x].column[y] + plus_diagonal) {
+					g_step[x + 1].row[y] = g_step[x].column[y] + plus_diagonal;
+					NorE = 0;
+					queue[tail] = (x + 1 + (y) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+			if (getWallData(g_wall_info_tmp, x + 1, y, SOUTH) == 0) {
+				if (g_step[x + 1].row[y - 1] > g_step[x].column[y] + plus_diagonal) {
+					g_step[x + 1].row[y - 1] = g_step[x].column[y] + plus_diagonal;
+					NorE = 0;
+					queue[tail] = (x + 1 + (y - 1) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+			if (getWallData(g_wall_info_tmp, x + 1, y, EAST) == 0) {
+				if (g_step[x + 1].column[y] > g_step[x].column[y] + plus_straight) {
+					g_step[x + 1].column[y] = g_step[x].column[y] + plus_straight;
+					NorE = 1;
+					queue[tail] = (x + 1 + (y) * 16 + NorE * 256);
+					tail++;
+				}
+			}
+		}
 	}
 }
 /****************************************
@@ -575,7 +662,7 @@ void searchAdachi(void) {
 	g_flag_run_mode = SEARCH;
 	g_log_count = 0;
 	driveSuction(5, OFF);
-	runStraight(5, HALF_SECTION, search_velo, search_velo);
+	runStraightSearch(5, HALF_SECTION, search_velo);
 
 	countCoord();
 	checkWall();
@@ -647,7 +734,7 @@ void searchAdachi(void) {
 			runStraightSearch(0, SECTION, search_velo);
 			countCoord();
 		}
-		runStraight(5, HALF_SECTION+0.02, search_velo, 0);
+		runStraight(5, HALF_SECTION + 0.02, search_velo, 0);
 
 		g_flag_blindalley = 1;
 		waitTime(500);
@@ -777,7 +864,7 @@ void searchFurukawa(void) {
 			runStraightSearch(0, SECTION, search_velo);
 			countCoord();
 		}
-		runStraight(5, HALF_SECTION+0.02, search_velo, 0);
+		runStraight(5, HALF_SECTION + 0.02, search_velo, 0);
 
 		g_flag_blindalley = 1;
 		waitTime(500);
@@ -1449,37 +1536,37 @@ void runPathDiagonal(uint8_t t_velo, float velo, float acc, float d_velo, float 
 		if (g_path_3[i] > 0 && g_path_3[i] <= 30) {
 			runStraight(acc, HALF_SECTION * g_path_3[i] + addInitDis(i), velo, velocity);
 		} else if (g_path_3[i] == S_L_CURVE) {
-			turnCorner(&t_90_L_05);
+			turnShortest(&tc_90_L_07);
 		} else if (g_path_3[i] == S_BIG_L_CURVE) {
-			turnCorner(t_para[t_velo][W90L]);
+			turnShortest(tc_para[t_velo][W90L]);
 		} else if (g_path_3[i] == S_U_L_CURVE) {
-			turnCorner(t_para[t_velo][T180L]);
+			turnShortest(tc_para[t_velo][T180L]);
 		} else if (g_path_3[i] == S_R_CURVE) {
-			turnCorner(&t_90_R_05);
+			turnShortest(&tc_90_R_07);
 		} else if (g_path_3[i] == S_BIG_R_CURVE) {
-			turnCorner(t_para[t_velo][W90R]);
+			turnShortest(tc_para[t_velo][W90R]);
 		} else if (g_path_3[i] == S_U_R_CURVE) {
-			turnCorner(t_para[t_velo][T180R]);
+			turnShortest(tc_para[t_velo][T180R]);
 		} else if (g_path_3[i] == L_45_I) {
-			turnCorner(t_para[t_velo][I45L]);
+			turnShortest(tc_para[t_velo][I45L]);
 		} else if (g_path_3[i] == R_45_I) {
-			turnCorner(t_para[t_velo][I45R]);
+			turnShortest(tc_para[t_velo][I45R]);
 		} else if (g_path_3[i] == L_45_O) {
-			turnCorner(t_para[t_velo][O45L]);
+			turnShortest(tc_para[t_velo][O45L]);
 		} else if (g_path_3[i] == R_45_O) {
-			turnCorner(t_para[t_velo][O45R]);
+			turnShortest(tc_para[t_velo][O45R]);
 		} else if (g_path_3[i] == L_135_I) {
-			turnCorner(t_para[t_velo][I135L]);
+			turnShortest(tc_para[t_velo][I135L]);
 		} else if (g_path_3[i] == R_135_I) {
-			turnCorner(t_para[t_velo][I135R]);
+			turnShortest(tc_para[t_velo][I135R]);
 		} else if (g_path_3[i] == L_135_O) {
-			turnCorner(t_para[t_velo][O135L]);
+			turnShortest(tc_para[t_velo][O135L]);
 		} else if (g_path_3[i] == R_135_O) {
-			turnCorner(t_para[t_velo][O135R]);
+			turnShortest(tc_para[t_velo][O135R]);
 		} else if (g_path_3[i] == L_V90) {
-			turnCorner(t_para[t_velo][V90L]);
+			turnShortest(tc_para[t_velo][V90L]);
 		} else if (g_path_3[i] == R_V90) {
-			turnCorner(t_para[t_velo][V90R]);
+			turnShortest(tc_para[t_velo][V90R]);
 		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
 			runStraight(d_acc, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47), d_velo, velocity);
 		} else {

@@ -572,7 +572,7 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 	g_accele = 0;
 
 	if (acceleration != 0) {
-		section1 = (velocity * velocity - g_target_velo * g_target_velo) / (2 * acceleration);
+		section1 =(velocity * velocity - g_target_velo * g_target_velo) / (2 * acceleration);
 	} else {
 		section1 = 0;
 	}
@@ -584,6 +584,7 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 		if (fabsf(g_distance) >= section1 || ((g_flag_pillar_edge_L == 1 || g_flag_pillar_edge_R == 1) && g_distance > distance / 2))
 			break;
 	}
+	g_accele=0;
 	g_target_velo = velocity;
 
 	while (g_flag_failsafe != 1) {

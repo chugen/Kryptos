@@ -52,8 +52,8 @@
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 443//461//494//525//470
-#define SEN_REFERENCE_R 523//495//457//455//517
+#define SEN_REFERENCE_L 420//461//494//525//470
+#define SEN_REFERENCE_R 512//495//457//455//517
 #define SEN_REFERENCE_FL 890//1120
 #define SEN_REFERENCE_FR 920//1100
 #define SEN_REFERENCE_FL_S 910//960//920
@@ -78,8 +78,8 @@
 #define SEN_PILLAR_EDGE_L -45//-50//-100
 #define SEN_PILLAR_EDGE_R -50//-50//-100
 
-#define SEN_PILLAR_EDGE_SEARCH_L -50
-#define SEN_PILLAR_EDGE_SEARCH_R -50
+#define SEN_PILLAR_EDGE_SEARCH_L -40
+#define SEN_PILLAR_EDGE_SEARCH_R -40
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //速度P制御
 #define VELO_P 220
