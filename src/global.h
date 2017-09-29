@@ -95,7 +95,7 @@ extern volatile uint8_t g_current_y;
 extern wall_t g_wall_info[15];
 extern wall_t g_wall_info_tmp[15];
 
-extern step_t g_step[15];
+extern step_t g_step[16];
 
 extern volatile int16_t g_target_x;
 extern volatile int16_t g_target_y;

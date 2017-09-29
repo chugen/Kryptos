@@ -39,8 +39,8 @@ typedef struct {
 } wall_t;
 
 typedef struct{
-	float row[15];
-	float column[15];
+	uint16_t row[16];
+	uint16_t column[16];
 } step_t;
 
 #endif /* MY_TYPEDEF_H_ */

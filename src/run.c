@@ -410,7 +410,7 @@ void runBlindAlley(float velo) {
 		times_count = 0;
 	}
 
-	runStraight(5, HALF_SECTION+0.02, velo, 0);
+	runStraight(5, HALF_SECTION+0.01, velo, 0);
 	if ((g_sensor_FL + g_sensor_FR) > (SEN_NOWALL_FL + SEN_NOWALL_FR)) {
 		g_flag_blindalley = 1;
 
@@ -595,13 +595,13 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 	if (g_flag_pillar_edge_L == 1) {
 		while (g_flag_failsafe != 1) {
 
-			if (fabsf(g_distance) >= 0.09)
+			if (fabsf(g_distance) >= 0.075)//0.09
 				break;
 		}
 	} else if (g_flag_pillar_edge_R == 1) {
 		while (g_flag_failsafe != 1) {
 
-			if (fabsf(g_distance) >= 0.075)
+			if (fabsf(g_distance) >= 0.07)//0.075
 				break;
 		}
 	}

@@ -6,6 +6,7 @@
  */
 #include "iodefine.h"
 #include <stdio.h>
+#include <stdint.h>
 #include <stdarg.h>
 
 
@@ -35,6 +36,9 @@ int myprintf(const char *fmt, ...){
 	return len;
 }
 
+void myprintfColor(uint8_t foreground,uint8_t background,uint8_t width, const char *fmt, ...){
 
+	myprintf(fmt);
+}
 
 

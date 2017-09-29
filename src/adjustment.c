@@ -236,7 +236,8 @@ void selectAdjustment2(void) {
 		break;
 	case 2:
 		initAdjustment2();
-		runStraight(5, SECTION, velo, velo);
+		//runStraight(5, SECTION, velo, velo);
+		runStraightSearch(5,SECTION*2,0.7);
 		turnSearch(&tc_90_L_07);
 		runStraight(5, SECTION, velo, 0);
 		break;
@@ -263,7 +264,7 @@ void selectAdjustment2(void) {
 		break;
 	case 6:
 		initAdjustment2();
-		for (i = 0; i < 10; i++) {
+		for (i = 0; i < 1; i++) {
 			turnCorner(&pivot);
 			waitTime(200);
 		}

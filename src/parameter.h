@@ -52,8 +52,8 @@
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 420//461//494//525//470
-#define SEN_REFERENCE_R 512//495//457//455//517
+#define SEN_REFERENCE_L 450//461//494//525//470
+#define SEN_REFERENCE_R 520//495//457//455//517
 #define SEN_REFERENCE_FL 890//1120
 #define SEN_REFERENCE_FR 920//1100
 #define SEN_REFERENCE_FL_S 910//960//920
@@ -68,18 +68,18 @@
 #define SEN_THRESHOLD_L 400
 #define SEN_THRESHOLD_R 410
 //壁有無判定基準値
-#define SEN_NOWALL_L 200//170
-#define SEN_NOWALL_R 200
-#define SEN_NOWALL_FL 100//75//160
-#define SEN_NOWALL_FR 90//65
+#define SEN_NOWALL_L 240//170
+#define SEN_NOWALL_R 240
+#define SEN_NOWALL_FL 120//100//75//160
+#define SEN_NOWALL_FR 110//90//65
 //死亡判定
 #define SEN_DEATH 1600
 //壁切れ判定変化量
 #define SEN_PILLAR_EDGE_L -45//-50//-100
 #define SEN_PILLAR_EDGE_R -50//-50//-100
 
-#define SEN_PILLAR_EDGE_SEARCH_L -40
-#define SEN_PILLAR_EDGE_SEARCH_R -40
+#define SEN_PILLAR_EDGE_SEARCH_L -45
+#define SEN_PILLAR_EDGE_SEARCH_R -45
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //速度P制御
 #define VELO_P 220

@@ -23,7 +23,7 @@
 #define FORWARD 0
 #define BACKWARD 1
 
-#define LOG_TIMES 2500
+#define LOG_TIMES 1500
 
 #define SECTION 0.18
 #define HALF_SECTION 0.09
@@ -80,7 +80,7 @@
 #define R_V90 46
 #define DIAGONAL 47
 /****************************************
- 色定義
+ LED色
  ****************************************/
 #define RED 100,0,0
 #define GREEN 0,100,0
@@ -94,6 +94,33 @@
 #define LBLUE 30,30,100
 #define LRED 100,30,30
 #define RGB_OFF 0,0,0
+/****************************************
+ ANSI ESCAPE SEQUENCE
+ ****************************************/
+#define ES_CLEAR 	 "\x1b[2J"
+#define ES_CURSOR_RESET "\x1b[0;0H"
+#define ES_DEFAULT 	 "\x1b[0m"
+#define ES_BOLD 	 "\x1b[1m"
+#define ES_UNDERLINE "\x1b[4m"
+#define ES_FLIP 	 "\x1b[7m"
+#define ES_F_BLACK   "\x1b[30m"
+#define ES_F_RED     "\x1b[31m"
+#define ES_F_GREEN   "\x1b[32m"
+#define ES_F_YELLOW  "\x1b[33m"
+#define ES_F_BLUE    "\x1b[34m"
+#define ES_F_MAGENDA "\x1b[35m"
+#define ES_F_CYAN    "\x1b[36m"
+#define ES_F_WHITE   "\x1b[37m"
+#define ES_F_DEFAULT "\x1b[39m"
+#define ES_B_BLACK   "\x1b[40m"
+#define ES_B_RED     "\x1b[41m"
+#define ES_B_GREEN   "\x1b[42m"
+#define ES_B_YELLOW  "\x1b[43m"
+#define ES_B_BLUE    "\x1b[44m"
+#define ES_B_MAGENDA "\x1b[45m"
+#define ES_B_CYAN    "\x1b[46m"
+#define ES_B_WHITE   "\x1b[47m"
+#define ES_B_DEFAULT "\x1b[49m"
 /****************************************
  Gyro(MPU-6000)レジスタ定義
  ****************************************/
@@ -119,16 +146,13 @@
 #define PROGRAM_S1 0xE8
 #define PROGRAM_S2 0x01
 
-
 #define ERASE_S1 0x20
-
 
 #define STATUS_CLEAR 0x50
 
 #define CLOCK_S1 0xE9
 #define CLOCK_S2 0x03
 #define CLOCK_S3 0x0F0F
-
 
 #define BLANK_CHECK_S1 0x71
 

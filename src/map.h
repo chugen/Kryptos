@@ -31,8 +31,8 @@ void setTargetCoord(uint16_t x,uint16_t y);
 /****************************************
  map表示
  ****************************************/
-
 void printMap(void);
+void printMapNew(void);
 /****************************************
  初期壁セット
  ****************************************/
@@ -77,6 +77,7 @@ uint8_t isUnknownNextSection(uint8_t dir);
  queuemap
  ****************************************/
 void countStepQueue(void);
+void countStepQueueNew(void);
 /****************************************
  足立法
  ****************************************/

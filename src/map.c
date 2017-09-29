@@ -173,13 +173,67 @@ void printMap(void) {
 
 }
 
-void printMap2(void) {
+void printMapNew(void) {
 	uint8_t i_x;
-	uint8_t i_y;
+	int8_t i_y;
 
 	waitTime(500);
-	myprintf("\x1b[2");
-	myprintf("\x1b[31m");
+	myprintf(ES_CLEAR);
+	myprintf(ES_CURSOR_RESET);
+	myprintf(ES_F_RED);
+	myprintf("\n\r");
+	myprintf(" ");
+	for (i_x = 0; i_x < 16; i_x++) {
+		if (i_x == 10) {
+			myprintf(" ");
+		}
+		myprintf("%4d", i_x);
+	}
+	myprintf("\n\r");
+
+	for (i_y = 15; i_y >= 0; i_y--) {
+
+		myprintf("  +");
+
+		for (i_x = 0; i_x < 16; i_x++) {
+			if (getWallData(g_wall_info_tmp, i_x, i_y, NORTH)) {
+				myprintf("---");
+			} else {
+				myprintf(ES_F_WHITE);
+				myprintf("%3d", g_step[i_x].row[i_y]);
+				myprintf(ES_F_RED);
+			}
+			myprintf("+");
+		}
+		myprintf("\n\r");
+		myprintf("%2d| ", i_y);
+		for (i_x = 0; i_x < 16; i_x++) {
+
+			myprintf(ES_DEFAULT);
+			if (isUnknownSection(i_x, i_y) != 1) {
+				myprintf(ES_F_YELLOW);
+				myprintf(ES_B_DEFAULT);
+				myprintf(ES_FLIP);
+			}
+
+			myprintf(ES_DEFAULT);
+			myprintf(ES_F_RED);
+			if (getWallData(g_wall_info_tmp, i_x, i_y, EAST)) {
+				myprintf("  | ");
+			} else {
+				myprintf(ES_F_WHITE);
+				myprintf(" %3d", g_step[i_x].column[i_y]);
+				myprintf(ES_F_RED);
+			}
+		}
+		myprintf("%2d\n", i_y);
+	}
+
+	myprintf("  +");
+	for (i_x = 0; i_x < 16; i_x++) {
+		myprintf("---+");
+	}
+
 	myprintf("\n\r");
 	myprintf(" ");
 	for (i_x = 0; i_x < 16; i_x++) {
@@ -189,6 +243,9 @@ void printMap2(void) {
 		myprintf("%4d", i_x);
 
 	}
+	myprintf("\n\r");
+	myprintf(ES_DEFAULT);
+
 }
 /****************************************
  壁情報セット
@@ -525,16 +582,16 @@ void countStepQueue(void) {
 }
 void countStepQueueNew(void) {
 	uint16_t i, j, NorE = 0;
-#define MAX 999
-
+	uint16_t const  max = 200;
 	uint8_t x, y, orient2;
 	uint8_t plus_straight = 10, plus_diagonal = 7;
 	short head = 0, tail = 1;
-	uint16_t queue[MAX];
+	uint16_t queue[200];
+
 	setInitWall();
 
-	for (i = 0; i < 15; i++) {
-		for (j = 0; j < 15; j++) {
+	for (i = 0; i < 16; i++) {
+		for (j = 0; j < 16; j++) {
 			g_step[i].row[j] = 999;
 			g_step[i].column[j] = 999;
 		}
@@ -543,31 +600,46 @@ void countStepQueueNew(void) {
 	g_step[g_target_x].row[g_target_y] = 0;
 	g_step[g_target_x].column[g_target_y] = 0;
 	queue[0] = (g_target_x + g_target_y * 16 + NorE * 256);
+
 	NorE = 1;
-	queue[1] = (g_target_x + g_target_y * 16 + NorE * 256);
+	queue[tail] = (g_target_x + g_target_y * 16 + NorE * 256);
 	tail++;
 
 	while (head != tail) {
 		orient2 = (queue[head] >> 8) & 0x0f;
 		y = (queue[head] >> 4) & 0x0f;
 		x = queue[head] & 0x0f;
-		head++;
+		if (head + 1 == max) {
+			head = 0;
+		} else {
+			head++;
+		}
+		//myprintf("head %d,tail %d \n", head, tail);
 
-		if (orient2 == 0) {
+		if (orient2 == 0 && getWallData(g_wall_info_tmp, x, y, NORTH) == 0) {
 			if (getWallData(g_wall_info_tmp, x, y, WEST) == 0) {
 				if (g_step[x - 1].column[y] > g_step[x].row[y] + plus_diagonal) {
 					g_step[x - 1].column[y] = g_step[x].row[y] + plus_diagonal;
 					NorE = 1;
 					queue[tail] = (x - 1 + (y) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
+
 			}
 			if (getWallData(g_wall_info_tmp, x, y, SOUTH) == 0) {
 				if (g_step[x].row[y - 1] > g_step[x].row[y] + plus_straight) {
 					g_step[x].row[y - 1] = g_step[x].row[y] + plus_straight;
 					NorE = 0;
 					queue[tail] = (x + (y - 1) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
 			}
 			if (getWallData(g_wall_info_tmp, x, y, EAST) == 0) {
@@ -575,7 +647,11 @@ void countStepQueueNew(void) {
 					g_step[x].column[y] = g_step[x].row[y] + plus_diagonal;
 					NorE = 1;
 					queue[tail] = (x + (y) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
 			}
 			if (getWallData(g_wall_info_tmp, x, y + 1, WEST) == 0) {
@@ -583,7 +659,11 @@ void countStepQueueNew(void) {
 					g_step[x - 1].column[y + 1] = g_step[x].row[y] + plus_diagonal;
 					NorE = 1;
 					queue[tail] = (x - 1 + (y + 1) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
 			}
 			if (getWallData(g_wall_info_tmp, x, y + 1, NORTH) == 0) {
@@ -591,7 +671,11 @@ void countStepQueueNew(void) {
 					g_step[x].row[y + 1] = g_step[x].row[y] + plus_straight;
 					NorE = 0;
 					queue[tail] = (x + (y + 1) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
 			}
 			if (getWallData(g_wall_info_tmp, x, y + 1, EAST) == 0) {
@@ -599,16 +683,24 @@ void countStepQueueNew(void) {
 					g_step[x].column[y + 1] = g_step[x].row[y] + plus_diagonal;
 					NorE = 1;
 					queue[tail] = (x + (y + 1) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
 			}
-		} else if (orient2 == 1) {
+		} else if (orient2 == 1&&getWallData(g_wall_info_tmp, x, y, EAST) == 0) {
 			if (getWallData(g_wall_info_tmp, x, y, NORTH) == 0) {
 				if (g_step[x].row[y] > g_step[x].column[y] + plus_diagonal) {
 					g_step[x].row[y] = g_step[x].column[y] + plus_diagonal;
 					NorE = 0;
 					queue[tail] = (x + (y) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
 			}
 			if (getWallData(g_wall_info_tmp, x, y, WEST) == 0) {
@@ -616,7 +708,11 @@ void countStepQueueNew(void) {
 					g_step[x - 1].column[y] = g_step[x].column[y] + plus_straight;
 					NorE = 1;
 					queue[tail] = (x - 1 + (y) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
 			}
 			if (getWallData(g_wall_info_tmp, x, y, SOUTH) == 0) {
@@ -624,7 +720,11 @@ void countStepQueueNew(void) {
 					g_step[x].row[y - 1] = g_step[x].column[y] + plus_diagonal;
 					NorE = 0;
 					queue[tail] = (x + (y - 1) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
 			}
 			if (getWallData(g_wall_info_tmp, x + 1, y, NORTH) == 0) {
@@ -632,7 +732,11 @@ void countStepQueueNew(void) {
 					g_step[x + 1].row[y] = g_step[x].column[y] + plus_diagonal;
 					NorE = 0;
 					queue[tail] = (x + 1 + (y) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
 			}
 			if (getWallData(g_wall_info_tmp, x + 1, y, SOUTH) == 0) {
@@ -640,7 +744,11 @@ void countStepQueueNew(void) {
 					g_step[x + 1].row[y - 1] = g_step[x].column[y] + plus_diagonal;
 					NorE = 0;
 					queue[tail] = (x + 1 + (y - 1) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
 			}
 			if (getWallData(g_wall_info_tmp, x + 1, y, EAST) == 0) {
@@ -648,7 +756,11 @@ void countStepQueueNew(void) {
 					g_step[x + 1].column[y] = g_step[x].column[y] + plus_straight;
 					NorE = 1;
 					queue[tail] = (x + 1 + (y) * 16 + NorE * 256);
-					tail++;
+					if (tail + 1 == max) {
+						tail = 0;
+					} else {
+						tail++;
+					}
 				}
 			}
 		}
@@ -663,6 +775,7 @@ void searchAdachi(void) {
 	g_log_count = 0;
 	driveSuction(5, OFF);
 	runStraightSearch(5, HALF_SECTION, search_velo);
+	//runStraight(5,0.09,0.7,0.7);
 
 	countCoord();
 	checkWall();
@@ -814,7 +927,7 @@ void searchFurukawa(void) {
 
 		} else if (isNoWall(g_wall_info_tmp, WALL_LEFT) && isUnknownNextSection( WALL_LEFT)) {
 
-			//turnCorner(&t_90_L_05);
+
 			turnSearch(&tc_90_L_07);
 
 			checkOrient(90);
@@ -822,7 +935,7 @@ void searchFurukawa(void) {
 
 		} else if (isNoWall(g_wall_info_tmp, WALL_RIGHT) && isUnknownNextSection( WALL_RIGHT)) {
 
-			//turnCorner(&t_90_R_05);
+
 			turnSearch(&tc_90_R_07);
 
 			checkOrient(-90);
@@ -835,16 +948,14 @@ void searchFurukawa(void) {
 			countCoord();
 
 		} else if (isNoWall(g_wall_info_tmp, WALL_LEFT) && isSmallerSteps( WALL_LEFT)) {
-//			driveRGB(LRED, ON);
-//			//turnCorner(&t_90_L_05);
+
 			turnSearch(&tc_90_L_07);
 
 			checkOrient(90);
 			countCoord();
 
 		} else if (isNoWall(g_wall_info_tmp, WALL_RIGHT) && isSmallerSteps(WALL_RIGHT)) {
-//			driveRGB(YELLOW, ON);
-//			//turnCorner(&t_90_R_05);
+
 			turnSearch(&tc_90_R_07);
 
 			checkOrient(-90);
@@ -1588,7 +1699,7 @@ void runPathDiagonal(uint8_t t_velo, float velo, float acc, float d_velo, float 
 	g_flag_run_mode = DEFAULT;
 }
 
-/*-----------------------------------------------------------*/
+
 /****************************************
  スピードコネクト
  ****************************************/

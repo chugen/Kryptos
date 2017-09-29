@@ -29,7 +29,6 @@
 
 void main(void) {
 	//uint8_t i, j;
-	float sp = 0.7;
 
 	init();
 	checkLowVoltage();

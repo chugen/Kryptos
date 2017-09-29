@@ -118,7 +118,7 @@ float checkLowVoltage(void) {
 	tmp = S12AD.ADDR6;
 	battery = (float) (tmp / 4096.0 * 3.3 * 3.0) + 0.06;
 
-	if (battery < 7.4) {
+	if (battery < 7.8) {
 		while (1) {
 			driveRGB(RED, ON);
 			waitTime(200);

@@ -406,9 +406,12 @@ void selectContest(void) {
 	//		printPath3();
 			break;
 		case 4:
+			setTargetCoord(GOAL_X, GOAL_Y);
+			countStepQueueNew();
+			printMapNew();
 //			runCircuit(16, 16, 2, 4, 30, 1.4);
-			waitButton();
-			printLog4();
+//			waitButton();
+//			printLog4();
 			break;
 		default:
 			break;
