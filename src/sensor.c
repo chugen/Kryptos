@@ -22,7 +22,7 @@ uint8_t commSPI(uint8_t address, uint8_t write, uint8_t mode) {
 
 	RSPI1.SPCR.BIT.SPE = 1; //RSPI機能有効
 	RSPI1.SPSR.BYTE = 0xA0; //ステータスクリア
-	for (i = 0; i < 1000; i++)
+	for (i = 0; i < 1000; i++)//1500神の値
 		;
 
 	RSPI1.SPDR.WORD.H = (address | (mode << 7));

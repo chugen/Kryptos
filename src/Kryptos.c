@@ -43,7 +43,6 @@ void main(void) {
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-
 		selectAdjustment1(T14);
 
 		break;
@@ -119,7 +118,11 @@ void main(void) {
 		waitSensor();
 		calcGyroZRef();
 		g_flag_control = 1;
+
 		driveMotor(ON);
+		waitTime(2000);
+		waitButton();
+		printLog4();
 		break;
 	case 10: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(LRED, ON);

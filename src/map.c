@@ -847,7 +847,7 @@ void searchAdachi(void) {
 			runStraightSearch(0, SECTION, search_velo);
 			countCoord();
 		}
-		runStraight(5, HALF_SECTION + 0.02, search_velo, 0);
+		runStraight(5, HALF_SECTION , search_velo, 0);
 
 		g_flag_blindalley = 1;
 		waitTime(500);

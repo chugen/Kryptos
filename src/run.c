@@ -233,6 +233,65 @@ float ctrlIntAngle(float ki) {
 /****************************************
  壁制御
  ****************************************/
+//float ctrlWall(float kp) {
+//	float tmp;
+//	if (g_target_velo <= 0.4) {
+////低速域
+//
+//		tmp = 0;
+//
+//	} else if ((g_flag_turn == 1) || (g_flag_blindalley == 1) || (g_flag_blindalley == 2)) {
+//// ターン中　袋小路中
+//		tmp = 0;
+//
+//	} else if (g_flag_diagonal == 1) {
+////斜め中
+//		if (SEN_DIAGONAL_FL > g_sensor_FL) {
+//			tmp = ( SEN_DIAGONAL_FL - g_sensor_FL) * 0.8;
+//		}
+//		if (SEN_DIAGONAL_FR > g_sensor_FR) {
+//			tmp = -( SEN_DIAGONAL_FR - g_sensor_FR) * 0.8;
+//		}
+//		tmp += 0.07 * (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
+//
+//	} else if (g_flag_circuit == 1) {
+////サーキット
+//		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
+//	} else if (((fabsf(g_sensor_L_derivative) > SEN_DERIVATIVE_L) || (fabsf(g_sensor_R_derivative) > SEN_DERIVATIVE_R)) && (g_target_velo <= 0.5)) {
+////探索速度で変化量が一定以上
+//		tmp = 0;
+//
+//	} else if ((g_sensor_L > SEN_THRESHOLD_L) && (g_sensor_R > SEN_THRESHOLD_R)) {
+////壁が両方ある
+//		tmp = (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
+//
+//	} else if ((g_sensor_L < SEN_THRESHOLD_L) && (g_sensor_R < SEN_THRESHOLD_R)) {
+////壁が両方ない
+//		tmp = 0;
+//
+//	} else if (g_sensor_L > SEN_THRESHOLD_L) {
+////左壁のみ
+//		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
+//
+//	} else if (g_sensor_R > SEN_REFERENCE_R) {
+////右壁のみ
+//		tmp = -2 * ( SEN_REFERENCE_R - g_sensor_R);
+//
+//	} else {
+//
+//		tmp = 0;
+//	}
+//
+//
+//	if (g_target_velo < 0.5) {
+//		return tmp * kp;
+//	} else if (g_target_velo < 1.5) {
+//		return tmp * 0.1;
+//	} else {
+//		return tmp * WALL_HIGH_SPEED;
+//	}
+//
+//}
 float ctrlWall(float kp) {
 	float tmp;
 	if (g_target_velo <= 0.4) { //低速域
@@ -297,7 +356,6 @@ float ctrlWall(float kp) {
 	}
 
 }
-
 float ctrlWallFrontAng(float kp) {
 	float tmp = 0;
 	if ((g_flag_blindalley == 1) && (g_sensor_FL_average > SEN_NOWALL_FL) && (g_sensor_FR_average > SEN_NOWALL_FR)) {
@@ -410,7 +468,7 @@ void runBlindAlley(float velo) {
 		times_count = 0;
 	}
 
-	runStraight(5, HALF_SECTION+0.01, velo, 0);
+	runStraight(5, HALF_SECTION, velo, 0);
 	if ((g_sensor_FL + g_sensor_FR) > (SEN_NOWALL_FL + SEN_NOWALL_FR)) {
 		g_flag_blindalley = 1;
 
@@ -437,8 +495,8 @@ void runBlindAlley(float velo) {
 		g_distance = 0;
 
 		//runStraight(5, HALF_SECTION + 0.01, velo, velo);
-		runStraight(5, -0.035, 0.5, 0);
-		runStraightSearch(5, HALF_SECTION, velo);
+		runStraight(5, -0.045, 0.5, 0);
+		runStraightSearch(5, HALF_SECTION + 0.045, velo);
 	} else if (SEN_REFERENCE_R - g_sensor_R < -170) {
 		turnCorner(&pivot_90_L);
 		g_flag_blindalley = 2;
@@ -451,8 +509,8 @@ void runBlindAlley(float velo) {
 		waitTime(300);
 		g_distance = 0;
 		//runStraight(5, HALF_SECTION + 0.01, velo, velo);
-		runStraight(5, -0.035, 0.5, 0);
-		runStraightSearch(5, HALF_SECTION, velo);
+		runStraight(5, -0.045, 0.5, 0);
+		runStraightSearch(5, HALF_SECTION + 0.045, velo);
 	} else {
 		g_target_angle = 0;
 		turnCorner(&pivot);
@@ -460,7 +518,7 @@ void runBlindAlley(float velo) {
 		g_distance = 0;
 		//runStraight(5, HALF_SECTION + BLIND_ALLEY, velo, velo);
 		runStraight(5, -0.035, 0.5, 0);
-		runStraightSearch(5, HALF_SECTION, velo);
+		runStraightSearch(5, HALF_SECTION + 0.035, velo);
 	}
 
 	g_flag_turn = 0;
@@ -572,7 +630,7 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 	g_accele = 0;
 
 	if (acceleration != 0) {
-		section1 =(velocity * velocity - g_target_velo * g_target_velo) / (2 * acceleration);
+		section1 = (velocity * velocity - g_target_velo * g_target_velo) / (2 * acceleration);
 	} else {
 		section1 = 0;
 	}
@@ -584,7 +642,7 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 		if (fabsf(g_distance) >= section1 || ((g_flag_pillar_edge_L == 1 || g_flag_pillar_edge_R == 1) && g_distance > distance / 2))
 			break;
 	}
-	g_accele=0;
+	g_accele = 0;
 	g_target_velo = velocity;
 
 	while (g_flag_failsafe != 1) {
@@ -595,13 +653,13 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 	if (g_flag_pillar_edge_L == 1) {
 		while (g_flag_failsafe != 1) {
 
-			if (fabsf(g_distance) >= 0.075)//0.09
+			if (fabsf(g_distance) >= 0.075) //0.09
 				break;
 		}
 	} else if (g_flag_pillar_edge_R == 1) {
 		while (g_flag_failsafe != 1) {
 
-			if (fabsf(g_distance) >= 0.07)//0.075
+			if (fabsf(g_distance) >= 0.07) //0.075
 				break;
 		}
 	}

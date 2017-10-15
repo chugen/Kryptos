@@ -52,10 +52,10 @@
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 450//461//494//525//470
-#define SEN_REFERENCE_R 520//495//457//455//517
-#define SEN_REFERENCE_FL 890//1120
-#define SEN_REFERENCE_FR 920//1100
+#define SEN_REFERENCE_L 450//476//450//461//494//525//470
+#define SEN_REFERENCE_R 512//478//520//495//457//455//517
+#define SEN_REFERENCE_FL 1090//881//890//1120
+#define SEN_REFERENCE_FR 1090//909//920//1100
 #define SEN_REFERENCE_FL_S 910//960//920
 #define SEN_REFERENCE_FR_S 880//930//880
 /*==========*/
@@ -76,10 +76,10 @@
 #define SEN_DEATH 1600
 //壁切れ判定変化量
 #define SEN_PILLAR_EDGE_L -45//-50//-100
-#define SEN_PILLAR_EDGE_R -50//-50//-100
+#define SEN_PILLAR_EDGE_R -50//-50//-100runStraightSearch(5, SECTION, 0.7);
 
-#define SEN_PILLAR_EDGE_SEARCH_L -45
-#define SEN_PILLAR_EDGE_SEARCH_R -45
+#define SEN_PILLAR_EDGE_SEARCH_L -32//-40
+#define SEN_PILLAR_EDGE_SEARCH_R -32//-40
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //速度P制御
 #define VELO_P 220
@@ -108,7 +108,7 @@
 #define WALL_P 0.3//0.7//0.3
 #define WALL_HIGH_SPEED 0.08
 #define WALL_FRONT_ANG 0.02//0.05//0.07
-#define WALL_FRONT_DIS 0.01//0.08//0.1
+#define WALL_FRONT_DIS 0.05//0.01//0.08//0.1
 /*Interrupt*/
 #define INTRPT_PERIOD 0.0005
 #define INTRPT_MS 0.001/INTRPT_PERIOD
