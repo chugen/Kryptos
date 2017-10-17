@@ -233,19 +233,77 @@ float ctrlIntAngle(float ki) {
 /****************************************
  壁制御
  ****************************************/
+float ctrlWall(float kp) {
+	float tmp;
+	if (g_target_velo <= 0.4) {
+//低速域
+
+		tmp = 0;
+
+	} else if ((g_flag_turn == 1) || (g_flag_blindalley == 1) || (g_flag_blindalley == 2)) {
+// ターン中　袋小路中
+		tmp = 0;
+
+	} else if (g_flag_diagonal == 1) {
+//斜め中
+		if (SEN_DIAGONAL_FL > g_sensor_FL) {
+			tmp = ( SEN_DIAGONAL_FL - g_sensor_FL) * 0.8;
+		}
+		if (SEN_DIAGONAL_FR > g_sensor_FR) {
+			tmp = -( SEN_DIAGONAL_FR - g_sensor_FR) * 0.8;
+		}
+		tmp += 0.07 * (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
+
+	} else if (g_flag_circuit == 1) {
+//サーキット
+		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
+	} else if (((fabsf(g_sensor_L_derivative) > SEN_DERIVATIVE_L) || (fabsf(g_sensor_R_derivative) > SEN_DERIVATIVE_R)) && (g_target_velo <= 0.7)) {
+//探索速度で変化量が一定以上
+		tmp = 0;
+
+	} else if ((g_sensor_L > SEN_THRESHOLD_L) && (g_sensor_R > SEN_THRESHOLD_R)) {
+//壁が両方ある
+		tmp = (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
+
+	} else if ((g_sensor_L < SEN_THRESHOLD_L) && (g_sensor_R < SEN_THRESHOLD_R)) {
+//壁が両方ない
+		tmp = 0;
+
+	} else if (g_sensor_L > SEN_THRESHOLD_L) {
+//左壁のみ
+		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
+
+	} else if (g_sensor_R > SEN_REFERENCE_R) {
+//右壁のみ
+		tmp = -2 * ( SEN_REFERENCE_R - g_sensor_R);
+
+	} else {
+
+		tmp = 0;
+	}
+
+
+	if (g_target_velo < 0.7) {
+		return tmp * kp;
+	} else if (g_target_velo < 1.5) {
+		return tmp * 0.1;
+	} else {
+		return tmp * WALL_HIGH_SPEED;
+	}
+
+}
 //float ctrlWall(float kp) {
 //	float tmp;
-//	if (g_target_velo <= 0.4) {
-////低速域
+//	if (g_target_velo <= 0.4) { //低速域
 //
 //		tmp = 0;
 //
 //	} else if ((g_flag_turn == 1) || (g_flag_blindalley == 1) || (g_flag_blindalley == 2)) {
-//// ターン中　袋小路中
+//
 //		tmp = 0;
 //
 //	} else if (g_flag_diagonal == 1) {
-////斜め中
+//
 //		if (SEN_DIAGONAL_FL > g_sensor_FL) {
 //			tmp = ( SEN_DIAGONAL_FL - g_sensor_FL) * 0.8;
 //		}
@@ -255,26 +313,27 @@ float ctrlIntAngle(float ki) {
 //		tmp += 0.07 * (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
 //
 //	} else if (g_flag_circuit == 1) {
-////サーキット
 //		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
-//	} else if (((fabsf(g_sensor_L_derivative) > SEN_DERIVATIVE_L) || (fabsf(g_sensor_R_derivative) > SEN_DERIVATIVE_R)) && (g_target_velo <= 0.5)) {
-////探索速度で変化量が一定以上
+//	} else if (((fabsf(g_sensor_L_derivative) > SEN_DERIVATIVE_L)
+//
+//	|| (fabsf(g_sensor_R_derivative) > SEN_DERIVATIVE_R)) && (g_target_velo <= 0.5)) {
+//
 //		tmp = 0;
 //
 //	} else if ((g_sensor_L > SEN_THRESHOLD_L) && (g_sensor_R > SEN_THRESHOLD_R)) {
-////壁が両方ある
+//		//	driveRGB(GREEN,ON);
 //		tmp = (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
 //
 //	} else if ((g_sensor_L < SEN_THRESHOLD_L) && (g_sensor_R < SEN_THRESHOLD_R)) {
-////壁が両方ない
+//		//	driveRGB(ORANGE,ON);
 //		tmp = 0;
 //
 //	} else if (g_sensor_L > SEN_THRESHOLD_L) {
-////左壁のみ
+//		//	driveRGB(BLUE,ON);
 //		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
 //
 //	} else if (g_sensor_R > SEN_REFERENCE_R) {
-////右壁のみ
+//		//	driveRGB(RED,ON);
 //		tmp = -2 * ( SEN_REFERENCE_R - g_sensor_R);
 //
 //	} else {
@@ -282,6 +341,11 @@ float ctrlIntAngle(float ki) {
 //		tmp = 0;
 //	}
 //
+////	if (fabsf(temp) < 0.00001) {
+////		driveRGB(BLUE, ON);
+////	} else {
+////		driveRGB(GREEN, ON);
+////	}
 //
 //	if (g_target_velo < 0.5) {
 //		return tmp * kp;
@@ -292,70 +356,6 @@ float ctrlIntAngle(float ki) {
 //	}
 //
 //}
-float ctrlWall(float kp) {
-	float tmp;
-	if (g_target_velo <= 0.4) { //低速域
-
-		tmp = 0;
-
-	} else if ((g_flag_turn == 1) || (g_flag_blindalley == 1) || (g_flag_blindalley == 2)) {
-
-		tmp = 0;
-
-	} else if (g_flag_diagonal == 1) {
-
-		if (SEN_DIAGONAL_FL > g_sensor_FL) {
-			tmp = ( SEN_DIAGONAL_FL - g_sensor_FL) * 0.8;
-		}
-		if (SEN_DIAGONAL_FR > g_sensor_FR) {
-			tmp = -( SEN_DIAGONAL_FR - g_sensor_FR) * 0.8;
-		}
-		tmp += 0.07 * (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
-
-	} else if (g_flag_circuit == 1) {
-		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
-	} else if (((fabsf(g_sensor_L_derivative) > SEN_DERIVATIVE_L)
-
-	|| (fabsf(g_sensor_R_derivative) > SEN_DERIVATIVE_R)) && (g_target_velo <= 0.5)) {
-
-		tmp = 0;
-
-	} else if ((g_sensor_L > SEN_THRESHOLD_L) && (g_sensor_R > SEN_THRESHOLD_R)) {
-		//	driveRGB(GREEN,ON);
-		tmp = (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
-
-	} else if ((g_sensor_L < SEN_THRESHOLD_L) && (g_sensor_R < SEN_THRESHOLD_R)) {
-		//	driveRGB(ORANGE,ON);
-		tmp = 0;
-
-	} else if (g_sensor_L > SEN_THRESHOLD_L) {
-		//	driveRGB(BLUE,ON);
-		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
-
-	} else if (g_sensor_R > SEN_REFERENCE_R) {
-		//	driveRGB(RED,ON);
-		tmp = -2 * ( SEN_REFERENCE_R - g_sensor_R);
-
-	} else {
-
-		tmp = 0;
-	}
-
-//	if (fabsf(temp) < 0.00001) {
-//		driveRGB(BLUE, ON);
-//	} else {
-//		driveRGB(GREEN, ON);
-//	}
-
-	if (g_target_velo < 0.5) {
-		return tmp * kp;
-	} else if (g_target_velo < 1.5) {
-		return tmp * 0.1;
-	} else {
-		return tmp * WALL_HIGH_SPEED;
-	}
-
-}
 float ctrlWallFrontAng(float kp) {
 	float tmp = 0;
 	if ((g_flag_blindalley == 1) && (g_sensor_FL_average > SEN_NOWALL_FL) && (g_sensor_FR_average > SEN_NOWALL_FR)) {
