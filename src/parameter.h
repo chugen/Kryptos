@@ -76,7 +76,7 @@
 #define SEN_DEATH 1600
 //壁切れ判定変化量
 #define SEN_PILLAR_EDGE_L -45//-50//-100
-#define SEN_PILLAR_EDGE_R -50//-50//-100runStraightSearch(5, SECTION, 0.7);
+#define SEN_PILLAR_EDGE_R -50//-50//-100
 
 #define SEN_PILLAR_EDGE_SEARCH_L -32//-40
 #define SEN_PILLAR_EDGE_SEARCH_R -32//-40
@@ -193,8 +193,8 @@ extern turn_t t_w90_R_1500;
  ****************************************/
 /*others~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 extern turn2_t tc_pivot;
-extern turn2_t tc_pivotc_90_L;
-extern turn2_t tc_pivotc_90_R;
+extern turn2_t tc_pivot_90_L;
+extern turn2_t tc_pivot_90_R;
 
 extern turn2_t tc_test;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

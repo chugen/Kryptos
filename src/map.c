@@ -775,7 +775,7 @@ void searchAdachi(void) {
 	g_log_count = 0;
 	driveSuction(5, OFF);
 	runStraightSearch(5, HALF_SECTION, search_velo);
-	//runStraight(5,0.09,0.7,0.7);
+
 
 	countCoord();
 	checkWall();
@@ -791,19 +791,19 @@ void searchAdachi(void) {
 			break;
 		}
 		if (g_step_map[g_current_x][g_current_y] == 255) {
-//			driveRGB(RED, ON);
+
 			driveMotor(OFF);
 			soundError();
 			break;
 		}
 		if (g_sensor_FL + g_sensor_FR >= SEN_DEATH) {
-//			driveRGB(BLUE, ON);
+
 			driveMotor(OFF);
 			soundError();
 			break;
 		}
 		if (pushButton() == 0) {
-//			driveRGB(MAGENTA, ON);
+
 			driveMotor(OFF);
 			soundError();
 			break;

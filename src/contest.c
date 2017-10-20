@@ -403,6 +403,7 @@ void selectContest(void) {
 
 	//		printMap();
 			printMap();
+			printMapNew();
 	//		printPath3();
 			break;
 		case 4:

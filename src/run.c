@@ -282,7 +282,6 @@ float ctrlWall(float kp) {
 		tmp = 0;
 	}
 
-
 	if (g_target_velo < 0.7) {
 		return tmp * kp;
 	} else if (g_target_velo < 1.5) {
@@ -292,70 +291,7 @@ float ctrlWall(float kp) {
 	}
 
 }
-//float ctrlWall(float kp) {
-//	float tmp;
-//	if (g_target_velo <= 0.4) { //低速域
-//
-//		tmp = 0;
-//
-//	} else if ((g_flag_turn == 1) || (g_flag_blindalley == 1) || (g_flag_blindalley == 2)) {
-//
-//		tmp = 0;
-//
-//	} else if (g_flag_diagonal == 1) {
-//
-//		if (SEN_DIAGONAL_FL > g_sensor_FL) {
-//			tmp = ( SEN_DIAGONAL_FL - g_sensor_FL) * 0.8;
-//		}
-//		if (SEN_DIAGONAL_FR > g_sensor_FR) {
-//			tmp = -( SEN_DIAGONAL_FR - g_sensor_FR) * 0.8;
-//		}
-//		tmp += 0.07 * (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
-//
-//	} else if (g_flag_circuit == 1) {
-//		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
-//	} else if (((fabsf(g_sensor_L_derivative) > SEN_DERIVATIVE_L)
-//
-//	|| (fabsf(g_sensor_R_derivative) > SEN_DERIVATIVE_R)) && (g_target_velo <= 0.5)) {
-//
-//		tmp = 0;
-//
-//	} else if ((g_sensor_L > SEN_THRESHOLD_L) && (g_sensor_R > SEN_THRESHOLD_R)) {
-//		//	driveRGB(GREEN,ON);
-//		tmp = (( SEN_REFERENCE_L - g_sensor_L) - ( SEN_REFERENCE_R - g_sensor_R));
-//
-//	} else if ((g_sensor_L < SEN_THRESHOLD_L) && (g_sensor_R < SEN_THRESHOLD_R)) {
-//		//	driveRGB(ORANGE,ON);
-//		tmp = 0;
-//
-//	} else if (g_sensor_L > SEN_THRESHOLD_L) {
-//		//	driveRGB(BLUE,ON);
-//		tmp = 2 * ( SEN_REFERENCE_L - g_sensor_L);
-//
-//	} else if (g_sensor_R > SEN_REFERENCE_R) {
-//		//	driveRGB(RED,ON);
-//		tmp = -2 * ( SEN_REFERENCE_R - g_sensor_R);
-//
-//	} else {
-//
-//		tmp = 0;
-//	}
-//
-////	if (fabsf(temp) < 0.00001) {
-////		driveRGB(BLUE, ON);
-////	} else {
-////		driveRGB(GREEN, ON);
-////	}
-//
-//	if (g_target_velo < 0.5) {
-//		return tmp * kp;
-//	} else if (g_target_velo < 1.5) {
-//		return tmp * 0.1;
-//	} else {
-//		return tmp * WALL_HIGH_SPEED;
-//	}
-//
-//}
+
 float ctrlWallFrontAng(float kp) {
 	float tmp = 0;
 	if ((g_flag_blindalley == 1) && (g_sensor_FL_average > SEN_NOWALL_FL) && (g_sensor_FR_average > SEN_NOWALL_FR)) {
@@ -483,37 +419,42 @@ void runBlindAlley(float velo) {
 
 	initRun();
 	if (SEN_REFERENCE_L - g_sensor_L < -170) {
-		turnCorner(&pivot_90_R);
+//		turnCorner(&pivot_90_R);
+		turnShortest(&tc_pivot_90_R);
 		g_flag_blindalley = 2;
 
 		waitTime(300);
 		g_flag_blindalley = 0;
 
 		initRun();
-		turnCorner(&pivot_90_R);
+//		turnCorner(&pivot_90_R);
+		turnShortest(&tc_pivot_90_R);
 		waitTime(300);
 		g_distance = 0;
 
 		//runStraight(5, HALF_SECTION + 0.01, velo, velo);
-		runStraight(5, -0.045, 0.5, 0);
-		runStraightSearch(5, HALF_SECTION + 0.045, velo);
+		runStraight(5, -0.035, 0.5, 0);
+		runStraightSearch(5, HALF_SECTION + 0.035, velo);
 	} else if (SEN_REFERENCE_R - g_sensor_R < -170) {
-		turnCorner(&pivot_90_L);
+//		turnCorner(&pivot_90_L);
+		turnShortest(&tc_pivot_90_L);
 		g_flag_blindalley = 2;
 
 		waitTime(300);
 		g_flag_blindalley = 0;
 
 		initRun();
-		turnCorner(&pivot_90_L);
+//		turnCorner(&pivot_90_L);
+		turnShortest(&tc_pivot_90_L);
 		waitTime(300);
 		g_distance = 0;
 		//runStraight(5, HALF_SECTION + 0.01, velo, velo);
-		runStraight(5, -0.045, 0.5, 0);
-		runStraightSearch(5, HALF_SECTION + 0.045, velo);
+		runStraight(5, -0.035, 0.5, 0);
+		runStraightSearch(5, HALF_SECTION + 0.035, velo);
 	} else {
 		g_target_angle = 0;
-		turnCorner(&pivot);
+//		turnCorner(&pivot);
+		turnShortest(&tc_pivot);
 		waitTime(300);
 		g_distance = 0;
 		//runStraight(5, HALF_SECTION + BLIND_ALLEY, velo, velo);
@@ -891,26 +832,30 @@ void turnSearch(turn2_t *p) {
  ****************************************/
 void turnShortest(turn2_t *p) {
 //壁切れ
-	if (p->angle >= 0) {
-		while (g_flag_failsafe != 1) {
-			if (g_flag_pillar_edge_L == 1)
-				break;
+	if (p->velocity != 0) {
+		if (p->angle >= 0) {
+			while (g_flag_failsafe != 1) {
+				if (g_flag_pillar_edge_L == 1)
+					break;
+			}
+			g_distance = 0;
+			runStraight(5, p->front, p->velocity, p->velocity);
+		} else {
+			while (g_flag_failsafe != 1) {
+				if (g_flag_pillar_edge_R == 1)
+					break;
+			}
+			g_distance = 0;
+			runStraight(5, p->front, p->velocity, p->velocity);
 		}
-		g_distance = 0;
-		runStraight(5, p->front, p->velocity, p->velocity);
-	} else {
-		while (g_flag_failsafe != 1) {
-			if (g_flag_pillar_edge_R == 1)
-				break;
-		}
-		g_distance = 0;
-		runStraight(5, p->front, p->velocity, p->velocity);
 	}
 //ターン
 	turnCornerContinuous(p->angle, p->omega);
 //ターン後オフセット
-	g_flag_diagonal = p->dia; //斜めフラグ
-	if ((g_flag_shortest_goal == 1)) {
-		runStraight(5, p->rear, p->velocity, p->velocity);
+	if (p->velocity != 0) {
+		g_flag_diagonal = p->dia; //斜めフラグ
+		if ((g_flag_shortest_goal == 1)) {
+			runStraight(5, p->rear, p->velocity, p->velocity);
+		}
 	}
 }

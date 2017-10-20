@@ -49,7 +49,26 @@ void main(void) {
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
 
-		selectAdjustment2();
+		//selectAdjustment2();
+
+		driveRGB(GREEN, ON);
+		waitTime(1000);
+		calcGyroZRef();
+		driveSuction(70, ON);
+		waitTime(1000);
+		initRun();
+		driveMotor(ON);
+		switchSensorLED(ON);
+
+		g_flag_shortest_goal = 1;
+
+		runStraight(30, SECTION * 5, 4, 0);
+
+		waitTime(300);
+		driveMotor(OFF);
+		driveSuction(70, OFF);
+		waitButton();
+		printLog4();
 
 		break;
 	case 3: //////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +127,8 @@ void main(void) {
 		switchSensorLED(ON);
 		while (1) {
 
-			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL, g_sensor_L, g_sensor_R, g_sensor_FR);
+			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL,
+					g_sensor_L, g_sensor_R, g_sensor_FR);
 //			myprintf("%4.1d	%4.1d\n", g_sensor_FL, g_sensor_FR);
 			waitTime(50);
 		}

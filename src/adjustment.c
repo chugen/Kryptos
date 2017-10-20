@@ -269,7 +269,7 @@ void selectAdjustment2(void) {
 	case 6:
 		initAdjustment2();
 		for (i = 0; i < 10; i++) {
-			turnCorner(&pivot);
+			turnShortest(&tc_pivot);
 			waitTime(200);
 		}
 		break;

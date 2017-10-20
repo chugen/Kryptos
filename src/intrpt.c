@@ -51,7 +51,7 @@ void intrptCMT0(void) {
 		//getLogInt(commSPI(GYRO_ZOUT_H, 0x0f, READ),commSPI(GYRO_ZOUT_L, 0x0f, READ));
 		//getLog(g_sensor_R, g_target_omega);
 //		getLog4(g_target_velo, g_current_velo, g_target_omega, g_current_omega);
-		getLog4(g_duty_L, g_duty_R, g_target_omega, g_current_omega);
+		getLog4(g_duty_L, g_duty_R, g_target_velo, g_current_velo);
 		//getLog4(g_target_velo, g_current_velo, g_distance,g_accele );
 		//getLog4(g_sensor_L, g_sensor_R, g_flag_pillar_edge_L, g_flag_pillar_edge_R);
 		//getLog4(g_torque_L,g_torque_R,g_target_omega,g_current_omega);
