@@ -127,6 +127,7 @@ extern volatile int8_t g_flag_shortest_goal;
 extern volatile int8_t g_flag_turn_continuous;
 extern volatile int8_t g_flag_FF;
 extern volatile int8_t g_flag_buzzer;
+extern volatile int8_t g_flag_run_known_section;
 //テスト用
 
 extern volatile float g_duty_L;

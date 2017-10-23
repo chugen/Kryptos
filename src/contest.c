@@ -96,7 +96,7 @@ void runAdachiAdachi(void) {
 	switchSensorLED(ON);
 	turnCorner(&pivot);
 	checkOrient(180);
-	runStraight(5, -0.035, 0.5, 0);
+	runStraight(5, -0.02, 0.5, 0);
 	setTargetCoord(START_X, START_Y);
 	countStepQueue();
 
@@ -154,7 +154,7 @@ void runFurukawaAdachi(void) {
 	switchSensorLED(ON);
 	turnCorner(&pivot);
 	checkOrient(180);
-	runStraight(5, -0.035, 0.5, 0);
+	runStraight(5, -0.02, 0.5, 0);
 	setTargetCoord(START_X, START_Y);
 
 	countStepQueue();
@@ -162,7 +162,6 @@ void runFurukawaAdachi(void) {
 	switchSensorLED(ON);
 	initRun();
 	driveMotor(ON);
-
 
 	searchAdachi();
 	turnCorner(&pivot);
@@ -221,7 +220,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal(T14,2, 10, 2, 10);
+		runPathDiagonal(T14, 2, 10, 2, 10);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -246,7 +245,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal(T14,3, 15, 3, 10);
+		runPathDiagonal(T14, 3, 15, 3, 10);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -271,7 +270,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal(T14,4, 15, 3, 15);
+		runPathDiagonal(T14, 4, 15, 3, 15);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -296,7 +295,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal(T14,4, 20, 3, 20);
+		runPathDiagonal(T14, 4, 20, 3, 20);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -321,7 +320,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal(T14,4, 20, 4, 20);
+		runPathDiagonal(T14, 4, 20, 4, 20);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -346,7 +345,7 @@ void selectRun(void) {
 		initRun();
 		driveMotor(ON);
 		switchSensorLED(ON);
-		runPathDiagonal(T14,4, 30, 4, 20);
+		runPathDiagonal(T14, 4, 30, 4, 20);
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		driveSuction(100, OFF);
@@ -395,19 +394,19 @@ void selectContest(void) {
 			setTargetCoord(GOAL_X, GOAL_Y);
 			setOrient(NORTH);
 			countStepShortest();
-	//		setCurrentCoord(START_X, START_Y);
+			//		setCurrentCoord(START_X, START_Y);
 
+			//		makePath();
+			//		makePath3();
 
-	//		makePath();
-	//		makePath3();
-
-	//		printMap();
+			//		printMap();
 			printMap();
 			printMapNew();
-	//		printPath3();
+			//		printPath3();
 			break;
 		case 4:
 			setTargetCoord(GOAL_X, GOAL_Y);
+			setOrient(NORTH);
 			countStepQueueNew();
 			printMapNew();
 //			runCircuit(16, 16, 2, 4, 30, 1.4);

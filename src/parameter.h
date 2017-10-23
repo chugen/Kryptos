@@ -52,8 +52,8 @@
  制御パラメータ
  ****************************************/
 //リファレンス
-#define SEN_REFERENCE_L 450//476//450//461//494//525//470
-#define SEN_REFERENCE_R 512//478//520//495//457//455//517
+#define SEN_REFERENCE_L 433//450//476//450//461//494//525//470
+#define SEN_REFERENCE_R 443//512//478//520//495//457//455//517
 #define SEN_REFERENCE_FL 1090//881//890//1120
 #define SEN_REFERENCE_FR 1090//909//920//1100
 #define SEN_REFERENCE_FL_S 910//960//920

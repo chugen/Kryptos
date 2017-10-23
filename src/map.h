@@ -20,6 +20,7 @@ void setOrient(uint8_t orient);
  座標管理
  ****************************************/
 void countCoord(void);
+void countCoord2(int8_t *x, int8_t *y);
 /****************************************
 現在座標セット
  ****************************************/
@@ -60,6 +61,7 @@ void checkWall(void);
  壁有無判定
  ****************************************/
 uint8_t isNoWall(wall_t *wall_info,uint8_t dir);
+uint8_t isNoWall2(wall_t *wall_info, uint8_t x, uint8_t y, uint8_t dir);
 /****************************************
  壁既知データ有無判定
  ****************************************/
@@ -68,10 +70,12 @@ uint8_t isUnknownWall(wall_t *wall_info,uint8_t dir) ;
  進行方向の歩数確認
  ****************************************/
 uint8_t isSmallerSteps(uint8_t dir);
+uint8_t isSmallerSteps2(uint8_t coord_x, uint8_t coord_y, uint8_t dir);
 /****************************************
  進行方向が既知か未知か
  ****************************************/
 uint8_t isUnknownSection(uint16_t x, uint16_t y);
+uint8_t isUnknownSection2(uint16_t x, uint16_t y);
 uint8_t isUnknownNextSection(uint8_t dir);
 /****************************************
  queuemap

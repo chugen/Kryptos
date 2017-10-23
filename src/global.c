@@ -123,6 +123,7 @@ volatile int8_t g_flag_shortest_goal;
 volatile int8_t g_flag_turn_continuous=0;
 volatile int8_t g_flag_FF=0;
 volatile int8_t g_flag_buzzer=0;
+volatile int8_t g_flag_run_known_section=0;
 
 //テスト用
 volatile float g_duty_L;
