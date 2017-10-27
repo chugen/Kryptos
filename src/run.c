@@ -148,7 +148,8 @@ float ctrlPropVelocity(float kp) {
  ****************************************/
 float ctrlIntVelocity(float ki) {
 	g_velo_error_integral += g_velo_error;
-	if (g_flag_blindalley == 1 || g_flag_blindalley == 2) {
+	if (g_flag_blindalley == 1 || g_flag_blindalley == 2
+			|| g_flag_blindalley == 3) {
 		g_velo_error_integral = 0;
 	}
 	return g_velo_error_integral * ki;
@@ -197,7 +198,8 @@ float ctrlIntOmega(float ki) {
 			&& g_flag_turn == 0) {
 		g_omega_error_integral = 0;
 		return 0;
-	} else if (g_flag_blindalley == 1 || g_flag_blindalley == 2) {
+	} else if (g_flag_blindalley == 1 || g_flag_blindalley == 2
+			|| g_flag_blindalley == 3) {
 		g_omega_error_integral = 0;
 		return 0;
 	} else {
@@ -230,7 +232,8 @@ float ctrlIntAngle(float ki) {
 			&& g_flag_turn == 0) {
 		g_angle_error_integral = 0;
 		return 0;
-	} else if (g_flag_blindalley == 1 || g_flag_blindalley == 2) {
+	} else if (g_flag_blindalley == 1 || g_flag_blindalley == 2
+			|| g_flag_blindalley == 3) {
 		g_angle_error_integral = 0;
 		return 0;
 	} else {
@@ -248,7 +251,7 @@ float ctrlWall(float kp) {
 		tmp = 0;
 
 	} else if ((g_flag_turn == 1) || (g_flag_blindalley == 1)
-			|| (g_flag_blindalley == 2)) {
+			|| (g_flag_blindalley == 2) || (g_flag_blindalley == 3)) {
 // ターン中　袋小路中
 		tmp = 0;
 
@@ -310,21 +313,28 @@ float ctrlWall(float kp) {
 
 float ctrlWallFrontAng(float kp) {
 	float tmp = 0;
-	if ((g_flag_blindalley == 1) && (g_sensor_FL_average > SEN_NOWALL_FL)
-			&& (g_sensor_FR_average > SEN_NOWALL_FR)) {
+	if ((g_flag_blindalley == 1) && (g_sensor_FL_lowpass > SEN_NOWALL_FL)
+			&& (g_sensor_FR_lowpass > SEN_NOWALL_FR)) {
 
 		g_omega_error_integral = 0;
 		tmp = -kp
-				* (( SEN_REFERENCE_FL - g_sensor_FL_average)
-						- ( SEN_REFERENCE_FR - g_sensor_FR_average));
+				* (( SEN_REFERENCE_FL - g_sensor_FL_lowpass)
+						- ( SEN_REFERENCE_FR - g_sensor_FR_lowpass));
 
-	} else if ((g_flag_blindalley == 2) && (g_sensor_FL_average > SEN_NOWALL_FL)
-			&& (g_sensor_FR_average > SEN_NOWALL_FR)) {
+	} else if ((g_flag_blindalley == 2) && (g_sensor_FL_lowpass > SEN_NOWALL_FL)
+			&& (g_sensor_FR_lowpass > SEN_NOWALL_FR)) {
 
 		g_omega_error_integral = 0;
 		tmp = -kp
-				* ((SEN_REFERENCE_FL_S - g_sensor_FL_average)
-						- (SEN_REFERENCE_FR_S - g_sensor_FR_average));
+				* ((SEN_REFERENCE_FL_L - g_sensor_FL_lowpass)
+						- (SEN_REFERENCE_FR_L - g_sensor_FR_lowpass));
+
+	} else if ((g_flag_blindalley == 3) && (g_sensor_FL_lowpass > SEN_NOWALL_FL)
+			&& (g_sensor_FR_lowpass > SEN_NOWALL_FR)) {
+
+		tmp = -kp
+				* ((SEN_REFERENCE_FL_R - g_sensor_FL_lowpass)
+						- (SEN_REFERENCE_FR_R - g_sensor_FR_lowpass));
 
 	} else {
 		tmp = 0;
@@ -333,19 +343,26 @@ float ctrlWallFrontAng(float kp) {
 }
 float ctrlWallFrontDis(float kp) {
 	float tmp = 0;
-	if ((g_flag_blindalley == 1) && (g_sensor_FL_average > SEN_NOWALL_FL)
-			&& (g_sensor_FR_average > SEN_NOWALL_FR)) {
+	if ((g_flag_blindalley == 1) && (g_sensor_FL_lowpass > SEN_NOWALL_FL)
+			&& (g_sensor_FR_lowpass > SEN_NOWALL_FR)) {
 
 		tmp = kp
-				* (( SEN_REFERENCE_FL - g_sensor_FL_average)
-						+ ( SEN_REFERENCE_FR - g_sensor_FR_average));
+				* (( SEN_REFERENCE_FL - g_sensor_FL_lowpass)
+						+ ( SEN_REFERENCE_FR - g_sensor_FR_lowpass));
 
-	} else if ((g_flag_blindalley == 2) && (g_sensor_FL_average > SEN_NOWALL_FL)
-			&& (g_sensor_FR_average > SEN_NOWALL_FR)) {
+	} else if ((g_flag_blindalley == 2) && (g_sensor_FL_lowpass > SEN_NOWALL_FL)
+			&& (g_sensor_FR_lowpass > SEN_NOWALL_FR)) {
 
 		tmp = kp
-				* ((SEN_REFERENCE_FL_S - g_sensor_FL_average)
-						+ (SEN_REFERENCE_FR_S - g_sensor_FR_average));
+				* ((SEN_REFERENCE_FL_L - g_sensor_FL_lowpass)
+						+ (SEN_REFERENCE_FR_L - g_sensor_FR_lowpass));
+
+	} else if ((g_flag_blindalley == 3) && (g_sensor_FL_lowpass > SEN_NOWALL_FL)
+			&& (g_sensor_FR_lowpass > SEN_NOWALL_FR)) {
+
+		tmp = kp
+				* ((SEN_REFERENCE_FL_R - g_sensor_FL_lowpass)
+						+ (SEN_REFERENCE_FR_R - g_sensor_FR_lowpass));
 
 	} else {
 		tmp = 0;
@@ -441,9 +458,9 @@ void runBlindAlley(float velo) {
 	}
 
 	runStraight(5, HALF_SECTION, velo, 0);
-	if ((g_sensor_FL + g_sensor_FR) > (SEN_NOWALL_FL + SEN_NOWALL_FR)) {
+	if ((g_sensor_FL + g_sensor_FR)
+			> (SEN_NOWALL_FL + SEN_NOWALL_FR)&& g_sensor_FL > SEN_NOWALL_FL && g_sensor_FR > SEN_NOWALL_FR) {
 		g_flag_blindalley = 1;
-
 		waitTime(300);
 	}
 
@@ -454,48 +471,49 @@ void runBlindAlley(float velo) {
 	g_flag_blindalley = 0;
 
 	initRun();
-	if (SEN_REFERENCE_L - g_sensor_L < -170) {
-//		turnCorner(&pivot_90_R);
-		turnShortest(&tc_pivot_90_R);
+	if (SEN_REFERENCE_R - g_sensor_R < -200) {
+
+		turnShortest(&tc_pivot_90_L);
 		g_flag_blindalley = 2;
 
 		waitTime(300);
 		g_flag_blindalley = 0;
 
 		initRun();
-//		turnCorner(&pivot_90_R);
-		turnShortest(&tc_pivot_90_R);
+
+		turnShortest(&tc_pivot_90_L);
 		waitTime(300);
 		g_distance = 0;
 
-		//runStraight(5, HALF_SECTION + 0.01, velo, velo);
+
 		runStraight(5, -0.035, 0.5, 0);
 		runStraightSearch(5, HALF_SECTION + 0.035, velo);
-	} else if (SEN_REFERENCE_R - g_sensor_R < -170) {
-//		turnCorner(&pivot_90_L);
-		turnShortest(&tc_pivot_90_L);
-		g_flag_blindalley = 2;
+	} else if (SEN_REFERENCE_L - g_sensor_L < -200) {
+
+		turnShortest(&tc_pivot_90_R);
+		g_flag_blindalley = 3;
 
 		waitTime(300);
 		g_flag_blindalley = 0;
 
 		initRun();
-//		turnCorner(&pivot_90_L);
-		turnShortest(&tc_pivot_90_L);
+
+		turnShortest(&tc_pivot_90_R);
 		waitTime(300);
 		g_distance = 0;
-		//runStraight(5, HALF_SECTION + 0.01, velo, velo);
+
+
 		runStraight(5, -0.035, 0.5, 0);
 		runStraightSearch(5, HALF_SECTION + 0.035, velo);
 	} else {
 		g_target_angle = 0;
-//		turnCorner(&pivot);
+
 		turnShortest(&tc_pivot);
 		waitTime(300);
 		g_distance = 0;
-		//runStraight(5, HALF_SECTION + BLIND_ALLEY, velo, velo);
-		runStraight(5, -0.035, 0.5, 0);
-		runStraightSearch(5, HALF_SECTION + 0.035, velo);
+
+		runStraight(5, -0.04, 0.5, 0);
+		runStraightSearch(5, HALF_SECTION + 0.04, velo);
 	}
 
 	g_flag_turn = 0;
@@ -628,7 +646,7 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 	}
 	g_accele = 0;
 	g_target_velo = velocity;
-
+//section2////////////////////////////////////////////////////////////////////
 	while (g_flag_failsafe != 1) {
 		if (fabsf(g_distance) >= section2
 				|| ((g_flag_pillar_edge_L == 1 || g_flag_pillar_edge_R == 1)
@@ -637,15 +655,17 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 	}
 	g_distance = 0;
 	if (g_flag_pillar_edge_L == 1) {
+		driveRGB(BLUE, ON);
 		while (g_flag_failsafe != 1) {
 
-			if (fabsf(g_distance) >= 0.075) //0.09
+			if (fabsf(g_distance) >= 0.10) //0.09
 				break;
 		}
 	} else if (g_flag_pillar_edge_R == 1) {
+		driveRGB(BLUE, ON);
 		while (g_flag_failsafe != 1) {
 
-			if (fabsf(g_distance) >= 0.07) //0.075
+			if (fabsf(g_distance) >= 0.10) //0.075
 				break;
 		}
 	}
@@ -670,8 +690,8 @@ void runStraightOffset(float dis, float velo) {
 		sensor_value_FR = 216.23 * expf(14.11 * dis);
 
 		while (g_flag_failsafe != 1) {
-			if ((g_sensor_FL_average > sensor_value_FL
-					&& g_sensor_FR_average > sensor_value_FR))
+			if ((g_sensor_FL_lowpass > sensor_value_FL
+					&& g_sensor_FR_lowpass > sensor_value_FR))
 				break;
 		}
 	} else {

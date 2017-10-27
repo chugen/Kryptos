@@ -217,29 +217,22 @@ void selectAdjustment2(void) {
 
 	case 0:
 		initAdjustment2();
-		runStraight(5, HALF_SECTION, velo, velo);
-
-		for (i = 0; i < 16; i++) {
-			runStraight(5, SECTION, velo, velo);
-			turnSearch(&tc_90_L_07);
-		}
-		runStraight(5, SECTION, velo, 0);
+		switchSensorLED(ON);
+		runStraight(5, SECTION * 4, velo, 0);
 		break;
 	case 1:
 		initAdjustment2();
-		runStraight(5, HALF_SECTION, velo, velo);
-
-		for (i = 0; i < 16; i++) {
-			runStraight(5, SECTION, velo, velo);
-			turnSearch(&tc_90_R_07);
-		}
-		runStraight(5, SECTION, velo, 0);
+//		g_flag_diagonal = 1;
+//		runStraight(5, SECTION * 4, velo, 0);
+		switchSensorLED(ON);
+		runStraightSearch(5,SECTION*2,velo);
+		runStraight(5, HALF_SECTION, velo, 0);
 		break;
 	case 2:
 		initAdjustment2();
 		switchSensorLED(ON);
-		//runStraight(5, SECTION, velo, velo);
-		runStraightSearch(5, SECTION, 0.7);
+		runStraight(5, SECTION, velo, velo);
+		//runStraightSearch(5, SECTION, 0.7);
 		turnSearch(&tc_90_L_07);
 		runStraight(5, SECTION, velo, 0);
 		break;
@@ -247,8 +240,8 @@ void selectAdjustment2(void) {
 	case 3:
 		initAdjustment2();
 		switchSensorLED(ON);
-		//runStraight(5, SECTION, velo, velo);
-		runStraightSearch(5, SECTION, 0.7);
+		runStraight(5, SECTION, velo, velo);
+		//runStraightSearch(5, SECTION, 0.7);
 		turnSearch(&tc_90_R_07);
 		runStraight(5, SECTION, velo, 0);
 		break;
@@ -281,13 +274,10 @@ void selectAdjustment2(void) {
 		runStraight(5, SECTION, velo, 0);
 		break;
 	case 8:
-		initAdjustment2();
-		runStraight(5, SECTION * 4, velo, 0);
+
 		break;
 	case 9:
-		initAdjustment2();
-		g_flag_diagonal = 1;
-		runStraight(5, SECTION * 4, velo, 0);
+
 		break;
 	case 10:
 
@@ -296,10 +286,24 @@ void selectAdjustment2(void) {
 
 		break;
 	case 12:
+		initAdjustment2();
+		runStraight(5, HALF_SECTION, velo, velo);
 
+		for (i = 0; i < 16; i++) {
+			runStraight(5, SECTION, velo, velo);
+			turnSearch(&tc_90_L_07);
+		}
+		runStraight(5, SECTION, velo, 0);
 		break;
 	case 13:
+		initAdjustment2();
+		runStraight(5, HALF_SECTION, velo, velo);
 
+		for (i = 0; i < 16; i++) {
+			runStraight(5, SECTION, velo, velo);
+			turnSearch(&tc_90_R_07);
+		}
+		runStraight(5, SECTION, velo, 0);
 		break;
 
 	default:

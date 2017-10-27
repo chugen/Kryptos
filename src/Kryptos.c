@@ -37,38 +37,60 @@ void main(void) {
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
-		g_flag_FF = 1;
+
 		selectContest();
+
+//		 FLASH.DFLWE0.WORD = 0x1EFF; //プロテクト解除
+//		 changeFCUMode(1, 1, P_E);
+//		 driveRGB(RED, ON);
+//		 notificateClock(1, 1);
+//
+//		 eraseFCU(0, 0);
+//		 driveRGB(BLUE, ON);
+//		 programFCU(1, 1, 0x44);
+//
+//		 driveRGB(GREEN, ON);
+//		 changeFCUMode(1, 1, READ);
+//		 myprintf("%d\n", readFCUValue(1, 1));
+//
+//		 FLASH.DFLWE0.WORD = 0x1E00; // disable
 
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-		selectAdjustment1(T14);
+		//selectAdjustment1(T14);
+		g_log_count = 0;
+		waitSensor();
+		g_log_count = 0;
+		waitTime(2000);
+		soundPrint();
+		waitButton();
+		printLog4();
 
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
 
-		//selectAdjustment2();
+		selectAdjustment2();
 
-		driveRGB(GREEN, ON);
-		waitTime(1000);
-		calcGyroZRef();
-		driveSuction(70, ON);
-		waitTime(1000);
-		initRun();
-		driveMotor(ON);
-		switchSensorLED(ON);
-
-		g_flag_shortest_goal = 1;
-
-		runStraight(30, SECTION * 5, 4, 0);
-
-		waitTime(300);
-		driveMotor(OFF);
-		driveSuction(70, OFF);
-		waitButton();
-		printLog4();
+//		driveRGB(GREEN, ON);
+//		waitTime(1000);
+//		calcGyroZRef();
+//		driveSuction(70, ON);
+//		waitTime(1000);
+//		initRun();
+//		driveMotor(ON);
+//		switchSensorLED(ON);
+//
+//		g_flag_shortest_goal = 1;
+//
+//		runStraight(30, SECTION * 5, 4, 0);
+//
+//		waitTime(300);
+//		driveMotor(OFF);
+//		driveSuction(70, OFF);
+//		waitButton();
+//		printLog4();
 
 		break;
 	case 3: //////////////////////////////////////////////////////////////////////////////////////
@@ -120,15 +142,16 @@ void main(void) {
 		driveMotor(OFF);
 		driveSuction(70, OFF);
 		waitButton();
-		printLog();
+		printLog4();
 		break;
 	case 8: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(WATER, ON);
 		switchSensorLED(ON);
 		while (1) {
-
-			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL,
-					g_sensor_L, g_sensor_R, g_sensor_FR);
+			myprintf("FL:%6.0f L:%6.0f R:%6.0f FR:%6.0f\n", g_sensor_FL_lowpass,
+								g_sensor_L_lowpass, g_sensor_R_lowpass, g_sensor_FR_lowpass);
+//			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL,
+//					g_sensor_L, g_sensor_R, g_sensor_FR);
 //			myprintf("%4.1d	%4.1d\n", g_sensor_FL, g_sensor_FR);
 			waitTime(50);
 		}

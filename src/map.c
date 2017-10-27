@@ -868,7 +868,7 @@ void countStepQueueNew(void) {
  ****************************************/
 void searchAdachi(void) {
 	float search_velo = 0.7;
-	float search_velo_known = 1.8;
+	float search_velo_known = 3;
 	uint8_t i, known_section_count = 0;
 	int8_t x_tmp = 0, y_tmp = 0;
 	g_flag_run_mode = SEARCH;
@@ -990,12 +990,9 @@ void searchAdachi(void) {
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		soundGoal();
-		matchWallGoal();
 	} else {
-		driveSuction(5, OFF);
 		driveMotor(OFF);
 		switchSensorLED(OFF);
-
 	}
 	g_flag_run_mode = DEFAULT;
 }
@@ -1004,7 +1001,7 @@ void searchAdachi(void) {
  ****************************************/
 void searchFurukawa(void) {
 	float search_velo = 0.7;
-	float search_velo_known = 1.8;
+	float search_velo_known = 3;
 	uint8_t i, known_section_count = 0;
 	int8_t x_tmp = 0, y_tmp = 0;
 	g_flag_run_mode = SEARCH;

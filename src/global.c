@@ -67,8 +67,10 @@ volatile int32_t g_sensor_FR;
 volatile int32_t g_sensor_L;
 volatile int32_t g_sensor_R;
 
-volatile float g_sensor_FL_average;
-volatile float g_sensor_FR_average;
+volatile float g_sensor_FL_lowpass;
+volatile float g_sensor_FR_lowpass;
+volatile float g_sensor_L_lowpass;
+volatile float g_sensor_R_lowpass;
 
 volatile int32_t g_sensor_L_derivative;
 volatile int32_t g_sensor_R_derivative;

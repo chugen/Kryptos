@@ -136,9 +136,9 @@ void waitSensor(void) {
 	uint16_t count = 0;
 	switchSensorLED(ON);
 	while (1) {
-		if ((g_sensor_L > 600) && (g_sensor_R > 600)) {
+		if ((g_sensor_L > 500) && (g_sensor_R > 500)) {
 			count++;
-			if (count > 300) {
+			if (count > 250) {
 				break;
 			}
 		} else {

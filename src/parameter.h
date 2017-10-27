@@ -24,8 +24,8 @@
 //慣性モーメント(kg・m^2)
 #define INERTIA 0.00030//0.00043//0.00011571875
 //タイヤ直径(m)
-#define DIAMETER_L 0.0219//0.0218
-#define DIAMETER_R 0.0219//0.0218
+#define DIAMETER_L 0.02160//0.0219//0.0218
+#define DIAMETER_R 0.02230//0.0219//0.0218
 //ギア歯数
 #define PINION 9.0
 #define SPUR 35.0
@@ -51,13 +51,21 @@
 /****************************************
  制御パラメータ
  ****************************************/
+//ローパスフィルタ定数
+#define SEN_LOWPASS 0.8
+
 //リファレンス
-#define SEN_REFERENCE_L 433//450//476//450//461//494//525//470
-#define SEN_REFERENCE_R 443//512//478//520//495//457//455//517
-#define SEN_REFERENCE_FL 1090//881//890//1120
-#define SEN_REFERENCE_FR 1090//909//920//1100
-#define SEN_REFERENCE_FL_S 910//960//920
-#define SEN_REFERENCE_FR_S 880//930//880
+#define SEN_REFERENCE_L 456//
+#define SEN_REFERENCE_R 464//
+//前壁制御
+#define SEN_REFERENCE_FL 975//
+#define SEN_REFERENCE_FR 913//
+
+#define SEN_REFERENCE_FL_L 971//
+#define SEN_REFERENCE_FR_L 904//
+
+#define SEN_REFERENCE_FL_R 967//
+#define SEN_REFERENCE_FR_R 780//
 /*==========*/
 #define SEN_DIAGONAL_FL 70
 #define SEN_DIAGONAL_FR 70
@@ -70,15 +78,15 @@
 //壁有無判定基準値
 #define SEN_NOWALL_L 240//170
 #define SEN_NOWALL_R 240
-#define SEN_NOWALL_FL 120//100//75//160
-#define SEN_NOWALL_FR 110//90//65
+#define SEN_NOWALL_FL 130//75//160
+#define SEN_NOWALL_FR 120//65
 //死亡判定
 #define SEN_DEATH 1600
 //壁切れ判定変化量
 #define SEN_PILLAR_EDGE_L -45//-50//-100
 #define SEN_PILLAR_EDGE_R -50//-50//-100
 
-#define SEN_PILLAR_EDGE_SEARCH_L -32//-40
+#define SEN_PILLAR_EDGE_SEARCH_L -30//-40
 #define SEN_PILLAR_EDGE_SEARCH_R -32//-40
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //速度P制御

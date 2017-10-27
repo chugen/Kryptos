@@ -362,6 +362,7 @@ void selectRun(void) {
  大会用関数
  ****************************************/
 void selectContest(void) {
+	g_flag_FF = 1;
 	while (1) {
 		driveRGB(CYAN, ON);
 		waitTime(500);
@@ -394,6 +395,7 @@ void selectContest(void) {
 			setTargetCoord(GOAL_X, GOAL_Y);
 			setOrient(NORTH);
 			countStepShortest();
+			countStepQueueNew();
 			//		setCurrentCoord(START_X, START_Y);
 
 			//		makePath();
