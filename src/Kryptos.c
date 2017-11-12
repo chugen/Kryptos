@@ -38,17 +38,7 @@ void main(void) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
 
-		waitSensor();
-		calcGyroZRef();
-		g_log_count = 0;
-		g_current_angle = 0;
-		while (1) {
-			myprintf("%8.5f %8.5f\n", g_current_angle, g_current_omega);
-		}
-//		while(1){
-//			myprintf("%6.1f %6.1f\n",g_encoder_diff_L,g_encoder_diff_R);
-//		}
-//		selectContest();
+		selectContest();
 
 //		 FLASH.DFLWE0.WORD = 0x1EFF; //プロテクト解除
 //		 changeFCUMode(1, 1, P_E);

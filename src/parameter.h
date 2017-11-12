@@ -99,7 +99,7 @@
 //角速度I制御
 #define ANG_VELO_I 6.0
 //角速度D制御
-#define ANG_VELO_D 30//20//5.0
+#define ANG_VELO_D 30//20
 //角速度P制御
 #define ANG_FASTVELO_P 300.0
 //角速度I制御
