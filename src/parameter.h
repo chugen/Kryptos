@@ -24,8 +24,8 @@
 //慣性モーメント(kg・m^2)
 #define INERTIA 0.00030//0.00043//0.00011571875
 //タイヤ直径(m)
-#define DIAMETER_L 0.02160//0.0219//0.0218
-#define DIAMETER_R 0.02230//0.0219//0.0218
+#define DIAMETER_L 0.02175//0.02160//0.0219//0.0218
+#define DIAMETER_R 0.02220//0.02230//0.0219//0.0218
 //ギア歯数
 #define PINION 9.0
 #define SPUR 35.0
@@ -86,8 +86,8 @@
 #define SEN_PILLAR_EDGE_L -45//-50//-100
 #define SEN_PILLAR_EDGE_R -50//-50//-100
 
-#define SEN_PILLAR_EDGE_SEARCH_L -30//-40
-#define SEN_PILLAR_EDGE_SEARCH_R -32//-40
+#define SEN_PILLAR_EDGE_SEARCH_L -20//-40
+#define SEN_PILLAR_EDGE_SEARCH_R -22//-40
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //速度P制御
 #define VELO_P 220
@@ -95,11 +95,11 @@
 #define VELO_I 10
 
 //角速度P制御
-#define ANG_VELO_P 250.0
+#define ANG_VELO_P 200//250.0
 //角速度I制御
 #define ANG_VELO_I 6.0
 //角速度D制御
-#define ANG_VELO_D 20//5.0
+#define ANG_VELO_D 30//20//5.0
 //角速度P制御
 #define ANG_FASTVELO_P 300.0
 //角速度I制御

@@ -38,7 +38,17 @@ void main(void) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
 
-		selectContest();
+		waitSensor();
+		calcGyroZRef();
+		g_log_count = 0;
+		g_current_angle = 0;
+		while (1) {
+			myprintf("%8.5f %8.5f\n", g_current_angle, g_current_omega);
+		}
+//		while(1){
+//			myprintf("%6.1f %6.1f\n",g_encoder_diff_L,g_encoder_diff_R);
+//		}
+//		selectContest();
 
 //		 FLASH.DFLWE0.WORD = 0x1EFF; //プロテクト解除
 //		 changeFCUMode(1, 1, P_E);
@@ -58,14 +68,14 @@ void main(void) {
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-		//selectAdjustment1(T14);
-		g_log_count = 0;
-		waitSensor();
-		g_log_count = 0;
-		waitTime(2000);
-		soundPrint();
-		waitButton();
-		printLog4();
+		selectAdjustment1(T14);
+//		g_log_count = 0;
+//		waitSensor();
+//		g_log_count = 0;
+//		waitTime(2000);
+//		soundPrint();
+//		waitButton();
+//		printLog4();
 
 		break;
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
@@ -149,7 +159,8 @@ void main(void) {
 		switchSensorLED(ON);
 		while (1) {
 			myprintf("FL:%6.0f L:%6.0f R:%6.0f FR:%6.0f\n", g_sensor_FL_lowpass,
-								g_sensor_L_lowpass, g_sensor_R_lowpass, g_sensor_FR_lowpass);
+					g_sensor_L_lowpass, g_sensor_R_lowpass,
+					g_sensor_FR_lowpass);
 //			myprintf("FL:%6.1d L:%6.1d R:%6.1d FR:%6.1d\n", g_sensor_FL,
 //					g_sensor_L, g_sensor_R, g_sensor_FR);
 //			myprintf("%4.1d	%4.1d\n", g_sensor_FL, g_sensor_FR);

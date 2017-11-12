@@ -352,6 +352,7 @@ void initMPU6000(void) {
 	commSPI(USER_CTRL, 0x10, WRITE);			//I2C無効，SPI有効
 	commSPI(SIGNAL_PATH_RESET, 0x07, WRITE); 	//シグナルパスリセット
 	waitTimeMicro(5000);
+//	waitTime(100);
 	commSPI(PWR_MGMT_1, 0x08, WRITE);			//温度センサ無効，
 	commSPI(PWR_MGMT_2, 0x1E, WRITE);
 	commSPI(GYRO_CONFIG, 0x18, WRITE);

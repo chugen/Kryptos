@@ -658,14 +658,14 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 		driveRGB(BLUE, ON);
 		while (g_flag_failsafe != 1) {
 
-			if (fabsf(g_distance) >= 0.10) //0.09
+			if (fabsf(g_distance) >= 0.101) //0.09
 				break;
 		}
 	} else if (g_flag_pillar_edge_R == 1) {
 		driveRGB(BLUE, ON);
 		while (g_flag_failsafe != 1) {
 
-			if (fabsf(g_distance) >= 0.10) //0.075
+			if (fabsf(g_distance) >= 0.096) //0.075
 				break;
 		}
 	}

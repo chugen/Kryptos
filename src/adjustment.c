@@ -224,6 +224,7 @@ void selectAdjustment2(void) {
 		initAdjustment2();
 //		g_flag_diagonal = 1;
 //		runStraight(5, SECTION * 4, velo, 0);
+		g_flag_run_mode = SEARCH;
 		switchSensorLED(ON);
 		runStraightSearch(5,SECTION*2,velo);
 		runStraight(5, HALF_SECTION, velo, 0);
@@ -248,14 +249,14 @@ void selectAdjustment2(void) {
 	case 4:
 		initAdjustment2();
 		for (i = 0; i < 16; i++) {
-			turnCorner(&pivot_90_L);
+			turnShortest(&tc_pivot_90_L);
 			waitTime(200);
 		}
 		break;
 	case 5:
 		initAdjustment2();
 		for (i = 0; i < 16; i++) {
-			turnCorner(&pivot_90_R);
+			turnShortest(&tc_pivot_90_R);
 			waitTime(200);
 		}
 		break;
