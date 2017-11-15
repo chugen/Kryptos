@@ -55,17 +55,17 @@
 #define SEN_LOWPASS 0.8
 
 //リファレンス
-#define SEN_REFERENCE_L 456//
-#define SEN_REFERENCE_R 464//
+#define SEN_REFERENCE_L 286//
+#define SEN_REFERENCE_R 257//
 //前壁制御
-#define SEN_REFERENCE_FL 975//
-#define SEN_REFERENCE_FR 913//
+#define SEN_REFERENCE_FL 504//
+#define SEN_REFERENCE_FR 494//
 
-#define SEN_REFERENCE_FL_L 971//
-#define SEN_REFERENCE_FR_L 904//
+#define SEN_REFERENCE_FL_L 497//
+#define SEN_REFERENCE_FR_L 491//
 
-#define SEN_REFERENCE_FL_R 967//
-#define SEN_REFERENCE_FR_R 780//
+#define SEN_REFERENCE_FL_R 518//
+#define SEN_REFERENCE_FR_R 487//
 /*==========*/
 #define SEN_DIAGONAL_FL 70
 #define SEN_DIAGONAL_FR 70
@@ -73,15 +73,15 @@
 #define SEN_DERIVATIVE_L 3//5//13
 #define SEN_DERIVATIVE_R 3//5//13
 //制御閾値
-#define SEN_THRESHOLD_L 400
-#define SEN_THRESHOLD_R 410
+#define SEN_THRESHOLD_L 200
+#define SEN_THRESHOLD_R 180
 //壁有無判定基準値
-#define SEN_NOWALL_L 240//170
-#define SEN_NOWALL_R 240
-#define SEN_NOWALL_FL 130//75//160
-#define SEN_NOWALL_FR 120//65
+#define SEN_NOWALL_L 120//170
+#define SEN_NOWALL_R 120
+#define SEN_NOWALL_FL 70//75//160
+#define SEN_NOWALL_FR 70//65
 //死亡判定
-#define SEN_DEATH 1600
+#define SEN_DEATH 1200
 //壁切れ判定変化量
 #define SEN_PILLAR_EDGE_L -45//-50//-100
 #define SEN_PILLAR_EDGE_R -50//-50//-100
@@ -311,6 +311,9 @@ enum TURN_TYPE {
 	V90L,
 	V90R
 };
-
+/****************************************
+距離toセンサー値 パラメータ
+ ****************************************/
+extern const sensor_t SENSOR_PARAMS[];
 #endif /* PARAMETER_H_ */
 

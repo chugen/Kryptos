@@ -990,6 +990,7 @@ void searchAdachi(void) {
 		switchSensorLED(OFF);
 		driveMotor(OFF);
 		soundGoal();
+		matchWallGoal();
 	} else {
 		driveMotor(OFF);
 		switchSensorLED(OFF);
@@ -1164,7 +1165,6 @@ void searchFurukawa(void) {
 		driveSuction(5, OFF);
 		driveMotor(OFF);
 		switchSensorLED(OFF);
-
 	}
 	g_flag_run_mode = DEFAULT;
 }

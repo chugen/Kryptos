@@ -43,4 +43,10 @@ typedef struct{
 	uint16_t column[16];
 } step_t;
 
+
+typedef struct{
+	float params_a;
+	float params_b;
+	float params_c;
+}sensor_t;
 #endif /* MY_TYPEDEF_H_ */

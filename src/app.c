@@ -497,7 +497,7 @@ void printLog(void) {
 void printLog4(void) {
 	int32_t i;
 	for (i = 0; i < LOG_TIMES; i++) {
-		myprintf("%d\t%f\t%f\t%f\t%f\n", i, *(g_log_array + i), *(g_log_array2 + i),
+		myprintf("%d %6.4f %6.4f %6.4f %6.4f\n", i, *(g_log_array + i), *(g_log_array2 + i),
 				*(g_log_array3 + i), *(g_log_array4 + i));
 	}
 	soundPrint();

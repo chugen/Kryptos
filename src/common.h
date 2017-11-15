@@ -27,6 +27,7 @@
 
 #define SECTION 0.18
 #define HALF_SECTION 0.09
+#define PILLAR 0.012
 
 #define DEFAULT 0
 #define SEARCH 1
@@ -50,8 +51,8 @@
 
 #define START_X 0
 #define START_Y 0
-#define GOAL_X  7
-#define GOAL_Y 	7
+#define GOAL_X  1
+#define GOAL_Y 	0
 /****************************************
  path
  ****************************************/

@@ -485,7 +485,6 @@ void runBlindAlley(float velo) {
 		waitTime(300);
 		g_distance = 0;
 
-
 		runStraight(5, -0.035, 0.5, 0);
 		runStraightSearch(5, HALF_SECTION + 0.035, velo);
 	} else if (SEN_REFERENCE_L - g_sensor_L < -200) {
@@ -501,7 +500,6 @@ void runBlindAlley(float velo) {
 		turnShortest(&tc_pivot_90_R);
 		waitTime(300);
 		g_distance = 0;
-
 
 		runStraight(5, -0.035, 0.5, 0);
 		runStraightSearch(5, HALF_SECTION + 0.035, velo);
@@ -658,14 +656,14 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
 		driveRGB(BLUE, ON);
 		while (g_flag_failsafe != 1) {
 
-			if (fabsf(g_distance) >= 0.101) //0.09
+			if (fabsf(g_distance) >= 0.0985) //0.09
 				break;
 		}
 	} else if (g_flag_pillar_edge_R == 1) {
 		driveRGB(BLUE, ON);
 		while (g_flag_failsafe != 1) {
 
-			if (fabsf(g_distance) >= 0.096) //0.075
+			if (fabsf(g_distance) >= 0.0945) //0.075
 				break;
 		}
 	}
@@ -680,15 +678,20 @@ void runStraightSearch(float acceleration, float distance, float velocity) {
  ****************************************/
 void runStraightOffset(float dis, float velo) {
 	uint32_t sensor_value_FL, sensor_value_FR;
+	float dis_tmp;
 
 	g_accele = 0;
 	g_target_velo = velo;
 
 	if ((g_sensor_FL + g_sensor_FR > SEN_NOWALL_FL + SEN_NOWALL_FR)
 			&& g_sensor_FL > SEN_NOWALL_FL && g_sensor_FR > SEN_NOWALL_FR) {
-		sensor_value_FL = 222.82 * expf(13.64 * dis);
-		sensor_value_FR = 216.23 * expf(14.11 * dis);
-
+		dis_tmp = SECTION - dis + 0.005;
+		sensor_value_FL = SENSOR_PARAMS[SEN_FL].params_a * dis_tmp * dis_tmp
+				+ SENSOR_PARAMS[SEN_FL].params_b * dis_tmp
+				+ SENSOR_PARAMS[SEN_FL].params_c;
+		sensor_value_FR = SENSOR_PARAMS[SEN_FR].params_a * dis_tmp * dis_tmp
+				+ SENSOR_PARAMS[SEN_FR].params_b * dis_tmp
+				+ SENSOR_PARAMS[SEN_FR].params_c;
 		while (g_flag_failsafe != 1) {
 			if ((g_sensor_FL_lowpass > sensor_value_FL
 					&& g_sensor_FR_lowpass > sensor_value_FR))
