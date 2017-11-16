@@ -904,6 +904,7 @@ void turnSearch(turn2_t *p) {
  ****************************************/
 void turnShortest(turn2_t *p) {
 //壁切れ
+	g_flag_turn = 1;
 	if (p->velocity != 0) {
 		if (p->angle >= 0) {
 			while (g_flag_failsafe != 1) {

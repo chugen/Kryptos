@@ -83,8 +83,8 @@
 //死亡判定
 #define SEN_DEATH 1200
 //壁切れ判定変化量
-#define SEN_PILLAR_EDGE_L -45//-50//-100
-#define SEN_PILLAR_EDGE_R -50//-50//-100
+#define SEN_PILLAR_EDGE_L -30//-50//-100
+#define SEN_PILLAR_EDGE_R -30//-50//-100
 
 #define SEN_PILLAR_EDGE_SEARCH_L -20//-40
 #define SEN_PILLAR_EDGE_SEARCH_R -22//-40
