@@ -94,6 +94,7 @@
 #define ORANGE 100,50,0
 #define LBLUE 30,30,100
 #define LRED 100,30,30
+#define LGREEN 30,100,30
 #define RGB_OFF 0,0,0
 /****************************************
  ANSI ESCAPE SEQUENCE

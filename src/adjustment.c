@@ -63,12 +63,15 @@ void selectAdjustment1(uint8_t velo) {
 		velocity = 1.2;
 		break;
 	case T14:
+		driveRGB(LGREEN, ON);
 		velocity = 1.4;
 		break;
 	case T16:
+		driveRGB(LRED, ON);
 		velocity = 1.6;
 		break;
 	case T18:
+		driveRGB(LBLUE, ON);
 		velocity = 1.8;
 		break;
 	}

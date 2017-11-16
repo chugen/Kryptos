@@ -37,8 +37,8 @@ void main(void) {
 	switch (selectMode(10)) {
 	case 0: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(ORANGE, ON);
-
-		selectContest();
+		selectAdjustment1(T14);
+//		selectContest();
 
 //		 FLASH.DFLWE0.WORD = 0x1EFF; //プロテクト解除
 //		 changeFCUMode(1, 1, P_E);
@@ -58,7 +58,7 @@ void main(void) {
 		break;
 	case 1: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(MAGENTA, ON);
-		selectAdjustment1(T14);
+		selectAdjustment1(T16);
 //		g_log_count = 0;
 //		waitSensor();
 //		g_log_count = 0;
@@ -71,6 +71,7 @@ void main(void) {
 	case 2: //////////////////////////////////////////////////////////////////////////////////////
 		driveRGB(BLUE, ON);
 
+//		selectAdjustment1(T18);
 		selectAdjustment2();
 
 //		driveRGB(GREEN, ON);
