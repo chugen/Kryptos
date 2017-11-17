@@ -198,7 +198,7 @@ void selectSearch(void) {
  ****************************************/
 void selectRun(void) {
 	waitTime(500);
-	switch (selectMode(6)) {
+	switch (selectMode(9)) {
 	case 0:
 		setTargetCoord(GOAL_X, GOAL_Y);
 
@@ -351,6 +351,59 @@ void selectRun(void) {
 		driveSuction(100, OFF);
 		break;
 	case 6:
+		setTargetCoord(GOAL_X, GOAL_Y);
+
+		countStepShortest();
+		setCurrentCoord(START_X, START_Y);
+
+		setOrient(NORTH);
+		makePath();
+		makePath3();
+
+		waitSensor();
+
+		waitTime(1000);
+		calcGyroZRef();
+		soundStartRun();
+		driveSuction(100, ON);
+		waitTime(1000);
+		initRun();
+		driveMotor(ON);
+		switchSensorLED(ON);
+		runPathDiagonal(T16, 4, 20, 4, 20);
+		switchSensorLED(OFF);
+		driveMotor(OFF);
+		driveSuction(100, OFF);
+		break;
+	case 7:
+		setTargetCoord(GOAL_X, GOAL_Y);
+
+		countStepShortest();
+		setCurrentCoord(START_X, START_Y);
+
+		setOrient(NORTH);
+		makePath();
+		makePath3();
+
+		waitSensor();
+
+		waitTime(1000);
+		calcGyroZRef();
+		soundStartRun();
+		driveSuction(100, ON);
+		waitTime(1000);
+		initRun();
+		driveMotor(ON);
+		switchSensorLED(ON);
+		runPathDiagonal(T16, 4, 30, 4, 20);
+		switchSensorLED(OFF);
+		driveMotor(OFF);
+		driveSuction(100, OFF);
+		break;
+	case 8:
+
+		break;
+	case 9:
 
 		break;
 	default:
@@ -407,13 +460,13 @@ void selectContest(void) {
 			//		printPath3();
 			break;
 		case 4:
-			setTargetCoord(GOAL_X, GOAL_Y);
-			setOrient(NORTH);
-			countStepQueueNew();
-			printMapNew();
+//			setTargetCoord(GOAL_X, GOAL_Y);
+//			setOrient(NORTH);
+//			countStepQueueNew();
+//			printMapNew();
 //			runCircuit(16, 16, 2, 4, 30, 1.4);
-//			waitButton();
-//			printLog4();
+			waitButton();
+			printLog4();
 			break;
 		default:
 			break;

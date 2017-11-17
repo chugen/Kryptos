@@ -35,15 +35,15 @@ void intrptCMT0(void) {
 	g_current_velo = returnVelocityL() + returnVelocityR();
 	g_current_omega = g_current_omega_tmp - g_gyro_reference;
 
-	if (log_count % 1 == 0) {
+	if (log_count % 2 == 0) {
 		/*Log=====================================================*/
-		getLog4(g_target_velo, g_current_velo, g_target_omega, g_current_omega);
+//		getLog4(g_target_velo, g_current_velo, g_target_omega, g_current_omega);
 //		getLog4(g_duty_L, g_duty_R, g_target_velo, g_current_velo);
 //		getLog4(g_target_velo, g_current_velo, g_distance,g_accele );
 //		getLog4(g_sensor_L, g_sensor_R, g_flag_pillar_edge_L, g_flag_pillar_edge_R);
 //		getLog4(g_torque_L,g_torque_R,g_target_omega,g_current_omega);
-//		getLog4(g_sensor_FL, g_sensor_FR, g_sensor_FL_average,
-//				g_sensor_FR_average);
+		getLog4(g_sensor_FL_lowpass, g_sensor_FR_lowpass, g_sensor_L_lowpass,
+				g_sensor_R_lowpass);
 //		getLog4(g_sensor_FL, g_sensor_FR, g_sensor_L, g_sensor_R);
 //		getLog4(g_current_x, g_current_y, (getWallData(WALL_RIGHT) == 0),	checkStep(WALL_RIGHT));
 //		getLog4(g_encoder_diff_L,g_encoder_diff_R,g_target_velo,g_current_velo);

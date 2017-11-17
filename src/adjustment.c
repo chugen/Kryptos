@@ -13,6 +13,7 @@
 #include "common.h"
 #include "parameter.h"
 #include "sensor.h"
+#include "mathf.h"
 
 /****************************************
  調整用初期化
@@ -78,11 +79,13 @@ void selectAdjustment1(uint8_t velo) {
 	switch (mode) {
 	case 0:
 		initAdjustment();
-		runStraight(15, SECTION, velocity, velocity);
-
-		turnShortest(tc_para[velo][mode]);
-		switchSensorLED(OFF);
-		runStraight(15, SECTION, velocity, 0);
+//		runStraight(15, SECTION, velocity, velocity);
+//
+//		turnShortest(tc_para[velo][mode]);
+//		switchSensorLED(OFF);
+//		runStraight(15, SECTION, velocity, 0);
+		g_flag_diagonal=1;
+		runStraight(15, SECTION*2.8*sqrtf(2), 3, 0);
 
 		break;
 	case 1:

@@ -1872,9 +1872,9 @@ void runPathDiagonal(uint8_t t_velo, float velo, float acc, float d_velo,
 		} else if (g_path_3[i] == R_135_O) {
 			turnShortest(tc_para[t_velo][O135R]);
 		} else if (g_path_3[i] == L_V90) {
-			turnShortest(tc_para[t_velo][V90L]);
+			turnShortest(tc_para[T14][V90L]);
 		} else if (g_path_3[i] == R_V90) {
-			turnShortest(tc_para[t_velo][V90R]);
+			turnShortest(tc_para[T14][V90R]);
 		} else if (g_path_3[i] > 47 && g_path_3[i] <= 113) {
 			runStraight(d_acc, sqrtf(2) * HALF_SECTION * (g_path_3[i] - 47),
 					d_velo, velocity);

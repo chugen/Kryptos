@@ -67,8 +67,8 @@
 #define SEN_REFERENCE_FL_R 518//
 #define SEN_REFERENCE_FR_R 487//
 /*==========*/
-#define SEN_DIAGONAL_FL 70
-#define SEN_DIAGONAL_FR 70
+#define SEN_DIAGONAL_FL 35
+#define SEN_DIAGONAL_FR 35
 //変化量
 #define SEN_DERIVATIVE_L 3//5//13
 #define SEN_DERIVATIVE_R 3//5//13
@@ -78,13 +78,13 @@
 //壁有無判定基準値
 #define SEN_NOWALL_L 120//170
 #define SEN_NOWALL_R 120
-#define SEN_NOWALL_FL 70//75//160
-#define SEN_NOWALL_FR 70//65
+#define SEN_NOWALL_FL 60//75//160
+#define SEN_NOWALL_FR 60//65
 //死亡判定
 #define SEN_DEATH 1200
 //壁切れ判定変化量
-#define SEN_PILLAR_EDGE_L -30//-50
-#define SEN_PILLAR_EDGE_R -30//-50
+#define SEN_PILLAR_EDGE_L -22//-50
+#define SEN_PILLAR_EDGE_R -22//-50
 
 #define SEN_PILLAR_EDGE_SEARCH_L -20//-40
 #define SEN_PILLAR_EDGE_SEARCH_R -22//-40

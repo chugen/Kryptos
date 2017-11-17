@@ -257,13 +257,13 @@ float ctrlWall(float kp) {
 
 	} else if (g_flag_diagonal == 1) {
 //斜め中
-		if (SEN_DIAGONAL_FL > g_sensor_FL) {
-			tmp = ( SEN_DIAGONAL_FL - g_sensor_FL) * 0.8;
+		if (SEN_DIAGONAL_FL > g_sensor_FL_lowpass) {
+			tmp = ( SEN_DIAGONAL_FL - g_sensor_FL_lowpass) * 1.5;
 		}
-		if (SEN_DIAGONAL_FR > g_sensor_FR) {
-			tmp = -( SEN_DIAGONAL_FR - g_sensor_FR) * 0.8;
+		if (SEN_DIAGONAL_FR > g_sensor_FR_lowpass) {
+			tmp = -( SEN_DIAGONAL_FR - g_sensor_FR_lowpass) * 1.5;
 		}
-		tmp += 0.07
+		tmp += 0.17
 				* (( SEN_REFERENCE_L - g_sensor_L)
 						- ( SEN_REFERENCE_R - g_sensor_R));
 
@@ -685,7 +685,7 @@ void runStraightOffset(float dis, float velo) {
 
 	if ((g_sensor_FL + g_sensor_FR > SEN_NOWALL_FL + SEN_NOWALL_FR)
 			&& g_sensor_FL > SEN_NOWALL_FL && g_sensor_FR > SEN_NOWALL_FR) {
-		dis_tmp = SECTION - dis + 0.005;
+		dis_tmp = SECTION - dis + 0.013;
 		sensor_value_FL = SENSOR_PARAMS[SEN_FL].params_a * dis_tmp * dis_tmp
 				+ SENSOR_PARAMS[SEN_FL].params_b * dis_tmp
 				+ SENSOR_PARAMS[SEN_FL].params_c;
